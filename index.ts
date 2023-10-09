@@ -1,7 +1,9 @@
 import { Elysia } from "elysia";
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+const app = new Elysia()
+.get("/", () => "Backend on Bun+ElysiaJS is running.")
+.listen(3003);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `Backend running at http://${app.server?.hostname}:${app.server?.port}`
 );
