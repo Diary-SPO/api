@@ -1,15 +1,33 @@
-# Elysia with Bun runtime
+# Backend on Bun with ElysiaJS
+Diary-SPO API-proxy on [Bun](https://bun.sh/) JS runtime + [ElysiaJS](https://elysiajs.com/) framework.
 
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
+## Installation
+This project requires [Bun](https://bun.sh/) latest version.
+
+To install Bun on Debian/Ubuntu run:
 ```bash
-bun create elysia ./elysia-example
+sudo apt install -y curl unzip && curl -fsSL https://bun.sh/install | bash
 ```
 
-## Development
+To download the backend run:
+```bash
+git clone https://github.com/Diary-SPO/bun-elysia-backend/ && cd bun-elysia-backend
+```
+
+To install dependencies run:
+```bash
+bun i
+```
+
+## Launch
+To start the basic server run:
+```bash
+bun .
+```
+
 To start the development server run:
 ```bash
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Open http://localhost:3003/ with your browser to see the result.
