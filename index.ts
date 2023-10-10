@@ -1,7 +1,7 @@
-import { Elysia } from "elysia";
+import { Elysia } from 'elysia';
 import { 
   helloRoute,
-} from "@src/routes";
+} from '@src/routes';
 
 const port = process.env.PORT ?? 3003;
 const app = new Elysia()
