@@ -1,6 +1,6 @@
-import { Elysia } from 'elysia';
+import { Elysia } from 'elysia'
 
 const router = new Elysia()
-    .get('/', () => 'Backend on Bun+ElysiaJS is running.');
+  .get('/', () => 'Backend on Bun+ElysiaJS is running.')
 
-export default router;
+export default router

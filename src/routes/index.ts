@@ -1,5 +1,6 @@
-import helloRoute from './hello.route';
+import helloRoute from './hello.route'
+import performanceCurrent from './performance.current.route'
 
 export {
-  helloRoute,
+  helloRoute, performanceCurrent
 }

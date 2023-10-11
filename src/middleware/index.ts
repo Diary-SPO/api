@@ -1,3 +1,3 @@
-import { Elysia } from 'elysia';
+import { Elysia } from 'elysia'
 
 // TODO: Сделать валидацию

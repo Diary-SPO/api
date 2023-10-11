@@ -1,10 +1,10 @@
-import { Elysia } from 'elysia';
-import { type IMark } from 'diary-shared';
-//import { checkCookie } from '@src/middleware';
+import { Elysia } from 'elysia'
+import { type IMark } from 'diary-shared'
+// import { checkCookie } from '@src/middleware';
 
 const router = new Elysia()
-    .get('/:id/:startDate/:endDate', ({ params: { id, startDate, endDate } }) => {
-        // TODO: Сделать получение данных расписания
-    });
+  .get('/lessons/:id/:startDate/:endDate', ({ params: { id, startDate, endDate } }) => {
+    // TODO: Сделать получение данных расписания
+  })
 
-export default router;
+export default router
