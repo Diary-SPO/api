@@ -1,13 +1,11 @@
-import { Elysia } from 'elysia';
-import { 
-  helloRoute,
-} from '@src/routes';
+import { Elysia } from 'elysia'
+import routes from '@src/routes'
 
-const port = process.env.PORT ?? 3003;
+const port = process.env.PORT ?? 3003
 const app = new Elysia()
-  .use(helloRoute)
-  .listen(port);
+  .use(routes)
+  .listen(port)
 
 console.log(
   `Backend running at http://${app.server?.hostname}:${app.server?.port}`
-);
+)

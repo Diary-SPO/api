@@ -1,7 +1,7 @@
 export interface ParamsInit {
   // LIMIT?: string
   SERVER_URL?: string
-  PORT?: string
+  PORT?: number
   // DATABASE_HOST?: string
   // DATABASE_PORT?: string
   // DATABASE_NAME?: string
