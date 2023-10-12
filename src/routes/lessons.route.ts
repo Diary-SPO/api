@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia'
 import { type Day } from 'diary-shared'
+import type {Context} from "elysia/dist/context";
 
 interface GetLessonsParams {
   id: string
@@ -9,7 +10,7 @@ interface GetLessonsParams {
 
 interface GetLessons {
   request: Request
-  set: any
+  set: Context['set']
   params: GetLessonsParams
 }
 
