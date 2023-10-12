@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia'
 import { type Day } from 'diary-shared'
-import type {Context} from "elysia/dist/context";
+import type { Context } from 'elysia/dist/context'
 
 interface GetLessonsParams {
   id: string
