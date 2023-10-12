@@ -1,7 +1,9 @@
-import helloRoute from './hello.route'
-import performanceCurrent from './performance.current.route'
-import lessonsRoute from './lessons.route'
+import { Elysia } from 'elysia'
+import hello from './hello.route'
+import lessons from './lessons.route'
 
-export {
-  helloRoute, performanceCurrent, lessonsRoute
-}
+const routes = new Elysia()
+  .use(hello)
+  .use(lessons)
+
+export default routes

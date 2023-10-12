@@ -1,13 +1,9 @@
 import { Elysia } from 'elysia'
-import {
-  helloRoute, performanceCurrent, lessonsRoute
-} from '@src/routes'
+import routes from '@src/routes'
 
 const port = process.env.PORT ?? 3003
 const app = new Elysia()
-  .use(helloRoute)
-  .use(performanceCurrent)
-  .use(lessonsRoute)
+  .use(routes)
   .listen(port)
 
 console.log(
