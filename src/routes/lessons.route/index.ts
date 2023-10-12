@@ -13,10 +13,11 @@ const schema = {
 const lessons = new Elysia()
   .guard(schema, app => app
     .get('/lessons/:id/:startDate/:endDate', getLessons, {
-      afterHandle(context) {
+      afterHandle (context) {
         // @ts-expect-error Тут unknown
         if (context.response.errors) {
           context.set.status = 400
+
           context.response = {
             // @ts-expect-error Тут unknown
             errors: context.response.errors,

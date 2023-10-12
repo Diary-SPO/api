@@ -18,10 +18,9 @@ const getLessons = async ({ request, set, params }: GetLessons): Promise<Day[] |
 
   try {
     const secret = request.headers.toJSON().secret
-    let formattedStartDate: string
+    const formattedStartDate = startDate.toString()
     let formattedEndDate: string
 
-    formattedStartDate = startDate.toString()
     formattedEndDate = endDate.toString()
 
     const startTimestamp = new Date(startDate).getTime()
