@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia'
 import hello from './hello.route'
-import lessons from './lessons.route'
-import performanceCurrent from './performance.current.route'
+import lessons from './lessons'
+import performanceCurrent from './performance.current'
 
 const routes = new Elysia()
   .use(hello)
