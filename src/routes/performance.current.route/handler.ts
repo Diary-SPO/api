@@ -17,10 +17,10 @@ const getPerformanceCurrent = async ({ request, set, params }: BaseRequest<GetPe
         Cookie: secret
       }
     })
+
     console.log(`${path}\t ${response.status}`)
-    const data = await response.json()
     set.status = 200
-    return data
+    return await response.json()
   } catch (e) {
     console.error(`/performance.current/:id\t failed\n${e as string}`)
     set.status = 500

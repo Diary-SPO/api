@@ -35,9 +35,8 @@ const getLessons = async ({ request, set, params }: BaseRequest<GetLessonsParams
     })
 
     console.log(`${path}\t ${response.status}`)
-    const data = await response.json()
     set.status = 200
-    return data
+    return await response.json()
   } catch (e) {
     console.error(`/lessons/:id/:startDate/:endDate\t failed\n${e as string}`)
     set.status = 500
