@@ -17,7 +17,6 @@ const getLessons = async ({ request, set, params }: GetLessons): Promise<Day[] |
   const { id, startDate, endDate } = params
 
   try {
-    const secret = request.headers.toJSON().secret
     const formattedStartDate = startDate.toString()
     let formattedEndDate: string
 
@@ -32,6 +31,7 @@ const getLessons = async ({ request, set, params }: GetLessons): Promise<Day[] |
       formattedEndDate = newEndDate.toISOString().substring(0, 10)
     }
 
+    const secret = request.headers.toJSON().secret
     const path = `${process.env.SERVER_URL}/services/students/${id}/lessons/${formattedStartDate}/${formattedEndDate}`
     const response = await fetch(path, {
       headers: {
