@@ -1,17 +1,11 @@
-import type { Context } from 'elysia/dist/bun'
 import type { Day } from 'diary-shared'
+import { type BaseRequest } from '@src/types'
 
 interface GetPerformanceCurrentParams {
   id: string
 }
 
-interface GetPerformanceCurrent {
-  request: Request
-  set: Context['set']
-  params: GetPerformanceCurrentParams
-}
-
-const getPerformanceCurrent = async ({ request, set, params }: GetPerformanceCurrent): Promise<Day[] | string> => {
+const getPerformanceCurrent = async ({ request, set, params }: BaseRequest<GetPerformanceCurrentParams>): Promise<Day[] | string> => {
   const { id } = params
 
   try {

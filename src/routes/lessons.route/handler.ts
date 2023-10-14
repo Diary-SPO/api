@@ -1,5 +1,5 @@
-import type { Context } from 'elysia/dist/bun'
 import type { Day } from 'diary-shared'
+import { type BaseRequest } from '@src/types'
 
 interface GetLessonsParams {
   id: string
@@ -7,13 +7,7 @@ interface GetLessonsParams {
   endDate: string
 }
 
-interface GetLessons {
-  request: Request
-  set: Context['set']
-  params: GetLessonsParams
-}
-
-const getLessons = async ({ request, set, params }: GetLessons): Promise<Day[] | string> => {
+const getLessons = async ({ request, set, params }: BaseRequest<GetLessonsParams>): Promise<Day[] | string> => {
   const { id, startDate, endDate } = params
 
   try {
