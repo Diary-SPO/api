@@ -1,7 +1,7 @@
 import { Elysia, t } from 'elysia'
+import handleErrors from '@src/utils/errorHandler'
 import getPerformanceCurrent from './handler'
 import { checkCookie } from '@src/middleware'
-import handleErrors from '@src/utils/errorHandler'
 
 const schema = {
   params: t.Object({
