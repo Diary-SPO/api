@@ -1,4 +1,4 @@
-import type { Day } from 'diary-shared'
+import type { PerformanceCurrent } from 'diary-shared'
 import type { Context } from 'elysia'
 
 interface IContext extends Omit<Context, 'params'> {
@@ -7,9 +7,10 @@ interface IContext extends Omit<Context, 'params'> {
   }
 }
 
-const getPerformanceCurrent = async ({ request, set, params }: IContext): Promise<Day[] | string> => {
+const getPerformanceCurrent = async ({ request, set, params }: IContext): Promise<PerformanceCurrent | string> => {
+  const { id } = params
   const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/reports/current/performance/${params.id}`
+  const path = `${process.env.SERVER_URL}/services/reports/current/performance/${id}`
   const response = await fetch(path, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
