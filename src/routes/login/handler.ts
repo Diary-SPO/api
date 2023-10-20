@@ -11,7 +11,7 @@ interface AuthContext extends Omit<Context, 'params'> {
 const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> => {
   const { login, password } = body
 
-  if (!login || !password || typeof login !== 'string' || typeof password !== 'string') {
+  if (!login || !password) {
     console.error(`login ${login}\t invalid login or password`)
     set.status = 400
     return 'Invalid login or password'
