@@ -21,11 +21,6 @@ export const checkCookie = ({ request, set }: CheckCookie): number | undefined =
     set.status = 401
     return 401
   }
+  
+  return
 }
-
-// const allowedHosts = ['localhost', 'https://prod-app51740302']
-//
-// const isHostAllowed = (host: string): boolean => {
-//   console.log(allowedHosts.some(allowedHost => host.includes(allowedHost)))
-//   return allowedHosts.some(allowedHost => host.includes(allowedHost))
-// }
