@@ -2,8 +2,11 @@
   "name": "bun-elysia",
   "version": "1.0.50",
   "scripts": {
-    "lint:fix": "eslint . --ext ts --fix",
-    "dev": "bun run --watch index.ts"
+    "start": "bun run ./src/main.ts",
+    "dev": "bun run --watch ./src/main.ts",
+    "build": "bun build ./src/main.ts --outdir dist",
+    "serve": "bun build ./src/main.ts --outdir dist && bun run ./dist/main.js",
+    "lint:fix": "eslint . --ext ts --fix"
   },
   "dependencies": {
     "diary-shared": "^1.8.0",
