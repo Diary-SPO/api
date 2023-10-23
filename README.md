@@ -28,15 +28,30 @@ To install dependencies run:
 bun i
 ```
 
-## Launch
-To start the basic server run:
-```bash
-bun .
-```
+## Configuration
+Before starting the server, you need to have a configuration file.
 
-To start the development server run:
-```bash
-bun dev
-```
+Create file with name `.env` in project root (or where server runs).
+File has the following syntax:
+```ini
+# Адрес сервера дневника
+SERVER_URL='адрес_целевого_дневника'
 
-Open http://localhost:3003/ with your browser to see the result.
+# Порт этого сервера (не обязательно)
+PORT=ваш_порт # по умолчанию 3003
+```
+Here is a possible example of your file:
+```ini
+SERVER_URL='https://poo.tomedu.ru'
+PORT=3000
+```
+You can rewrite file `.env.example` and rename to `.env`
+
+## Launch and build scripts
+```bash
+bun start     # run server from source code
+bun dev       # run with watch mode
+bun run build # build to ./dist folder
+bun serve     # build and run production
+```
+Open link from terminal (http://localhost:3003/) with your browser to see "hello" page of running server.
