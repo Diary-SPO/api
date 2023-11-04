@@ -1,13 +1,7 @@
 import type { Organization } from 'diary-shared'
 import type { Context } from 'elysia'
 
-interface IContext extends Omit<Context, 'params'> {
-  params: {
-    id: string
-  }
-}
-
-const getOrganization = async ({ request, set }: IContext): Promise<Organization | string> => {
+const getOrganization = async ({ request, set }: Context): Promise<Organization | string> => {
   const secret = request.headers.toJSON().secret
   const path = `${process.env.SERVER_URL}/services/people/organization`
   const response = await fetch(path, {
