@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia'
 import routes from '@src/routes'
+import '@database'
 
 const port = process.env.PORT ?? 3003
 const app = new Elysia()

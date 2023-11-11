@@ -1,5 +1,6 @@
-import type { AuthData } from 'diary-shared'
 import type { Context } from 'elysia'
+import { registration } from './dbRegistration'
+import { AuthData } from '@src/types'
 
 interface AuthContext extends Omit<Context, 'params'> {
   body: {
@@ -8,7 +9,9 @@ interface AuthContext extends Omit<Context, 'params'> {
   }
 }
 
-const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> => {
+// Набросал, но нужно поправить -_-
+
+const postAuth = async ({ set, body }: AuthContext): Promise<AuthData| string> => {
   const { login, password } = body
 
   if (!login || !password) {
@@ -18,20 +21,17 @@ const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> 
   }
 
   const path = `${process.env.SERVER_URL}/services/security/login`
-  const response = await fetch(path, {
-    method: 'POST',
-    body: JSON.stringify({ login, password, isRemember: true }),
-    headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-  })
-  console.log(`${response.status} ${path}`)
 
-  const data = await response.json()
+  const data = await registration(login, password, -1) // -1 - это заглушка
 
-  const setCookieHeader = response.headers.getAll('Set-Cookie')
-  const cookieString = Array.isArray(setCookieHeader) ? setCookieHeader.join('; ') : setCookieHeader
+  set.status = typeof data === 'number' ? data : 200
 
-  set.status = response.status
-  return { data, cookie: cookieString }
+  console.log(path, set.status)
+
+  if (typeof data !== 'number'){
+    return { data, cookie: data.cookie }
+  }
+  return 'Error authorization'
 }
 
 export default postAuth

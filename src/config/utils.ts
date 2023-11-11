@@ -5,9 +5,9 @@ dotenv.config()
 
 function checkEnvVariables (params: ParamsInit): void {
   for (const key of Object.keys(params) as ParamsKeys[]) {
-    const value = process.env[key] ?? Bun.env[key]
+    const value = process.env[key] ?? Bun.env[key] ?? params[key]
 
-    if (typeof value !== 'string' || value.trim() === '') {
+    if ((typeof value !== 'number' && typeof value !== 'string') || String(value).trim() === '') {
       throw new Error(`Environment variable ${key} is not defined or empty.`)
     }
     params[key] = value
