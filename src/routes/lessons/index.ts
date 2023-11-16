@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia'
 import getLessons from './handler'
-import handleErrors from '@src/utils/errorHandler'
+import { handleErrors } from '@utils'
 import { checkCookie } from '@src/middleware'
 
 const schema = {

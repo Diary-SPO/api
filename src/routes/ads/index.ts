@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia'
 import getAds from './handler'
-import handleErrors from '@src/utils/errorHandler'
+import { handleErrors } from '@utils'
 import { checkCookie } from '@src/middleware'
 
 const ads = new Elysia()
