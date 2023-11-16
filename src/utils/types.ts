@@ -1,4 +1,4 @@
-import type { Cookie } from 'elysia'
+import type { Context as ElysiaContext, Cookie } from 'elysia'
 import type { GenericRecord, RecordNonNull, RecordNullable } from '@utils'
 
 /**
@@ -69,4 +69,10 @@ export interface Context {
  */
 export interface IContext extends Context {
   response: IResponse
+}
+
+export interface ContextWithID extends Omit<ElysiaContext, 'params'> {
+  params: {
+    id: string
+  }
 }

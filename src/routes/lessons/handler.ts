@@ -1,10 +1,8 @@
 import type { Day } from 'diary-shared'
-import type { Context } from 'elysia'
-import { adjustEndDate, formatDate, HeadersWithCookie } from '@utils'
+import { adjustEndDate, type ContextWithID, formatDate, HeadersWithCookie } from '@utils'
 
-interface IContext extends Omit<Context, 'params'> {
-  params: {
-    id: string
+interface IContext extends ContextWithID {
+  params: ContextWithID['params'] & {
     startDate: string
     endDate: string
   }
