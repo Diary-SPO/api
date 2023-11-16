@@ -27,11 +27,11 @@ export const calculateDifferenceInDays = (start: string, end: string): number =>
  */
 export const adjustEndDate = (start: string, end: string): string => {
   const differenceInDays = calculateDifferenceInDays(start, end)
-  
+
   if (differenceInDays > 14) {
     const newEndDate = new Date(new Date(start).getTime() + 14 * 24 * 60 * 60 * 1000)
     return formatDate(newEndDate.toISOString())
   }
-  
+
   return formatDate(end)
 }
