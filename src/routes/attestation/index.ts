@@ -12,7 +12,7 @@ const schema = {
 const attestation = new Elysia()
   .guard(schema, app => app
     .get('/attestation/:id', getAttestation, {
-      afterHandle: handleErrors,
+      afterHandle: () => handleErrors,
       beforeHandle: checkCookie
     })
   )

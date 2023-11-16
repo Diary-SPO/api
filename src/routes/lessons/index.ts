@@ -14,7 +14,7 @@ const schema = {
 const lessons = new Elysia()
   .guard(schema, app => app
     .get('/lessons/:id/:startDate/:endDate', getLessons, {
-      afterHandle: handleErrors,
+      afterHandle: () => handleErrors,
       beforeHandle: checkCookie
     })
   )

@@ -15,7 +15,7 @@ interface IContext {
 }
 
 let i = 0
-function handleErrors (context: IContext): void {
+const handleErrors = (context: IContext): void => {
   if (context.response.errors) {
     context.set.status = 400
 
