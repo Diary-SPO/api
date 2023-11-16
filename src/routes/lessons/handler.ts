@@ -1,5 +1,6 @@
 import type { Day } from 'diary-shared'
 import type { Context } from 'elysia'
+import { HeadersWithCookie } from '@utils'
 
 interface IContext extends Omit<Context, 'params'> {
   params: {
@@ -28,11 +29,9 @@ const getLessons = async ({ request, set, params }: IContext): Promise<Day[] | s
 
   const secret = request.headers.toJSON().secret
   const path = `${process.env.SERVER_URL}/services/students/${id}/lessons/${formattedStartDate}/${formattedEndDate}`
+
   const response = await fetch(path, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      Cookie: secret
-    }
+    headers: HeadersWithCookie(secret)
   })
 
   console.log(`${response.status} ${path}`)

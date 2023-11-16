@@ -1,5 +1,5 @@
 import { Elysia, t } from 'elysia'
-import handleErrors from '@src/utils/errorHandler'
+import { handleErrors } from '@utils'
 import getAttestation from './handler'
 import { checkCookie } from '@src/middleware'
 

@@ -1,4 +1,4 @@
-import type { Context, IContext } from '@src/utils/types'
+import type { Context, IContext } from '@utils'
 
 export const isIContext = (obj: Context): obj is IContext => {
   return (

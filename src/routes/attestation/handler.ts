@@ -1,5 +1,6 @@
 import type { AttestationResponse } from 'diary-shared'
 import type { Context } from 'elysia'
+import { HeadersWithCookie } from '@utils'
 
 interface IContext extends Omit<Context, 'params'> {
   params: {
@@ -12,10 +13,7 @@ const getAttestation = async ({ request, set, params }: IContext): Promise<Attes
   const secret = request.headers.toJSON().secret
   const path = `${process.env.SERVER_URL}/services/reports/curator/group-attestation-for-student/${id}`
   const response = await fetch(path, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      Cookie: secret
-    }
+    headers: HeadersWithCookie(secret)
   })
 
   console.log(`${response.status} ${path}`)

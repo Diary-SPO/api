@@ -1,19 +1,5 @@
 import type { Cookie } from 'elysia'
-
-/**
- * Общий тип для записей с неизвестными значениями.
- */
-type GenericRecord = Record<string, unknown>
-
-/**
- * Общий тип для записей с возможностью значения null.
- */
-type RecordNullable<T> = Record<string, T | null>
-
-/**
- * Общий тип для записей без значений null.
- */
-type RecordNonNull<T> = Record<string, T>
+import type { GenericRecord, RecordNonNull, RecordNullable } from '@utils'
 
 /**
  * Интерфейс для ответа.
@@ -24,7 +10,7 @@ export interface IResponse {
 }
 
 /**
- * Интерфейс контекста приложения.
+ * Интерфейс контекста сервера.
  */
 export interface Context {
   /**
@@ -38,22 +24,22 @@ export interface Context {
   body: unknown
 
   /**
-   * Параметры запроса с возможностью значения null.
+   * Параметры запроса.
    */
   query: RecordNullable<string>
 
   /**
-   * Параметры запроса без значений null.
+   * Параметры запроса.
    */
   params: RecordNonNull<string>
 
   /**
-   * Заголовки запроса с возможностью значения null.
+   * Заголовки запроса.
    */
   headers: RecordNullable<string>
 
   /**
-   * Cookie с неизвестными значениями.
+   * Cookie.
    */
   cookie: RecordNonNull<Cookie<any>>
 

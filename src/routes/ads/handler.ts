@@ -1,5 +1,6 @@
 import type { NotificationsResponse } from 'diary-shared'
 import type { Context } from 'elysia'
+import { HeadersWithCookie } from '@utils'
 
 interface IContext extends Omit<Context, 'params'> {
   params: {
@@ -11,10 +12,7 @@ const getAds = async ({ request, set }: IContext): Promise<NotificationsResponse
   const secret = request.headers.toJSON().secret
   const path = `${process.env.SERVER_URL}/services/people/organization/news/last/10`
   const response = await fetch(path, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      Cookie: secret
-    }
+    headers: HeadersWithCookie(secret)
   })
 
   console.log(`${response.status} ${path}`)

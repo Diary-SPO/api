@@ -1,8 +1,7 @@
-import type { Context } from '@src/utils/types'
-import { isIContext } from '@src/utils/isIContext'
+import { type Context, isIContext } from '@utils'
 
 let i = 0
-const handleErrors = (context: Context): void => {
+export const handleErrors = (context: Context): void => {
   if (!isIContext(context)) {
     return
   }
@@ -18,5 +17,3 @@ const handleErrors = (context: Context): void => {
     }
   }
 }
-
-export default handleErrors

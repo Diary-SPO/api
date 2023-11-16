@@ -1,5 +1,6 @@
 import type { AuthData } from 'diary-shared'
 import type { Context } from 'elysia'
+import { BaseHeaders } from '@utils'
 
 interface AuthContext extends Omit<Context, 'params'> {
   body: {
@@ -21,8 +22,9 @@ const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> 
   const response = await fetch(path, {
     method: 'POST',
     body: JSON.stringify({ login, password, isRemember: true }),
-    headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+    headers: BaseHeaders
   })
+
   console.log(`${response.status} ${path}`)
 
   const data = await response.json()
