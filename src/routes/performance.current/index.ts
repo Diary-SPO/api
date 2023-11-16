@@ -12,7 +12,7 @@ const schema = {
 const performanceCurrent = new Elysia()
   .guard(schema, app => app
     .get('/performance.current/:id', getPerformanceCurrent, {
-      afterHandle: () => handleErrors,
+      afterHandle: handleErrors,
       beforeHandle: checkCookie
     })
   )

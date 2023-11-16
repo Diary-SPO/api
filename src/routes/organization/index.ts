@@ -5,7 +5,7 @@ import { checkCookie } from '@src/middleware'
 
 const organization = new Elysia()
   .get('/organization', getOrganization, {
-    afterHandle: () => handleErrors,
+    afterHandle: handleErrors,
     beforeHandle: checkCookie
   })
 
