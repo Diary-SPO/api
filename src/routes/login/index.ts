@@ -6,7 +6,7 @@ const schema = {
   body: t.Object({
     login: t.String(),
     password: t.String(),
-    isRemember: t.Undefined() || t.Boolean(),
+    isRemember: t.Undefined() || t.Boolean()
   })
 }
 
