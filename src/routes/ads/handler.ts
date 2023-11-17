@@ -1,4 +1,4 @@
-import type { NotificationsResponse } from 'diary-shared'
+import type { NotificationsResponse } from '@diary-spo/shared'
 import { type ContextWithID, HeadersWithCookie } from '@utils'
 
 const getAds = async ({ request, set }: ContextWithID): Promise<NotificationsResponse | string> => {

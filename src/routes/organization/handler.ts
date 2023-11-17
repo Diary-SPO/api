@@ -1,4 +1,4 @@
-import type { Organization } from 'diary-shared'
+import type { Organization } from '@diary-spo/shared'
 import type { Context } from 'elysia'
 import { HeadersWithCookie } from '@utils'
 

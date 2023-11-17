@@ -1,4 +1,4 @@
-import type { PerformanceCurrent } from 'diary-shared'
+import type { PerformanceCurrent } from '@diary-spo/shared'
 import { type ContextWithID, HeadersWithCookie } from '@utils'
 
 const getPerformanceCurrent = async ({ request, set, params }: ContextWithID): Promise<PerformanceCurrent | string> => {

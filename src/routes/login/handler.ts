@@ -1,4 +1,4 @@
-import type { AuthData } from 'diary-shared'
+import type { AuthData } from '@diary-spo/shared'
 import type { Context } from 'elysia'
 import { BaseHeaders } from '@utils'
 
