@@ -1,8 +1,12 @@
 import { Elysia } from 'elysia'
+import { cors } from '@elysiajs/cors'
 import routes from '@src/routes'
 
 const port = process.env.PORT ?? 3003
 const app = new Elysia()
+  .use(cors({
+    origin: true
+  }))
   .use(routes)
   .listen(port)
 
