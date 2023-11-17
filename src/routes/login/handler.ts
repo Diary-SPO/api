@@ -6,7 +6,7 @@ interface AuthContext extends Omit<Context, 'params'> {
   body: {
     login: string
     password: string
-    isRemember?: boolean
+    isRemember: boolean
   }
 }
 
