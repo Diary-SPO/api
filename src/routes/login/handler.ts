@@ -1,6 +1,7 @@
 import type { Context } from 'elysia'
 import { registration } from './dbRegistration'
 import { AuthData } from '@src/types'
+import { BaseHeaders } from '@utils'
 
 interface AuthContext extends Omit<Context, 'params'> {
   body: {
@@ -21,6 +22,13 @@ const postAuth = async ({ set, body }: AuthContext): Promise<AuthData| string> =
   }
 
   const path = `${process.env.SERVER_URL}/services/security/login`
+  const response = await fetch(path, {
+    method: 'POST',
+    body: JSON.stringify({ login, password, isRemember: true }),
+    headers: BaseHeaders
+  })
+
+  console.log(`${response.status} ${path}`)
 
   const data = await registration(login, password, -1) // -1 - это заглушка
 
