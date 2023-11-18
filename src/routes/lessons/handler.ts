@@ -1,4 +1,4 @@
-import type { Day } from 'diary-shared'
+import type { Day } from '@diary-spo/shared'
 import { adjustEndDate, type ContextWithID, formatDate, HeadersWithCookie } from '@utils'
 
 interface IContext extends ContextWithID {

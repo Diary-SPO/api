@@ -4,13 +4,12 @@
   "scripts": {
     "start": "bun run ./src/main.ts",
     "dev": "bun run --watch ./src/main.ts",
-    "build": "bun build ./src/main.ts --outdir dist",
-    "serve": "bun build ./src/main.ts --outdir dist && bun run ./dist/main.js",
+    "build": "bun build ./src/main.ts --outdir dist --minify --target bun",
+    "serve": "bun run build && bun run ./dist/main.js",
     "lint:fix": "eslint . --ext ts --fix"
   },
   "dependencies": {
     "@elysiajs/cors": "^0.7.2",
-    "dotenv": "^16.3.1",
     "elysia": "latest",
     "jshashes": "^1.0.8",
     "pg": "^8.11.3"

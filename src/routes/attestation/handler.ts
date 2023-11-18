@@ -1,4 +1,4 @@
-import type { AttestationResponse } from 'diary-shared'
+import type { AttestationResponse } from '@diary-spo/shared'
 import { type ContextWithID, HeadersWithCookie } from '@utils'
 
 const getAttestation = async ({ request, set, params }: ContextWithID): Promise<AttestationResponse | string> => {
