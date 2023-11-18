@@ -45,7 +45,7 @@ const postAuth = async ({
   if (typeof data === 'number') {
     return 'Error authorization'
   }
-  
+
   return { data, cookie: data.cookie }
 }
 

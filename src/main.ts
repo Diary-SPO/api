@@ -7,9 +7,11 @@ import routes from '@routes'
 
 const port = process.env.PORT ?? 3003
 const app = new Elysia()
-  .use(swagger({
-    path: '/documentation'
-  }))
+  .use(
+    swagger({
+      path: '/documentation',
+    }),
+  )
   .use(
     cors({
       origin: true,

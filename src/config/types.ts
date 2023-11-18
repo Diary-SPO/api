@@ -1,3 +1,11 @@
+/**
+ * Утилитарный тип, который делает каждое свойство объекта T либо строкой, либо числом.
+ */
+
+export type StringOrNumber<T> = {
+  [K in keyof T]: string | number
+}
+
 export interface ParamsInit {
   SERVER_URL: string
   PORT: number
@@ -10,3 +18,5 @@ export interface ParamsInit {
 }
 
 export type ParamsKeys = keyof ParamsInit
+
+
