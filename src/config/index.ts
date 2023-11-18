@@ -4,12 +4,11 @@ import checkEnvVariables from './utils'
 
 if (!fs.existsSync('.env')) {
   throw new Error(
-    'Configuration file ".env" not found. Read README for instructions on how to create.'
+    'Configuration file ".env" not found. Read README for instructions on how to create.',
   )
 }
 
 const PARAMS_INIT: ParamsInit = {
-// LIMIT: '20',
   SERVER_URL: '',
   PORT: 3003,
   DATABASE_HOST: '',
@@ -23,7 +22,6 @@ const PARAMS_INIT: ParamsInit = {
 checkEnvVariables(PARAMS_INIT)
 
 export const {
-// LIMIT,
   SERVER_URL,
   PORT,
   DATABASE_HOST,

@@ -1,5 +1,4 @@
 export interface ParamsInit {
-  // LIMIT?: string
   SERVER_URL: string
   PORT: number
   DATABASE_HOST: string

@@ -1,7 +1,7 @@
-import type { AuthData } from '@diary-spo/shared'
 import type { Context } from 'elysia'
 import { registration } from './dbRegistration'
 import { BaseHeaders } from '@utils'
+import { AuthData } from '@types'
 
 interface AuthContext extends Omit<Context, 'params'> {
   body: {
@@ -13,7 +13,10 @@ interface AuthContext extends Omit<Context, 'params'> {
 
 // FIXME: Набросал, но нужно поправить -_-
 
-const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> => {
+const postAuth = async ({
+  set,
+  body,
+}: AuthContext): Promise<AuthData | string> => {
   const { login, password, isRemember } = body
 
   if (!login || !password) {
@@ -26,7 +29,7 @@ const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> 
   const response = await fetch(path, {
     method: 'POST',
     body: JSON.stringify({ login, password, isRemember }),
-    headers: BaseHeaders
+    headers: BaseHeaders,
   })
 
   console.log(`${response.status} ${path}`)
@@ -37,7 +40,7 @@ const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> 
 
   console.log(path, set.status)
 
-  if (typeof data !== 'number'){
+  if (typeof data !== 'number') {
     return { data, cookie: data.cookie }
   }
   return 'Error authorization'

@@ -1,5 +1,10 @@
 import type { Day } from '@diary-spo/shared'
-import { adjustEndDate, type ContextWithID, formatDate, HeadersWithCookie } from '@utils'
+import {
+  adjustEndDate,
+  type ContextWithID,
+  formatDate,
+  HeadersWithCookie,
+} from '@utils'
 
 interface IContext extends ContextWithID {
   params: ContextWithID['params'] & {
@@ -8,7 +13,11 @@ interface IContext extends ContextWithID {
   }
 }
 
-const getLessons = async ({ request, set, params }: IContext): Promise<Day[] | string> => {
+const getLessons = async ({
+  request,
+  set,
+  params,
+}: IContext): Promise<Day[] | string> => {
   const { id, startDate, endDate } = params
 
   const formattedStartDate = formatDate(startDate)
@@ -18,7 +27,7 @@ const getLessons = async ({ request, set, params }: IContext): Promise<Day[] | s
   const path = `${process.env.SERVER_URL}/services/students/${id}/lessons/${formattedStartDate}/${formattedEndDate}`
 
   const response = await fetch(path, {
-    headers: HeadersWithCookie(secret)
+    headers: HeadersWithCookie(secret),
   })
 
   console.log(`${response.status} ${path}`)
