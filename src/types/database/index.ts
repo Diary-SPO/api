@@ -1,4 +1,5 @@
 import { type Teacher } from '@diary-spo/shared'
+export * from './returnTypes'
 export interface DiaryUser {
   id: number
   spoId?: number
@@ -11,6 +12,7 @@ export interface DiaryUser {
   lastName: string
   middleName: string
   cookie: string
+  token?: string
 }
 
 export interface Group {
@@ -101,4 +103,11 @@ export interface RequiredDB {
 export interface AuthData {
   cookie: string
   data: DiaryUser
+}
+
+export interface Auth {
+  id: number
+  idDiaryUser: number
+  token: string
+  lastDate: string
 }

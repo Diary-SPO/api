@@ -1,13 +1,12 @@
 import type { Context } from 'elysia'
-import { registration } from './dbRegistration'
+import { registration } from '../../database/dbRegistration'
 import { BaseHeaders } from '@utils'
-import { AuthData } from '@types'
+import { ResponseLogin } from '@types'
 
-interface AuthContext extends Omit<Context, 'params'> {
+interface AuthContext extends Context {
   body: {
     login: string
     password: string
-    isRemember: boolean
   }
 }
 
@@ -16,7 +15,24 @@ interface AuthContext extends Omit<Context, 'params'> {
 const postAuth = async ({
   set,
   body,
-}: AuthContext): Promise<AuthData | string> => {
+}: AuthContext): Promise<ResponseLogin | string> => {
+  const {login, password} = body
+
+  if (!login || !password) {
+    console.error(`login ${login}\t invalid login or password`)
+    set.status = 400
+    return 'Invalid login or password'
+  }
+
+  const data = await registration(login, password)
+    .catch((err) => {
+      set.status = 401
+      return 'Error authorization: ' + err
+    })
+  
+  return data
+  /*
+  // Это вынести в middleware
   const { login, password, isRemember } = body
 
   if (!login || !password) {
@@ -40,10 +56,13 @@ const postAuth = async ({
 
   console.log(path, set.status)
 
-  if (typeof data !== 'number') {
-    return { data, cookie: data.cookie }
+  // Вынести в тот же middleware, который также будет ставить статус 401
+  if (typeof data === 'number') {
+    return 'Error authorization'
   }
-  return 'Error authorization'
+  
+  return { data, cookie: data.cookie }
+  */
 }
 
 export default postAuth

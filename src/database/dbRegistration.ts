@@ -1,23 +1,21 @@
-import type { DiaryUser, VKUser, SPO, Group, PersonResponse } from '@types'
-import Hashes from 'jshashes'
-import { SERVER_URL } from '@config'
+import type { DiaryUser, VKUser, SPO, Group, PersonResponse, Auth, ResponseLogin } from '@types'
+import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
 import { client } from '@db'
+import { suid } from 'rand-token'
 
 export const registration = async (
   login: string,
-  password: string,
-  vkId: number,
-): Promise<DiaryUser | number> => {
-  const passwordHashed = new Hashes.SHA256().b64(password)
+  password: string
+): Promise<ResponseLogin> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
-    body: JSON.stringify({ login, password: passwordHashed, isRemember: true }),
+    body: JSON.stringify({ login, password, isRemember: true }),
   })
 
-  if (typeof res === 'number') return res
+  if (typeof res === 'number') throw new Error('Ошибочка с авторизацией: неверный логин или пароль')
 
   try {
     const student = res.data.tenants[res.data.tenantName].students[0]
@@ -33,20 +31,20 @@ export const registration = async (
       cookie: cookie ?? '',
     })
 
-    if (typeof detailedInfo === 'number') return detailedInfo
+    if (typeof detailedInfo === 'number') throw new Error('Error get detailed info!')
 
     // TODO: add ENCRYPT_KEY
     const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
-      password: encrypt(password ?? ''),
+      password: encrypt(password ?? '', ENCRYPT_KEY),
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,
       firstName: detailedInfo.data.person.firstName,
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
-      cookie: encrypt(cookie ?? ''),
+      cookie: encrypt(cookie ?? '', ENCRYPT_KEY),
     }
 
     const regSPO: SPO = {
@@ -68,7 +66,6 @@ export const registration = async (
 
     const groupQueryBuilder = createQueryBuilder<Group>(client)
     const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
-    const userVKQueryBuilder = createQueryBuilder<VKUser>(client)
     const SPOQueryBuilder = createQueryBuilder<SPO>(client)
 
     const existingGroup = await groupQueryBuilder
@@ -80,11 +77,6 @@ export const registration = async (
       .from('diaryUser')
       .select('*')
       .where(`id = ${regData.id}`)
-      .first()
-    const existingVKUser = await userVKQueryBuilder
-      .from('vkUser')
-      .select('*')
-      .where(`"vkId" = ${vkId}`)
       .first()
     const existingSPO = await SPOQueryBuilder.from('SPO')
       .select('*')
@@ -124,20 +116,41 @@ export const registration = async (
       await userDiaryQueryBuilder.update(regData)
     }
 
-    if (!existingVKUser) {
-      await userVKQueryBuilder.insert({ diaryId: regData.id, vkId })
-    } else {
-      await userVKQueryBuilder.update({ diaryId: regData.id, vkId })
+    // Генерируем токен
+    const token = suid(16)
+
+    const date = new Date()
+    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+
+    const tokenQueryBuilder = await createQueryBuilder<Auth>(client)
+    .from('auth')
+    .insert({
+      idDiaryUser: regData.id,
+      token,
+      lastDate: formattedDate
+    })
+
+    if (!tokenQueryBuilder) {
+      throw new Error('Error insert token!')
     }
 
-    regData.cookie = decrypt(regData.cookie)
+    regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
+    regData.token = token
 
-    return regData
-  } catch (error) {
-    console.log('Ошибка авторизации:', error)
-    return 1
+    // ЧЕГОЭТО: Это вообще что-то как-попалошное... ???
+    return {
+      id: regData.id,
+      groupId: regData.groupId,
+      login: regData.login,
+      phone: regData.phone,
+      birthday: regData.birthday,
+      firstName: regData.firstName,
+      lastName: regData.lastName,
+      middleName: regData.middleName,
+      spoId: regData.spoId,
+      token: regData.token
+    }
+  } catch (err) {
+    throw new Error('Ошибка на этапе работы с базой: ' + err)
   }
-  // 401 - ошибка запроса,
-  // 501 - сервер упал.
-  // 1   - неизвестная ошибка
 }

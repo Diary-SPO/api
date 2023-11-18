@@ -3,6 +3,7 @@ import { type Context, isIContext } from '@utils'
 let i = 0
 export const handleErrors = (context: Context): void => {
   if (!isIContext(context)) {
+    console.error('No context')
     return
   }
 

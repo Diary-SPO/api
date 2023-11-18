@@ -4,10 +4,11 @@ function checkEnvVariables(params: ParamsInit): void {
   for (const key of Object.keys(params) as ParamsKeys[]) {
     const value = Bun.env[key] ?? params[key]
 
-    if (typeof value !== 'number' || String(value).trim() === '') {
+    if (typeof value !== 'number' && String(value).trim() === '') {
       throw new Error(`Environment variable ${key} is not defined or empty.`)
     }
 
+    // @ts-ignore
     params[key] = value
   }
 }
