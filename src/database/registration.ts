@@ -4,7 +4,7 @@ import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
 import { client } from '@db'
 import { suid } from 'rand-token'
-import { ResponseLoginFromDiaryUser } from 'src/types/converterTypes'
+import { ResponseLoginFromDiaryUser } from '@types'
 
 export const registration = async (
   login: string,
