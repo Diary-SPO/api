@@ -5,7 +5,8 @@ import { handleErrors } from '@utils'
 const schema = {
   body: t.Object({
     login: t.String(),
-    password: t.String()
+    password: t.String(),
+    isHash: t.Boolean()
   }),
 }
 

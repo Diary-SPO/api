@@ -4,6 +4,7 @@ import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
 import { client } from '@db'
 import { suid } from 'rand-token'
+import { ResponseLoginFromDiaryUser } from 'src/types/converterTypes'
 
 export const registration = async (
   login: string,
@@ -134,22 +135,12 @@ export const registration = async (
       throw new Error('Error insert token!')
     }
 
-    regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
+    // Не вычисляем, т.к. не отдаём
+    //regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
     regData.token = token
 
-    // ЧЕГОЭТО: Это вообще что-то как-попалошное... ???
-    return {
-      id: regData.id,
-      groupId: regData.groupId,
-      login: regData.login,
-      phone: regData.phone,
-      birthday: regData.birthday,
-      firstName: regData.firstName,
-      lastName: regData.lastName,
-      middleName: regData.middleName,
-      spoId: regData.spoId,
-      token: regData.token
-    }
+    // Убираем все "приватные" поля из ответа
+    return ResponseLoginFromDiaryUser(regData)
   } catch (err) {
     throw new Error('Ошибка на этапе работы с базой: ' + err)
   }
