@@ -5,6 +5,7 @@ import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
 import { client } from '@db'
 import { suid } from 'rand-token'
 import { ResponseLoginFromDiaryUser } from '@types'
+import { generateToken } from './generateToken'
 
 export const registration = async (
   login: string,
@@ -119,22 +120,7 @@ export const registration = async (
     }
 
     // Генерируем токен
-    const token = suid(16)
-
-    const date = new Date()
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-
-    const tokenQueryBuilder = await createQueryBuilder<Auth>(client)
-    .from('auth')
-    .insert({
-      idDiaryUser: regData.id,
-      token,
-      lastDate: formattedDate
-    })
-
-    if (!tokenQueryBuilder) {
-      throw new Error('Error insert token!')
-    }
+    const token = await generateToken(regData.id)
 
     // Не вычисляем, т.к. не отдаём
     //regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
