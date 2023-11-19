@@ -2,6 +2,7 @@ import type { Context } from 'elysia'
 import { registration } from '../../database/registration'
 import { ResponseLogin } from '@types'
 import Hashes from 'jshashes'
+import { offlineAuth } from 'src/database/auth'
 
 interface AuthContext extends Context {
   body: {
@@ -31,7 +32,12 @@ const postAuth = async ({
   }
 
   const data = await registration(login, password)
-    .catch((err) => {
+    .catch(async (err): Promise<ResponseLogin | string> => {
+      if (String(err).indexOf('denied access') > -1)
+      return await offlineAuth(login, password).catch((err) => {
+        set.status = 401
+        return `Error working authorization. Detailed info: "${err}"`
+      })
       set.status = 401
       return `Error working authorization. Detailed info: "${err}"`
     })

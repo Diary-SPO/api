@@ -16,6 +16,7 @@ export const registration = async (
     body: JSON.stringify({ login, password, isRemember: true }),
   })
 
+  if (res === 501) throw new Error('Authorization error: the diary was denied access')
   if (typeof res === 'number') throw new Error('Ошибочка с авторизацией: неверный логин или пароль')
 
   try {
