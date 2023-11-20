@@ -1,5 +1,10 @@
 import { ParamsInit, ParamsKeys, StringOrNumber } from './types'
 
+/**
+ * Считывает .env файл
+ * Проверяет наличие всех полей из ParamsInit в конфигурационном файле
+ * @param {ParamsInit} params 
+ */
 const checkEnvVariables = (params: StringOrNumber<ParamsInit>): void => {
   for (const key of Object.keys(params) as ParamsKeys[]) {
     const value = Bun.env[key] ?? params[key]

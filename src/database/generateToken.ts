@@ -3,6 +3,12 @@ import createQueryBuilder from '@diary-spo/sql'
 import { Auth } from '@types'
 import { suid } from 'rand-token'
 
+/**
+ * Генерирует токен и вставляет в базу
+ * В случае успеха возвращает токен, иначе выбрасывает ошибку
+ * @param idDiaryUser 
+ * @returns {string} token
+ */
 export const generateToken = async (idDiaryUser: number): Promise<string> => {
   // Генерируем токен
   const token = suid(16)

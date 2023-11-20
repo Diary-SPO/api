@@ -6,7 +6,7 @@ const getAds = async ({
   set,
 }: ContextWithID): Promise<NotificationsResponse | string> => {
   const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/people/organization/news/last/10`
+  const path = `${Bun.env.SERVER_URL}/services/people/organization/news/last/10`
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret),
   })

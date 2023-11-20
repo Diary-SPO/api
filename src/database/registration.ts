@@ -13,6 +13,13 @@ import { ResponseLoginFromDiaryUser } from '@types'
 import { generateToken } from './generateToken'
 import { offlineAuth } from './auth'
 
+/**
+ * Регистрирует/авторизирует в оригинальном дневнике с сохранениям данных в базе данных
+ * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае учпешной авторизации
+ * @param login 
+ * @param password 
+ * @returns {ResponseLogin}
+ */
 export const registration = async (
   login: string,
   password: string,

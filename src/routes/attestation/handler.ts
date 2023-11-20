@@ -8,7 +8,7 @@ const getAttestation = async ({
 }: ContextWithID): Promise<AttestationResponse | string> => {
   const { id } = params
   const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/reports/curator/group-attestation-for-student/${id}`
+  const path = `${Bun.env.SERVER_URL}/services/reports/curator/group-attestation-for-student/${id}`
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret),
   })
