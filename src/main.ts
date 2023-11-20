@@ -17,6 +17,11 @@ const app = new Elysia()
     }
   }))
   .use(
+    swagger({
+      path: '/documentation',
+    }),
+  )
+  .use(
     cors({
       origin: true,
     }),

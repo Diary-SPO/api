@@ -1,6 +1,6 @@
-import { type ParamsInit, type ParamsKeys } from './types'
+import { ParamsInit, ParamsKeys, StringOrNumber } from './types'
 
-function checkEnvVariables(params: ParamsInit): void {
+const checkEnvVariables = (params: StringOrNumber<ParamsInit>): void => {
   for (const key of Object.keys(params) as ParamsKeys[]) {
     const value = Bun.env[key] ?? params[key]
 
