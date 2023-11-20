@@ -35,11 +35,6 @@ export interface SPO {
   directorName: string
 }
 
-export interface VKUser {
-  diaryId: number
-  vkId: number
-}
-
 export interface PersonResponse {
   person: {
     birthday: string
