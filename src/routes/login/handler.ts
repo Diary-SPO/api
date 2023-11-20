@@ -32,14 +32,9 @@ const postAuth = async ({
 
   const data = await registration(login, password).catch(
     async (err): Promise<ResponseLogin | string> => {
-      if (String(err).indexOf('denied access') > -1)
-        return await offlineAuth(login, password).catch((err) => {
-          set.status = 401
-          return `Error working authorization. Detailed info: "${err}"`
-        })
       set.status = 401
       return `Error working authorization. Detailed info: "${err}"`
-    },
+    }
   )
 
   console.log(`/login ${set.status}`)

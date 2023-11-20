@@ -11,6 +11,7 @@ import createQueryBuilder, { fetcher, encrypt } from '@diary-spo/sql'
 import { client } from '@db'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { generateToken } from './generateToken'
+import { offlineAuth } from './auth'
 
 export const registration = async (
   login: string,
@@ -22,10 +23,13 @@ export const registration = async (
     body: JSON.stringify({ login, password, isRemember: true }),
   })
 
-  if (res === 501)
-    throw new Error('Authorization error: the diary was denied access')
+  if (res === 501) {
+    return await offlineAuth(login, password).catch((err) => {
+      throw new Error('Authorization error: access to the diary was denied, and authorization through the database failed')
+    })
+  }
   if (typeof res === 'number')
-    throw new Error('Ошибочка с авторизацией: неверный логин или пароль')
+    throw new Error('Invalid username or password')
 
   try {
     const student = res.data.tenants[res.data.tenantName].students[0]

@@ -1,3 +1,4 @@
 export const protectInjection = (value: string): string => {
-  return value.replace('`', '').replace("'", '').replace('"', '')
+  return Buffer.from(value, 'utf-8').toString()
+    .replaceAll('`', '').replaceAll("'", '').replaceAll('"', '')
 }
