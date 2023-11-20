@@ -16,13 +16,12 @@ const postAuth = async ({
   set,
   body,
 }: AuthContext): Promise<ResponseLogin | string> => {
-
   // Захешировать пароль ? (Для отладки, потом можно вырезать)
   if (!body?.isHash ?? true) {
     body.password = new Hashes.SHA256().b64(body.password)
   }
 
-  const {login, password} = body
+  const { login, password } = body
 
   if (!login || !password) {
     const messageResponse = `login ${login}\t invalid login or password`
@@ -31,19 +30,20 @@ const postAuth = async ({
     return messageResponse
   }
 
-  const data = await registration(login, password)
-    .catch(async (err): Promise<ResponseLogin | string> => {
+  const data = await registration(login, password).catch(
+    async (err): Promise<ResponseLogin | string> => {
       if (String(err).indexOf('denied access') > -1)
-      return await offlineAuth(login, password).catch((err) => {
-        set.status = 401
-        return `Error working authorization. Detailed info: "${err}"`
-      })
+        return await offlineAuth(login, password).catch((err) => {
+          set.status = 401
+          return `Error working authorization. Detailed info: "${err}"`
+        })
       set.status = 401
       return `Error working authorization. Detailed info: "${err}"`
-    })
+    },
+  )
 
   console.log(`/login ${set.status}`)
-  
+
   return data
 }
 

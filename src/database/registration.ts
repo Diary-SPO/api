@@ -1,15 +1,20 @@
-import type { DiaryUser, VKUser, SPO, Group, PersonResponse, Auth, ResponseLogin } from '@types'
+import type {
+  DiaryUser,
+  SPO,
+  Group,
+  PersonResponse,
+  ResponseLogin,
+} from '@types'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
+import createQueryBuilder, { fetcher, encrypt } from '@diary-spo/sql'
 import { client } from '@db'
-import { suid } from 'rand-token'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { generateToken } from './generateToken'
 
 export const registration = async (
   login: string,
-  password: string
+  password: string,
 ): Promise<ResponseLogin> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
@@ -17,8 +22,10 @@ export const registration = async (
     body: JSON.stringify({ login, password, isRemember: true }),
   })
 
-  if (res === 501) throw new Error('Authorization error: the diary was denied access')
-  if (typeof res === 'number') throw new Error('Ошибочка с авторизацией: неверный логин или пароль')
+  if (res === 501)
+    throw new Error('Authorization error: the diary was denied access')
+  if (typeof res === 'number')
+    throw new Error('Ошибочка с авторизацией: неверный логин или пароль')
 
   try {
     const student = res.data.tenants[res.data.tenantName].students[0]
@@ -34,7 +41,8 @@ export const registration = async (
       cookie: cookie ?? '',
     })
 
-    if (typeof detailedInfo === 'number') throw new Error('Error get detailed info!')
+    if (typeof detailedInfo === 'number')
+      throw new Error('Error get detailed info!')
 
     // TODO: add ENCRYPT_KEY
     const regData: DiaryUser = {
