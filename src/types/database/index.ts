@@ -1,5 +1,5 @@
 import { type Teacher } from '@diary-spo/shared'
-export * from './returnTypes'
+
 export interface DiaryUser {
   id: number
   spoId?: number

@@ -22,7 +22,7 @@ export const offlineAuth = async (
     .first()
 
   if (!diaryUserQueryBuilder) {
-    throw new Error('User not finded or incorrect password!')
+    throw new Error('User not found or incorrect password!')
   }
 
   // Если пользователь найден, генерируем токен и отдаём
