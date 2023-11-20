@@ -5,7 +5,7 @@ import { swagger } from '@elysiajs/swagger'
 
 import routes from '@routes'
 
-const port = process.env.PORT ?? 3003
+const port = Bun.env.PORT ?? 3003
 const app = new Elysia()
   .use(
     swagger({

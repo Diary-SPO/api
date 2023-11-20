@@ -25,11 +25,12 @@ export const registration = async (
 
   if (res === 501) {
     return await offlineAuth(login, password).catch((err) => {
-      throw new Error('Authorization error: access to the diary was denied, and authorization through the database failed')
+      throw new Error(
+        'Authorization error: access to the diary was denied, and authorization through the database failed',
+      )
     })
   }
-  if (typeof res === 'number')
-    throw new Error('Invalid username or password')
+  if (typeof res === 'number') throw new Error('Invalid username or password')
 
   try {
     const student = res.data.tenants[res.data.tenantName].students[0]

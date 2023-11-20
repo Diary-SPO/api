@@ -34,7 +34,7 @@ const postAuth = async ({
     async (err): Promise<ResponseLogin | string> => {
       set.status = 401
       return `Error working authorization. Detailed info: "${err}"`
-    }
+    },
   )
 
   console.log(`/login ${set.status}`)
