@@ -25,6 +25,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
       idDiaryUser,
       token,
       lastDate: formattedDate,
+      lastUsedDate: formattedDate
     })
 
   if (!tokenQueryBuilder) {

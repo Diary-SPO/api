@@ -144,6 +144,7 @@ export interface Auth {
   idDiaryUser: number
   token: string
   lastDate: string
+  lastUsedDate: string
 }
 
 /**
@@ -160,4 +161,22 @@ export interface ResponseLogin {
   lastName: string
   middleName: string
   token?: string
+}
+
+/**
+ * Структура таблицы auth, хранящей токены
+ */
+export interface TokenDetailedInfo {
+  id?: number
+  idDiaryUser: number
+  token: string
+  lastDate: Date
+  lastUsedDate: Date
+}
+
+/**
+ * Структура для извлечения куки
+ */
+export interface CookieGetDetailedInfo extends TokenDetailedInfo {
+  cookie: string
 }
