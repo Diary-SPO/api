@@ -8,7 +8,7 @@ const getPerformanceCurrent = async ({
 }: ContextWithID): Promise<PerformanceCurrent | string> => {
   const { id } = params
   const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/reports/current/performance/${id}`
+  const path = `${Bun.env.SERVER_URL}/services/reports/current/performance/${id}`
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret),
   })

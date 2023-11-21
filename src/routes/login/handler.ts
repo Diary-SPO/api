@@ -1,52 +1,45 @@
 import type { Context } from 'elysia'
-import { registration } from './dbRegistration'
-import { BaseHeaders } from '@utils'
-import { AuthData } from '@types'
+import { registration } from '../../database/registration'
+import { ResponseLogin } from '@types'
+import Hashes from 'jshashes'
+import { offlineAuth } from 'src/database/auth'
 
 interface AuthContext extends Context {
   body: {
     login: string
     password: string
-    isRemember: boolean
+    isHash: boolean
   }
 }
-
-// FIXME: Набросал, но нужно поправить -_-
 
 const postAuth = async ({
   set,
   body,
-}: AuthContext): Promise<AuthData | string> => {
-  // Это вынести в middleware
-  const { login, password, isRemember } = body
+}: AuthContext): Promise<ResponseLogin | string> => {
+  // Захешировать пароль ? (Для отладки, потом можно вырезать)
+  if (!body?.isHash ?? true) {
+    body.password = new Hashes.SHA256().b64(body.password)
+  }
+
+  const { login, password } = body
 
   if (!login || !password) {
-    console.error(`login ${login}\t invalid login or password`)
+    const messageResponse = `login ${login}\t invalid login or password`
+    console.error(messageResponse)
     set.status = 400
-    return 'Invalid login or password'
+    return messageResponse
   }
 
-  const path = `${process.env.SERVER_URL}/services/security/login`
-  const response = await fetch(path, {
-    method: 'POST',
-    body: JSON.stringify({ login, password, isRemember }),
-    headers: BaseHeaders,
-  })
+  const data = await registration(login, password).catch(
+    async (err): Promise<ResponseLogin | string> => {
+      set.status = 401
+      return `Error working authorization. Detailed info: "${err}"`
+    },
+  )
 
-  console.log(`${response.status} ${path}`)
+  console.log(`/login ${set.status}`)
 
-  const data = await registration(login, password, -1) // -1 - это заглушка
-
-  set.status = typeof data === 'number' ? data : 200
-
-  console.log(path, set.status)
-
-  // Вынести в тот же middleware, который также будет ставить статус 401
-  if (typeof data === 'number') {
-    return 'Error authorization'
-  }
-
-  return { data, cookie: data.cookie }
+  return data
 }
 
 export default postAuth

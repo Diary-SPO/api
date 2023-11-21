@@ -1,23 +1,43 @@
-import type { DiaryUser, VKUser, SPO, Group, PersonResponse } from '@types'
-import Hashes from 'jshashes'
-import { SERVER_URL } from '@config'
+import type {
+  DiaryUser,
+  SPO,
+  Group,
+  PersonResponse,
+  ResponseLogin,
+} from '@types'
+import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { fetcher, encrypt, decrypt } from '@diary-spo/sql'
+import createQueryBuilder, { fetcher, encrypt } from '@diary-spo/sql'
 import { client } from '@db'
+import { ResponseLoginFromDiaryUser } from '@types'
+import { generateToken } from './generateToken'
+import { offlineAuth } from './auth'
 
+/**
+ * Регистрирует/авторизирует в оригинальном дневнике с сохранениям данных в базе данных
+ * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае учпешной авторизации
+ * @param login 
+ * @param password 
+ * @returns {ResponseLogin}
+ */
 export const registration = async (
   login: string,
   password: string,
-  vkId: number,
-): Promise<DiaryUser | number> => {
-  const passwordHashed = new Hashes.SHA256().b64(password)
+): Promise<ResponseLogin> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
-    body: JSON.stringify({ login, password: passwordHashed, isRemember: true }),
+    body: JSON.stringify({ login, password, isRemember: true }),
   })
 
-  if (typeof res === 'number') return res
+  if (res === 501) {
+    return await offlineAuth(login, password).catch((err) => {
+      throw new Error(
+        'Authorization error: access to the diary was denied, and authorization through the database failed',
+      )
+    })
+  }
+  if (typeof res === 'number') throw new Error('Invalid username or password')
 
   try {
     const student = res.data.tenants[res.data.tenantName].students[0]
@@ -33,20 +53,21 @@ export const registration = async (
       cookie: cookie ?? '',
     })
 
-    if (typeof detailedInfo === 'number') return detailedInfo
+    if (typeof detailedInfo === 'number')
+      throw new Error('Error get detailed info!')
 
     // TODO: add ENCRYPT_KEY
     const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
-      password: encrypt(password ?? ''),
+      password: encrypt(password ?? '', ENCRYPT_KEY),
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,
       firstName: detailedInfo.data.person.firstName,
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
-      cookie: encrypt(cookie ?? ''),
+      cookie: encrypt(cookie ?? '', ENCRYPT_KEY),
     }
 
     const regSPO: SPO = {
@@ -68,7 +89,6 @@ export const registration = async (
 
     const groupQueryBuilder = createQueryBuilder<Group>(client)
     const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
-    const userVKQueryBuilder = createQueryBuilder<VKUser>(client)
     const SPOQueryBuilder = createQueryBuilder<SPO>(client)
 
     const existingGroup = await groupQueryBuilder
@@ -80,11 +100,6 @@ export const registration = async (
       .from('diaryUser')
       .select('*')
       .where(`id = ${regData.id}`)
-      .first()
-    const existingVKUser = await userVKQueryBuilder
-      .from('vkUser')
-      .select('*')
-      .where(`"vkId" = ${vkId}`)
       .first()
     const existingSPO = await SPOQueryBuilder.from('SPO')
       .select('*')
@@ -124,20 +139,16 @@ export const registration = async (
       await userDiaryQueryBuilder.update(regData)
     }
 
-    if (!existingVKUser) {
-      await userVKQueryBuilder.insert({ diaryId: regData.id, vkId })
-    } else {
-      await userVKQueryBuilder.update({ diaryId: regData.id, vkId })
-    }
+    // Генерируем токен
+    const token = await generateToken(regData.id)
 
-    regData.cookie = decrypt(regData.cookie)
+    // Не вычисляем, т.к. не отдаём
+    //regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
+    regData.token = token
 
-    return regData
-  } catch (error) {
-    console.log('Ошибка авторизации:', error)
-    return 1
+    // Убираем все "приватные" поля из ответа
+    return ResponseLoginFromDiaryUser(regData)
+  } catch (err) {
+    throw new Error('Ошибка на этапе работы с базой: ' + err)
   }
-  // 401 - ошибка запроса,
-  // 501 - сервер упал.
-  // 1   - неизвестная ошибка
 }

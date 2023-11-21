@@ -7,7 +7,7 @@ const getOrganization = async ({
   set,
 }: Context): Promise<Organization | string> => {
   const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/people/organization`
+  const path = `${Bun.env.SERVER_URL}/services/people/organization`
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret),
   })

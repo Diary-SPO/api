@@ -17,7 +17,8 @@
     "elysia-helmet": "^1.0.1",
     "jshashes": "^1.0.8",
     "knex": "^3.0.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "rand-token": "^1.0.1"
   },
   "devDependencies": {
     "@diary-spo/shared": "^1.8.5",
