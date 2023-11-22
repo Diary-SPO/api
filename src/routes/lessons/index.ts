@@ -15,6 +15,12 @@ const lessons = new Elysia().guard(schema, (app) =>
   app.get('/lessons/:id/:startDate/:endDate', getLessons, {
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
+    headers: t.Object({
+      'secret': t.String()
+    }),
+    detail: {
+      tags: ['Student']
+    }
   }),
 )
 

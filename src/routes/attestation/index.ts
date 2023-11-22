@@ -13,6 +13,12 @@ const attestation = new Elysia().guard(schema, (app) =>
   app.get('/attestation/:id', getAttestation, {
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
+    headers: t.Object({
+      'secret': t.String()
+    }),
+    detail: {
+      tags: ['Student']
+    }
   }),
 )
 
