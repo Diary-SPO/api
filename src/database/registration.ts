@@ -12,6 +12,7 @@ import { client } from '@db'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { generateToken } from './generateToken'
 import { offlineAuth } from './auth'
+import { cookieExtractor } from 'src/utils/cookieExtractor'
 
 /**
  * Регистрирует/авторизирует в оригинальном дневнике с сохранениям данных в базе данных
@@ -44,13 +45,11 @@ export const registration = async (
     const SPO = res.data.tenants[res.data.tenantName].settings.organization
 
     const setCookieHeader = res.headers.get('Set-Cookie')
-    const cookie = Array.isArray(setCookieHeader)
-      ? setCookieHeader.join('; ')
-      : setCookieHeader
+    const cookie = cookieExtractor(setCookieHeader ?? '')
 
     const detailedInfo = await fetcher<PersonResponse>({
       url: `${SERVER_URL}/services/security/account-settings`,
-      cookie: cookie ?? '',
+      cookie: cookie,
     })
 
     if (typeof detailedInfo === 'number')

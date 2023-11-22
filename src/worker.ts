@@ -4,6 +4,7 @@ import createQueryBuilder, { decrypt, encrypt, fetcher } from "@diary-spo/sql"
 import { client } from "@db"
 import { UserData } from "@diary-spo/shared"
 import { ENCRYPT_KEY, SERVER_URL } from "@config"
+import { cookieExtractor } from "./utils/cookieExtractor"
 
 declare var self: Worker
 
@@ -109,9 +110,7 @@ while (true) {
 
         // Подготавливаем куку
         const setCookieHeader = res.headers.get('Set-Cookie')
-        const cookie = Array.isArray(setCookieHeader)
-            ? setCookieHeader.join('; ')
-            : setCookieHeader
+        const cookie = cookieExtractor(setCookieHeader ?? '')
         const encryptCookie = encrypt(String(cookie), ENCRYPT_KEY)
         
         // Обновляем куку
