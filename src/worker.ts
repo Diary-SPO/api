@@ -28,7 +28,7 @@ while (true) {
         }
     }
 
-    console.log(`Начался проход и обновление кук... (${new Date()})`)
+    console.log(`WORKER: Начался проход и обновление кук... (${new Date()})`)
 
     // Обрабатываем и проверяем, нужно ли перевыпустить куки
     // ---------------------------------------------------->
@@ -72,7 +72,7 @@ while (true) {
     tokenExtractorQueryBuilder.splice(0, tokenExtractorQueryBuilder.length)
 
     if (ids.length == 0) {
-        console.log('Worker: некого обновлять. Завершаю проход')
+        console.log('WORKER: некого обновлять. Завершаю проход')
         lastSchedulerRunning = new Date()
         messageNext()
         continue
@@ -104,7 +104,7 @@ while (true) {
           })
         // Если дневник вернул что-то не то...
         if (typeof res === 'number') {
-            console.error('Что-то не так... Дневник ответил чем-то другим ? Для отладки: ' + res)
+            console.error('WORKER: Что-то не так... Дневник ответил чем-то другим ? Для отладки: ' + res)
             continue
         }
 
@@ -140,7 +140,7 @@ while (true) {
 }
 
 function messageNext() {
-    console.log(`Обновление кук завершено (${new Date()})! Следующее обновление через `
+    console.log(`WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через `
         // @ts-ignore
         + (lastSchedulerRunning.getTime()/1000 + intervalRun - new Date().getTime()/1000)
         + ' секунд')

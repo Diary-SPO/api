@@ -170,8 +170,8 @@ export interface TokenDetailedInfo {
   id?: number
   idDiaryUser: number
   token: string
-  lastDate: Date
-  lastUsedDate: Date
+  lastDate: string
+  lastUsedDate: string
 }
 
 /**

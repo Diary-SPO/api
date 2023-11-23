@@ -2,12 +2,13 @@ import { ENCRYPT_KEY } from "@config"
 import { client } from "@db"
 import createQueryBuilder, { decrypt } from "@diary-spo/sql"
 import { CookieGetDetailedInfo } from "@types"
+import { formatDate } from "@utils"
 import { protectInjection } from "src/utils/protectInjection"
 
 interface CacheTokensCookie {
     [key: string]: {
         cookie: string,
-        lastDate: Date,
+        lastDate: string,
         addedSeconds: number // количество секунд с добавления
     }
 }
@@ -30,6 +31,8 @@ const getCookieFromToken = async (token: string) => {
     const cacheCookieGet = cacheGetter(token)
 
     if (cacheCookieGet) {
+        // @ts-ignore
+        updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
         return cacheCookieGet
     }
 
@@ -47,6 +50,8 @@ const getCookieFromToken = async (token: string) => {
 
     // @ts-ignore
     taskScheduler(getCookieQueryBuilder);   // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
+    // @ts-ignore
+    updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
 
     return getCookieQueryBuilder.cookie;
 }
@@ -88,6 +93,24 @@ const taskScheduler = async (saveData: CookieGetDetailedInfo): Promise<void> => 
             }
         });
         nearestExpiringToken = newNearestExpiringToken
+    }
+}
+
+const updaterDateFromToken = async (token: CookieGetDetailedInfo | string) => {
+    // Предворительно обновляем дату использования, если нужно
+    const currDateFormated = formatDate(new Date().toISOString())
+    const saveData = typeof token !== 'string' ? token : cacheTokensCookie?.[token] as unknown as CookieGetDetailedInfo
+    if (formatDate(String(saveData.lastDate)) != currDateFormated) {
+        const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
+            .from('auth')
+            .where(`token = '${token}'`)
+            .update({
+                lastDate: currDateFormated
+            })
+        // Если смогли обновить, то сохраняем новую дату
+        if (updateLastDateFromTokenQueryBuilder) {
+            saveData.lastDate = currDateFormated
+        }
     }
 }
 
