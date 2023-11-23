@@ -154,6 +154,11 @@ export interface ResponseLogin {
   id: number
   spoId?: number
   groupId: number
+  groupName: string
+  organization: {
+    abbreviation: string
+    addressSettlement: string
+  }
   login: string
   phone: string
   birthday: string

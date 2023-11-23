@@ -146,7 +146,7 @@ export const registration = async (
     regData.token = token
 
     // Убираем все "приватные" поля из ответа
-    return ResponseLoginFromDiaryUser(regData)
+    return ResponseLoginFromDiaryUser(regData, actualSPO, actualGroup)
   } catch (err) {
     throw new Error('Ошибка на этапе работы с базой: ' + err)
   }
