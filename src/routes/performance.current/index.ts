@@ -14,11 +14,11 @@ const performanceCurrent = new Elysia().guard(schema, (app) =>
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
     headers: t.Object({
-      'secret': t.String()
+      secret: t.String(),
     }),
     detail: {
-      tags: ['Student']
-    }
+      tags: ['Student'],
+    },
   }),
 )
 

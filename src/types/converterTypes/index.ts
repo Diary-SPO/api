@@ -3,7 +3,7 @@ import { DiaryUser, Group, ResponseLogin, SPO } from '../database'
 export function ResponseLoginFromDiaryUser(
   diaryUser: DiaryUser,
   spo: SPO,
-  group: Group
+  group: Group,
 ): ResponseLogin {
   return {
     id: diaryUser.id,
@@ -11,7 +11,7 @@ export function ResponseLoginFromDiaryUser(
     groupName: group.groupName,
     organization: {
       abbreviation: spo.abbreviation,
-      addressSettlement: spo.actualAddress
+      addressSettlement: spo.actualAddress,
     },
     login: diaryUser.login,
     phone: diaryUser.phone,

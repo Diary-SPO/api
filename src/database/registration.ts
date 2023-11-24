@@ -17,8 +17,8 @@ import { cookieExtractor } from 'src/utils/cookieExtractor'
 /**
  * Регистрирует/авторизирует в оригинальном дневнике с сохранениям данных в базе данных
  * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае учпешной авторизации
- * @param login 
- * @param password 
+ * @param login
+ * @param password
  * @returns {ResponseLogin}
  */
 export const registration = async (

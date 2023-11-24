@@ -17,8 +17,7 @@ const getOrganization = async ({
     console.log(`${response.status} ${path}`)
     set.status = 200
     return await response.json()
-  }
-  catch (err) {
+  } catch (err) {
     set.status = 401
     return `Error. Detailed info: ` + err
   }

@@ -6,7 +6,7 @@ import { suid } from 'rand-token'
 /**
  * Генерирует токен и вставляет в базу
  * В случае успеха возвращает токен, иначе выбрасывает ошибку
- * @param idDiaryUser 
+ * @param idDiaryUser
  * @returns {string} token
  */
 export const generateToken = async (idDiaryUser: number): Promise<string> => {
@@ -25,7 +25,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
       idDiaryUser,
       token,
       lastDate: formattedDate,
-      lastUsedDate: formattedDate
+      lastUsedDate: formattedDate,
     })
 
   if (!tokenQueryBuilder) {

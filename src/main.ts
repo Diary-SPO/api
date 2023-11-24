@@ -6,7 +6,7 @@ import { swagger } from '@elysiajs/swagger'
 import routes from '@routes'
 import { compression } from 'elysia-compression'
 
-const workerURL = new URL("worker.ts", import.meta.url).href
+const workerURL = new URL('worker.ts', import.meta.url).href
 const port = Bun.env.PORT ?? 3003
 const app = new Elysia()
   .use(
@@ -27,13 +27,15 @@ const app = new Elysia()
       origin: true,
     }),
   )
-  .use(compression({
-    type: 'gzip',
-    options: {
-      level: 4
-    },
-    encoding: 'utf-8'
-  }))
+  .use(
+    compression({
+      type: 'gzip',
+      options: {
+        level: 4,
+      },
+      encoding: 'utf-8',
+    }),
+  )
   // @ts-ignore
   .use(helmet())
   .use(routes)
@@ -45,6 +47,4 @@ console.log(
 
 const worker = new Worker(workerURL)
 
-console.log(
-  `Worker running!`
-)
+console.log(`Worker running!`)

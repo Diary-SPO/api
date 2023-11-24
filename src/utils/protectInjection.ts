@@ -1,7 +1,7 @@
 /**
  * Удаляет различные виды кавычек из переданной строки
  * Защищает от sql-инъекций
- * @param value 
+ * @param value
  * @returns {string}
  */
 export const protectInjection = (value: string): string => {
