@@ -28,12 +28,11 @@ const getCookieFromToken = async (token: string) => {
     throw new Error('The token cannot be shorter than 16 characters')
   }
 
-  const cacheCookieGet = cacheGetter(token)
+  const getCacheFromCookie = cacheGetter(token)
 
-  if (cacheCookieGet) {
-    // @ts-ignore
+  if (getCacheFromCookie) {
     updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
-    return cacheCookieGet
+    return getCacheFromCookie
   }
 
   const getCookieQueryBuilder = await createQueryBuilder<CookieGetDetailedInfo>(
@@ -60,9 +59,8 @@ const getCookieFromToken = async (token: string) => {
     ENCRYPT_KEY,
   )
 
-  // @ts-ignore
   taskScheduler(getCookieQueryBuilder) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
-  // @ts-ignore
+
   updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
 
   return getCookieQueryBuilder.cookie
@@ -83,6 +81,7 @@ const taskScheduler = async (
     lastDate: saveData.lastDate,
     addedSeconds: expiring,
   }
+
   if (!expiring) {
     nearestExpiringToken = expiring + maxTokenLifeTimeCache
   }
@@ -102,6 +101,7 @@ const taskScheduler = async (
         delete cacheTokensCookie[token]
         return
       }
+
       if (
         currAddedSeconds < newNearestExpiringToken ||
         !newNearestExpiringToken
@@ -109,6 +109,7 @@ const taskScheduler = async (
         newNearestExpiringToken = currAddedSeconds
       }
     })
+
     nearestExpiringToken = newNearestExpiringToken
   }
 }
@@ -120,17 +121,20 @@ const updaterDateFromToken = async (token: CookieGetDetailedInfo | string) => {
     typeof token !== 'string'
       ? token
       : (cacheTokensCookie?.[token] as unknown as CookieGetDetailedInfo)
-  if (formatDate(String(saveData.lastDate)) != currDateFormated) {
-    const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
-      .from('auth')
-      .where(`token = '${token}'`)
-      .update({
-        lastDate: currDateFormated,
-      })
-    // Если смогли обновить, то сохраняем новую дату
-    if (updateLastDateFromTokenQueryBuilder) {
-      saveData.lastDate = currDateFormated
-    }
+
+  if (formatDate(String(saveData.lastDate)) == currDateFormated) {
+    return
+  }
+
+  // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
+  const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
+    .from('auth')
+    .where(`token = '${token}'`)
+    .update({ lastDate: currDateFormated })
+
+  // Если смогли обновить, то сохраняем новую дату
+  if (updateLastDateFromTokenQueryBuilder) {
+    saveData.lastDate = currDateFormated
   }
 }
 
@@ -142,10 +146,12 @@ const updaterDateFromToken = async (token: CookieGetDetailedInfo | string) => {
  */
 const cacheGetter = (token: string): string | null => {
   const cacheCookie = cacheTokensCookie?.[token]
-  if (cacheCookie) {
-    return cacheCookie.cookie
+
+  if (!cacheCookie) {
+    return null
   }
-  return null
+
+  return cacheCookie.cookie
 }
 
 export { getCookieFromToken }

@@ -20,6 +20,17 @@ const maxLifeTimeInactiveTokenSeconds =
   maxLifeTimeInactiveTokenDays * 24 * 60 * 60 // В секундах
 const maxNotUpdateTokenInSeconds = maxNotUpdateTokenInDays * 24 * 60 * 60 // Через сколько дней обновлять токен в секундах
 
+const messageNext = ()=> {
+  console.log(
+    `WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через ` +
+      // @ts-ignore
+      (lastSchedulerRunning.getTime() / 1000 +
+        intervalRun -
+        new Date().getTime() / 1000) +
+      ' секунд',
+  )
+}
+
 // TODO: Стоит ли сделать постраничное извлечение, чтобы не загружать в память сразу все 100500 записей ?
 while (true) {
   if (lastSchedulerRunning) {
@@ -167,15 +178,4 @@ while (true) {
 
   // ну и отпускаем в следующий цикл...
   messageNext()
-}
-
-function messageNext() {
-  console.log(
-    `WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через ` +
-      // @ts-ignore
-      (lastSchedulerRunning.getTime() / 1000 +
-        intervalRun -
-        new Date().getTime() / 1000) +
-      ' секунд',
-  )
 }

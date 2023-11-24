@@ -7,15 +7,15 @@ const schema = {
   params: t.Object({
     id: t.String(),
   }),
+  headers: t.Object({
+    secret: t.String(),
+  })
 }
 
 const performanceCurrent = new Elysia().guard(schema, (app) =>
   app.get('/performance.current/:id', getPerformanceCurrent, {
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
-    headers: t.Object({
-      secret: t.String(),
-    }),
     detail: {
       tags: ['Student'],
     },

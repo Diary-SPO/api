@@ -3,15 +3,20 @@ import getOrganization from './handler'
 import { handleErrors } from '@utils'
 import { checkCookie } from 'src/middleware'
 
-const organization = new Elysia().get('/organization', getOrganization, {
-  afterHandle: handleErrors,
-  beforeHandle: checkCookie,
+const schema = {
   headers: t.Object({
     secret: t.String(),
   }),
-  detail: {
-    tags: ['Student'],
-  },
-})
+}
+
+const organization = new Elysia().guard(schema, (app) => 
+  app.get('/organization', getOrganization, {
+    afterHandle: handleErrors,
+    beforeHandle: checkCookie,
+    detail: {
+      tags: ['Student'],
+    },
+  })
+)
 
 export default organization
