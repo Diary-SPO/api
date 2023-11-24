@@ -6,7 +6,6 @@ import { swagger } from '@elysiajs/swagger'
 import routes from '@routes'
 import { compression } from 'elysia-compression'
 
-const workerURL = new URL('worker.ts', import.meta.url).href
 const port = Bun.env.PORT ?? 3003
 const app = new Elysia()
   .use(
@@ -45,6 +44,6 @@ console.log(
   `Backend running at http://${app.server?.hostname}:${app.server?.port}`,
 )
 
-const worker = new Worker(workerURL)
+const worker = new Worker('./src/worker.ts')
 
 console.log(`Worker running!`)
