@@ -3,7 +3,7 @@
  * @param setCookieHeader
  * @returns {string} cookie
  */
-export const cookieExtractor = (setCookieHeader: string) => {
+export const cookieExtractor = (setCookieHeader: string): string => {
   // Подготавливаем куку
   const cookie = setCookieHeader
     .split(';')

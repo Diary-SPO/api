@@ -9,14 +9,14 @@ const schema = {
   }),
 }
 
-const organization = new Elysia().guard(schema, (app) => 
+const organization = new Elysia().guard(schema, (app) =>
   app.get('/organization', getOrganization, {
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
     detail: {
       tags: ['Student'],
     },
-  })
+  }),
 )
 
 export default organization

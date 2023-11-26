@@ -9,7 +9,7 @@ const schema = {
   }),
   headers: t.Object({
     secret: t.String(),
-  })
+  }),
 }
 
 const attestation = new Elysia().guard(schema, (app) =>

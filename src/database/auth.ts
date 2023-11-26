@@ -1,13 +1,8 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
-import {
-  DiaryUser,
-  Group,
-  ResponseLogin,
-  ResponseLoginFromDiaryUser,
-  SPO,
-} from '@types'
+import { ResponseLogin, DiaryUser, SPO, Group } from '@diary-spo/types'
+import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
 

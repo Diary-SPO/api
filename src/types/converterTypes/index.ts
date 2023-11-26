@@ -1,4 +1,4 @@
-import { DiaryUser, Group, ResponseLogin, SPO } from '../database'
+import { DiaryUser, Group, ResponseLogin, SPO } from '@diary-spo/types'
 
 export function ResponseLoginFromDiaryUser(
   diaryUser: DiaryUser,

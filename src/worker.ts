@@ -1,10 +1,10 @@
 import { sleep } from 'bun'
-import { CookieGetDetailedInfo, DiaryUser } from '@types'
 import createQueryBuilder, { decrypt, encrypt, fetcher } from '@diary-spo/sql'
 import { client } from '@db'
 import { UserData } from '@diary-spo/shared'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { cookieExtractor } from './utils/cookieExtractor'
+import { DiaryUser, CookieGetDetailedInfo } from '@diary-spo/types'
 
 declare var self: Worker
 
@@ -20,7 +20,7 @@ const maxLifeTimeInactiveTokenSeconds =
   maxLifeTimeInactiveTokenDays * 24 * 60 * 60 // В секундах
 const maxNotUpdateTokenInSeconds = maxNotUpdateTokenInDays * 24 * 60 * 60 // Через сколько дней обновлять токен в секундах
 
-const messageNext = ()=> {
+const messageNext = () => {
   console.log(
     `WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через ` +
       // @ts-ignore

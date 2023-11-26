@@ -9,7 +9,7 @@ const schema = {
   }),
   headers: t.Object({
     secret: t.String(),
-  })
+  }),
 }
 
 const performanceCurrent = new Elysia().guard(schema, (app) =>

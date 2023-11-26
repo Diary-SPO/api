@@ -16,7 +16,7 @@ const ads = new Elysia().guard(schema, (app) =>
     detail: {
       tags: ['Student'],
     },
-  })
+  }),
 )
 
 export default ads

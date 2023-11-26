@@ -1,8 +1,8 @@
 import type { Context } from 'elysia'
 import { registration } from '../../database/registration'
-import { ResponseLogin } from '@types'
 import Hashes from 'jshashes'
 import { offlineAuth } from 'src/database/auth'
+import { ResponseLogin } from '@diary-spo/types'
 
 interface AuthContext extends Context {
   body: {

@@ -44,6 +44,6 @@ console.log(
   `Backend running at http://${app.server?.hostname}:${app.server?.port}`,
 )
 
-const worker = new Worker('./src/worker.ts')
+new Worker('./src/worker.ts')
 
 console.log(`Worker running!`)
