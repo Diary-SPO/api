@@ -9,7 +9,6 @@ import { compression } from 'elysia-compression'
 const port = Bun.env.PORT ?? 3003
 const app = new Elysia()
   .use(
-    // @ts-ignore
     swagger({
       path: '/documentation',
       documentation: {
@@ -21,7 +20,6 @@ const app = new Elysia()
     }),
   )
   .use(
-    // @ts-ignore
     cors({
       origin: true,
     }),
@@ -35,7 +33,6 @@ const app = new Elysia()
       encoding: 'utf-8',
     }),
   )
-  // @ts-ignore
   .use(helmet())
   .use(routes)
   .listen(port)

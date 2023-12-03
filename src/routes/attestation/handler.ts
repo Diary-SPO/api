@@ -7,21 +7,16 @@ const getAttestation = async ({
   set,
   params,
 }: ContextWithID): Promise<AttestationResponse | string> => {
-  try {
-    const { id } = params
-    const secret = await getCookieFromToken(request.headers.toJSON().secret)
-    const path = `${Bun.env.SERVER_URL}/services/reports/curator/group-attestation-for-student/${id}`
-    const response = await fetch(path, {
-      headers: HeadersWithCookie(secret),
-    })
+  const { id } = params
+  const secret = await getCookieFromToken(request.headers.toJSON().secret)
+  const path = `${Bun.env.SERVER_URL}/services/reports/curator/group-attestation-for-student/${id}`
+  const response = await fetch(path, {
+    headers: HeadersWithCookie(secret),
+  })
 
-    console.log(`${response.status} ${path}`)
-    set.status = 200
-    return await response.json()
-  } catch (err) {
-    set.status = 401
-    return `Error. Detailed info: ` + err
-  }
+  console.log(`${response.status} ${path}`)
+  set.status = 200
+  return await response.json()
 }
 
 export default getAttestation
