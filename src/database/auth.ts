@@ -35,10 +35,12 @@ export const offlineAuth = async (
 
   // Извлекаем организацию
   const spoGetQueryBuilder = await createQueryBuilder<SPO>(client)
-    .select('*')
-    .from('SPO')
-    .where(`id = ${diaryUserQueryBuilder.spoId}`)
-    .first()
+    .customQueryRun(
+      'SELECT * FROM "SPO"'
+      + 'INNER JOIN groups ON groups."spoId" = "SPO".id'
+      + '\nWHERE groups.id = ' + diaryUserQueryBuilder.groupId
+      + '\nLIMIT 1'
+    )
 
   if (!spoGetQueryBuilder) {
     throw new Error('SPO for current user not found!')

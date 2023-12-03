@@ -20,7 +20,6 @@ const maxNotUpdateTokenInSeconds = maxNotUpdateTokenInDays * 24 * 60 * 60 // Ч�
 const messageNext = () => {
   console.log(
     `WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через ` +
-      // @ts-ignore
       (lastSchedulerRunning?.getTime() / 1000 +
         intervalRun -
         new Date().getTime() / 1000) +

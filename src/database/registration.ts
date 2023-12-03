@@ -4,7 +4,7 @@ import type {
   Group,
   PersonResponse,
   ResponseLogin,
-} from '@types'
+} from '@diary-spo/types'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { fetcher, encrypt } from '@diary-spo/sql'
@@ -15,8 +15,8 @@ import { offlineAuth } from './auth'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
 
 /**
- * Регистрирует/авторизирует в оригинальном дневнике с сохранениям данных в базе данных
- * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае учпешной авторизации
+ * Регистрирует/авторизирует в оригинальном дневнике с сохранением данных в базе данных.
+ * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае успешной авторизации
  * @param login
  * @param password
  * @returns {ResponseLogin}
@@ -105,31 +105,26 @@ export const registration = async (
       .where(`abbreviation = '${regSPO.abbreviation}'`)
       .first()
 
-    const actualSPO: SPO = regSPO
-    const actualGroup: Group = regGroup
-
     if (!existingSPO) {
       const res = await SPOQueryBuilder.insert(regSPO)
       if (!res) throw new Error('Error insert SPO')
-      actualSPO.id = res.id
+      regSPO.id = res.id
     } else {
       await SPOQueryBuilder.update(regSPO)
-      actualSPO.id = existingSPO.id
+      regSPO.id = existingSPO.id
     }
-    regGroup.spoId = actualSPO.id
-    regData.spoId = actualSPO.id
 
     if (!existingGroup) {
       const res = await groupQueryBuilder.insert(regGroup)
       if (!res) throw new Error('Error insert group')
-      actualGroup.id = res.id
+      regGroup.id = res.id
     } else {
       await groupQueryBuilder.update(regGroup)
-      actualGroup.id = existingGroup.id
+      regGroup.id = existingGroup.id
     }
 
     // Если всё ок, вносим id группы в пользователя
-    regData.groupId = actualGroup.id ?? -1 // <- ???
+    regData.groupId = regGroup.id ?? -1 // <- ???
 
     // Дальше всё как обычно
     if (!existingDiaryUser) {
@@ -146,7 +141,7 @@ export const registration = async (
     regData.token = token
 
     // Убираем все "приватные" поля из ответа
-    return ResponseLoginFromDiaryUser(regData, actualSPO, actualGroup)
+    return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)
   } catch (err) {
     throw new Error('Ошибка на этапе работы с базой: ' + err)
   }
