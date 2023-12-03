@@ -6,25 +6,22 @@ import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { cookieExtractor } from './utils/cookieExtractor'
 import { DiaryUser, CookieGetDetailedInfo } from '@diary-spo/types'
 
-declare var self: Worker
-
 // Время последнего запуска обслуживания кук
 let lastSchedulerRunning: Date | null = null
 // Конфиг
 const intervalRun = 60 * 60 // Запускать каждый час <--- Это можно менять
 const maxLifeTimeInactiveTokenDays = 7 // В днях <--- Это можно менять
 const maxNotUpdateTokenInDays = 5 // Через сколько дней обновлять токен ? <--- Это можно менять
-const delayRequestInSeconds = 500 // пауза в миллисекундах между обращениями к оригинальному дневника (а то блокнут вдруг, да и не нужно спамить запросами)
+const delayRequestInSeconds = 500 // пауза в миллисекундах между обращениями к оригинальному дневнику (а то заблокируют вдруг, да и не нужно спам запросами устраивать)
 // Вычисляется автоматом
-const maxLifeTimeInactiveTokenSeconds =
-  maxLifeTimeInactiveTokenDays * 24 * 60 * 60 // В секундах
+const maxLifeTimeInactiveTokenSeconds = maxLifeTimeInactiveTokenDays * 24 * 60 * 60 // В секундах
 const maxNotUpdateTokenInSeconds = maxNotUpdateTokenInDays * 24 * 60 * 60 // Через сколько дней обновлять токен в секундах
 
 const messageNext = () => {
   console.log(
     `WORKER: Обновление кук завершено (${new Date()})! Следующее обновление через ` +
       // @ts-ignore
-      (lastSchedulerRunning.getTime() / 1000 +
+      (lastSchedulerRunning?.getTime() / 1000 +
         intervalRun -
         new Date().getTime() / 1000) +
       ' секунд',
@@ -71,7 +68,7 @@ while (true) {
         new Date().getTime() / 1000 >
       maxLifeTimeInactiveTokenSeconds
     ) {
-      const deleteTokenQueryBuilder = await createQueryBuilder(client)
+      await createQueryBuilder(client)
         .from('auth')
         .where(`id = ${currTokenInfo.id}`)
         .delete()
@@ -136,7 +133,7 @@ while (true) {
       method: 'POST',
       body: JSON.stringify({ login, password, isRemember: true }),
     })
-    // Если дневник вернул что-то не то...
+    // Если дневник вернул что-то другое...
     if (typeof res === 'number') {
       console.error(
         'WORKER: Что-то не так... Дневник ответил чем-то другим ? Для отладки: ' +
@@ -151,7 +148,7 @@ while (true) {
     const encryptCookie = encrypt(String(cookie), ENCRYPT_KEY)
 
     // Обновляем куку
-    const cookieUpdateQueryBuilder = await createQueryBuilder(client)
+    await createQueryBuilder(client)
       .from('diaryUser')
       .where(`id = ${userForUpdate.id}`)
       .update({
@@ -163,7 +160,7 @@ while (true) {
       date.getMonth() + 1
     }-${date.getDate()}`
     // Обновляем дату последнего обновления в токенах пользователя
-    const tokenLastTokenUpdateDateQueryBuilder = await createQueryBuilder(
+    await createQueryBuilder(
       client,
     )
       .from('auth')
