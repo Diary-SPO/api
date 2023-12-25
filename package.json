@@ -5,7 +5,7 @@
     "start": "bun run ./src/main.ts",
     "dev": "bun run --watch ./src/main.ts",
     "build": "bun build ./src/main.ts --outdir dist --minify --target bun",
-    "serve": "bun run build && bun run ./dist/main.js",
+    "serve": "bun run build ./src/main.ts ./src/worker.ts && bun run ./dist/main.js",
     "lint:fix": "eslint . --ext ts --fix",
     "format": "prettier --write ."
   },
