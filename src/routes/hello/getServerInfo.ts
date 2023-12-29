@@ -1,5 +1,7 @@
 import { SERVER_URL } from '@config'
 import * as process from 'process'
+import { getGitCommitHash } from './getGitCommitHash'
+import { getLoadAvg } from './getLoadAvg'
 
 export const getServerInfo = (): object => {
   return {
@@ -7,6 +9,6 @@ export const getServerInfo = (): object => {
     arch: process.arch,
     targetDiary: SERVER_URL,
     backend: 'bun+elysia',
-    commit: Bun.revision ?? 'noVersion'
+    commit: getGitCommitHash() ?? 'noVersion'
   }
 }
