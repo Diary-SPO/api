@@ -2,6 +2,7 @@ import type { Context } from 'elysia'
 import { registration } from '../../database/registration'
 import Hashes from 'jshashes'
 import { type ResponseLogin } from '@diary-spo/types'
+import { DatabaseResponseLogin } from '../../types/diaryTypes/types'
 
 interface AuthContext extends Context {
   body: {
@@ -14,7 +15,7 @@ interface AuthContext extends Context {
 const postAuth = async ({
   set,
   body
-}: AuthContext): Promise<ResponseLogin | string> => {
+}: AuthContext): Promise<DatabaseResponseLogin | ResponseLogin | null | string> => {
   // Захешировать пароль ? (Для отладки, потом можно вырезать)
   if (!body?.isHash ?? true) {
     body.password = new Hashes.SHA256().b64(body.password)
@@ -30,7 +31,7 @@ const postAuth = async ({
   }
 
   const data = await registration(login, password).catch(
-    async (err): Promise<ResponseLogin | string> => {
+    (err): ResponseLogin | string => {
       set.status = 401
       return `Error working authorization. Detailed info: "${err}"`
     }

@@ -34,13 +34,13 @@ export const offlineAuth = async (
   }
 
   // Извлекаем организацию
-  const spoGetQueryBuilder = await createQueryBuilder<SPO>(client)
+  const spoGetQueryBuilder = (await createQueryBuilder<SPO>(client)
     .customQueryRun(
       'SELECT * FROM "SPO"' +
-      'INNER JOIN groups ON groups."spoId" = "SPO".id' +
+      '\nINNER JOIN groups ON groups."spoId" = "SPO".id' +
       '\nWHERE groups.id = ' + diaryUserQueryBuilder.groupId +
       '\nLIMIT 1'
-    )?.[0]
+    ))?.[0] ?? null
 
   if (!spoGetQueryBuilder) {
     throw new Error('SPO for current user not found!')
@@ -58,8 +58,7 @@ export const offlineAuth = async (
   }
 
   // Если пользователь найден, генерируем токен и отдаём
-  const token = await generateToken(diaryUserQueryBuilder.id)
-  diaryUserQueryBuilder.token = token
+  diaryUserQueryBuilder.token = await generateToken(diaryUserQueryBuilder.id)
 
   return ResponseLoginFromDiaryUser(
     diaryUserQueryBuilder,
