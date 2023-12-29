@@ -7,7 +7,7 @@ interface CheckCookie {
 
 export const checkCookie = ({
   request,
-  set,
+  set
 }: CheckCookie): number | undefined => {
   const secret = request.headers.get('secret')
 

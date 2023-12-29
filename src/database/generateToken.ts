@@ -1,7 +1,8 @@
 import { client } from '@db'
 import createQueryBuilder from '@diary-spo/sql'
-import { Auth } from '@types'
+import { type Auth } from '@types'
 import { suid } from 'rand-token'
+import { formatDate } from '@utils'
 
 /**
  * Генерирует токен и вставляет в базу
@@ -13,20 +14,16 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
   // Генерируем токен
   const token = suid(16)
 
-  const date = new Date()
-  const formattedDate = `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}`
+  const formattedDate = formatDate(new Date().toISOString())
 
   // Вставляем токен
-  const tokenQueryBuilder = await createQueryBuilder<Auth>(client)
+  const tokenQueryBuilder = (await createQueryBuilder<Auth>(client)
     .from('auth')
     .insert({
       idDiaryUser,
       token,
-      lastDate: formattedDate,
-      lastUsedDate: formattedDate,
-    })
+      lastUsedDate: formattedDate
+    }))?.[0] ?? null
 
   if (!tokenQueryBuilder) {
     throw new Error('Error insert token!')

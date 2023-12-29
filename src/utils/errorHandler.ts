@@ -14,7 +14,7 @@ export const handleErrors = (context: Context): void => {
     console.error(context.response)
     context.response = {
       errors: context.response.errors,
-      title: context.response.title,
+      title: context.response.title
     }
   }
 }

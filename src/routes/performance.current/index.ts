@@ -5,11 +5,11 @@ import { checkCookie } from 'src/middleware'
 
 const schema = {
   params: t.Object({
-    id: t.String(),
+    id: t.String()
   }),
   headers: t.Object({
-    secret: t.String(),
-  }),
+    secret: t.String()
+  })
 }
 
 const performanceCurrent = new Elysia().guard(schema, (app) =>
@@ -17,9 +17,9 @@ const performanceCurrent = new Elysia().guard(schema, (app) =>
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
     detail: {
-      tags: ['Student'],
-    },
-  }),
+      tags: ['Student']
+    }
+  })
 )
 
 export default performanceCurrent

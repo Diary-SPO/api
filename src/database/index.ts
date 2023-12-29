@@ -3,7 +3,7 @@ import {
   DATABASE_PORT,
   DATABASE_NAME,
   DATABASE_USERNAME,
-  DATABASE_PASSWORD,
+  DATABASE_PASSWORD
 } from '@config'
 import { Client } from 'pg'
 import { exit } from 'process'
@@ -13,7 +13,7 @@ const client = new Client({
   port: DATABASE_PORT,
   database: DATABASE_NAME,
   user: DATABASE_USERNAME,
-  password: DATABASE_PASSWORD,
+  password: DATABASE_PASSWORD
 })
 
 client.connect((err) => {

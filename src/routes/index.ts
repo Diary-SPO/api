@@ -1,5 +1,5 @@
 import { Elysia } from 'elysia'
-import hello from './hello.route'
+import hello from './hello'
 import login from './login'
 import lessons from './lessons'
 import performanceCurrent from './performance.current'

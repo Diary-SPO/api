@@ -1,20 +1,18 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
-import { CookieGetDetailedInfo } from '@types'
+import { type CookieGetDetailedInfo } from '@types'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 
-interface CacheTokensCookie {
-  [key: string]: {
-    cookie: string
-    lastDate: string
-    addedSeconds: number // количество секунд с добавления
-  }
-}
+type CacheTokensCookie = Record<string, {
+  cookie: string
+  lastUsedDAte: string
+  addedSeconds: number // количество секунд с добавления
+}>
 
 const cacheTokensCookie: CacheTokensCookie = {}
-let nearestExpiringToken = null // Ближайшая старая запись в кеше. Бередём ядро, не занимаем ненужными операциями :)
+let nearestExpiringToken = null // Ближайшая старая запись в кеше. Бережём ядро, не занимаем ненужными операциями
 const maxTokenLifeTimeCache = 60 * 5 // 5 минут
 const maxElementsFromCache = 1000 // Максимум токенов, хранящихся в памяти
 
@@ -23,7 +21,7 @@ const maxElementsFromCache = 1000 // Максимум токенов, храня
  * @param token
  * @returns {string} cookie
  */
-const getCookieFromToken = async (token: string) => {
+const getCookieFromToken = async (token: string): Promise<string | null> => {
   if (token.length < 16) {
     throw new Error('The token cannot be shorter than 16 characters')
   }
@@ -31,20 +29,21 @@ const getCookieFromToken = async (token: string) => {
   const getCacheFromCookie = cacheGetter(token)
 
   if (getCacheFromCookie) {
+    // @ts-expect-error т.к. не задерживаем пользователя
     updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
+      .catch(err => { console.log(err.toString()) })
     return getCacheFromCookie
   }
 
   const getCookieQueryBuilder = await createQueryBuilder<CookieGetDetailedInfo>(
-    client,
+    client
   )
     .select(
       'auth.id',
       '"idDiaryUser"',
       'token',
-      '"lastDate"',
       '"lastUsedDate"',
-      'cookie',
+      'cookie'
     )
     .from('auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser')
     .where(`auth.token = '${protectInjection(token)}'`)
@@ -56,12 +55,16 @@ const getCookieFromToken = async (token: string) => {
 
   getCookieQueryBuilder.cookie = decrypt(
     getCookieQueryBuilder.cookie,
-    ENCRYPT_KEY,
+    ENCRYPT_KEY
   )
 
+  // @ts-expect-error т.к. не задерживаем пользователя
   taskScheduler(getCookieQueryBuilder) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
+    .catch(err => { console.log(err.toString()) })
 
+  // @ts-expect-error т.к. не задерживаем пользователя
   updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
+    .catch(err => { console.log(err.toString()) })
 
   return getCookieQueryBuilder.cookie
 }
@@ -72,14 +75,14 @@ const getCookieFromToken = async (token: string) => {
  * @returns {void}
  */
 const taskScheduler = async (
-  saveData: CookieGetDetailedInfo,
+  saveData: CookieGetDetailedInfo
 ): Promise<void> => {
   // Добавляем/обновляем информацию в кэше
   const expiring = new Date().getTime() / 1000
   cacheTokensCookie[saveData.token] = {
     cookie: saveData.cookie,
-    lastDate: saveData.lastDate,
-    addedSeconds: expiring,
+    lastUsedDate: saveData.lastUsedDate,
+    addedSeconds: expiring
   }
 
   if (!expiring) {
@@ -95,9 +98,10 @@ const taskScheduler = async (
     }
 
     let newNearestExpiringToken = Number.MAX_VALUE
-    Object.keys(cacheTokensCookie).forEach((token) => {
+    Object.keys(cacheTokensCookie).forEach((token, index) => {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
+        // @ts-expect-error ну как бы работаем с объектом... Может как по-другому можно ?
         delete cacheTokensCookie[token]
         return
       }
@@ -114,15 +118,15 @@ const taskScheduler = async (
   }
 }
 
-const updaterDateFromToken = async (token: CookieGetDetailedInfo | string) => {
-  // Предворительно обновляем дату использования, если нужно
-  const currDateFormated = formatDate(new Date().toISOString())
+const updaterDateFromToken = async (token: CookieGetDetailedInfo | string): Promise<void> => {
+  // Предварительно обновляем дату использования, если нужно
+  const currDateFormatted = formatDate(new Date().toISOString())
   const saveData =
     typeof token !== 'string'
       ? token
       : (cacheTokensCookie?.[token] as unknown as CookieGetDetailedInfo)
 
-  if (formatDate(String(saveData.lastDate)) == currDateFormated) {
+  if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return
   }
 
@@ -130,11 +134,11 @@ const updaterDateFromToken = async (token: CookieGetDetailedInfo | string) => {
   const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
     .from('auth')
     .where(`token = '${token}'`)
-    .update({ lastDate: currDateFormated })
+    .update({ lastUsedDate: currDateFormatted })
 
   // Если смогли обновить, то сохраняем новую дату
   if (updateLastDateFromTokenQueryBuilder) {
-    saveData.lastDate = currDateFormated
+    saveData.lastUsedDate = currDateFormatted
   }
 }
 

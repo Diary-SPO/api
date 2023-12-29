@@ -5,12 +5,12 @@ import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
 const getOrganization = async ({
   request,
-  set,
+  set
 }: Context): Promise<Organization | string> => {
   const secret = await getCookieFromToken(request.headers.toJSON().secret)
   const path = `${Bun.env.SERVER_URL}/services/people/organization`
   const response = await fetch(path, {
-    headers: HeadersWithCookie(secret),
+    headers: HeadersWithCookie(secret)
   })
 
   console.log(`${response.status} ${path}`)

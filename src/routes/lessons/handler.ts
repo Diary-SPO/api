@@ -3,7 +3,7 @@ import {
   adjustEndDate,
   type ContextWithID,
   formatDate,
-  HeadersWithCookie,
+  HeadersWithCookie
 } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
@@ -17,7 +17,7 @@ interface IContext extends ContextWithID {
 const getLessons = async ({
   request,
   set,
-  params,
+  params
 }: IContext): Promise<Day[] | string> => {
   const { id, startDate, endDate } = params
 
@@ -28,7 +28,7 @@ const getLessons = async ({
   const path = `${Bun.env.SERVER_URL}/services/students/${id}/lessons/${formattedStartDate}/${formattedEndDate}`
 
   const response = await fetch(path, {
-    headers: HeadersWithCookie(secret),
+    headers: HeadersWithCookie(secret)
   })
 
   console.log(`${response.status} ${path}`)

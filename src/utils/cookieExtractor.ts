@@ -4,19 +4,16 @@
  * @returns {string} cookie
  */
 export const cookieExtractor = (setCookieHeader: string): string => {
-  // Подготавливаем куку
-  const cookie = setCookieHeader
+  // Подготавливаем куку. Будет кука следующего формата UID=vSADsfgasdfADSFsadfSAD...
+  return setCookieHeader
     .split(';')
     .map((value) => {
-      if (value.indexOf('UID') !== -1) {
+      if (value.includes('UID')) {
         return value + '; path=/;'
       }
-      if (value.indexOf('.AspNetCore.Cookies') !== -1) {
+      if (value.includes('.AspNetCore.Cookies')) {
         return value + '; path=/; samesite=lax; httponly'
       }
     })
     .join('')
-
-  // Будет кука формата UID=vSADsfgasdfADSFsadfSAD...
-  return cookie
 }

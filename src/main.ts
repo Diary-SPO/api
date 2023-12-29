@@ -14,33 +14,33 @@ const app = new Elysia()
       documentation: {
         info: {
           title: 'Документация к api.spo-diary.ru',
-          version: '1.0.0',
-        },
-      },
-    }),
+          version: '1.0.0'
+        }
+      }
+    })
   )
   .use(
     cors({
-      origin: true,
-    }),
+      origin: true
+    })
   )
   .use(
     compression({
       type: 'gzip',
       options: {
-        level: 4,
+        level: 4
       },
-      encoding: 'utf-8',
-    }),
+      encoding: 'utf-8'
+    })
   )
   .use(helmet())
   .use(routes)
   .listen(port)
 
 console.log(
-  `Backend running at http://${app.server?.hostname}:${app.server?.port}`,
+  `Backend running at http://${app.server?.hostname}:${app.server?.port}`
 )
 
 new Worker(new URL('worker', (import.meta.url)).href)
 
-console.log(`Worker running!`)
+console.log('Worker running!')

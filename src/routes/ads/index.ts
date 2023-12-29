@@ -5,8 +5,8 @@ import { checkCookie } from 'src/middleware'
 
 const schema = {
   headers: t.Object({
-    secret: t.String(),
-  }),
+    secret: t.String()
+  })
 }
 
 const ads = new Elysia().guard(schema, (app) =>
@@ -14,9 +14,9 @@ const ads = new Elysia().guard(schema, (app) =>
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
     detail: {
-      tags: ['Student'],
-    },
-  }),
+      tags: ['Student']
+    }
+  })
 )
 
 export default ads

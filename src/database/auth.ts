@@ -1,7 +1,7 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
-import { ResponseLogin, DiaryUser, SPO, Group } from '@diary-spo/types'
+import { type ResponseLogin, type DiaryUser, type SPO, type Group } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
@@ -15,17 +15,17 @@ import { generateToken } from './generateToken'
  */
 export const offlineAuth = async (
   login: string,
-  password: string,
-): Promise<ResponseLogin> => {
-  // пробуем войти "оффдайн", если пользователь есть в базе (в случае, если упал основной дневник)
+  password: string
+): Promise<ResponseLogin | null> => {
+  // пробуем войти "оффлайн", если пользователь есть в базе (в случае, если упал основной дневник)
   const diaryUserQueryBuilder = await createQueryBuilder<DiaryUser>(client)
     .from('diaryUser')
     .select('*')
     .where(
       `login = '${protectInjection(login)}' and password = '${encrypt(
         password,
-        ENCRYPT_KEY,
-      )}'`,
+        ENCRYPT_KEY
+      )}'`
     )
     .first()
 
@@ -36,11 +36,11 @@ export const offlineAuth = async (
   // Извлекаем организацию
   const spoGetQueryBuilder = await createQueryBuilder<SPO>(client)
     .customQueryRun(
-      'SELECT * FROM "SPO"'
-      + 'INNER JOIN groups ON groups."spoId" = "SPO".id'
-      + '\nWHERE groups.id = ' + diaryUserQueryBuilder.groupId
-      + '\nLIMIT 1'
-    )
+      'SELECT * FROM "SPO"' +
+      'INNER JOIN groups ON groups."spoId" = "SPO".id' +
+      '\nWHERE groups.id = ' + diaryUserQueryBuilder.groupId +
+      '\nLIMIT 1'
+    )?.[0]
 
   if (!spoGetQueryBuilder) {
     throw new Error('SPO for current user not found!')
@@ -64,6 +64,6 @@ export const offlineAuth = async (
   return ResponseLoginFromDiaryUser(
     diaryUserQueryBuilder,
     spoGetQueryBuilder,
-    groupGetQueryBuilder,
+    groupGetQueryBuilder
   )
 }

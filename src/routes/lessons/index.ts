@@ -7,11 +7,11 @@ const schema = {
   params: t.Object({
     id: t.String(),
     endDate: t.String(),
-    startDate: t.String(),
+    startDate: t.String()
   }),
   Headers: t.Object({
-    secret: t.String(),
-  }),
+    secret: t.String()
+  })
 }
 
 const lessons = new Elysia().guard(schema, (app) =>
@@ -19,9 +19,9 @@ const lessons = new Elysia().guard(schema, (app) =>
     afterHandle: handleErrors,
     beforeHandle: checkCookie,
     detail: {
-      tags: ['Student'],
-    },
-  }),
+      tags: ['Student']
+    }
+  })
 )
 
 export default lessons

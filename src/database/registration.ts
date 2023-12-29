@@ -1,9 +1,8 @@
 import type {
-  DiaryUser,
   SPO,
   Group,
   PersonResponse,
-  ResponseLogin,
+  ResponseLogin
 } from '@diary-spo/types'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
@@ -13,6 +12,8 @@ import { ResponseLoginFromDiaryUser } from '@types'
 import { generateToken } from './generateToken'
 import { offlineAuth } from './auth'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
+import { formatDate } from '@utils'
+import { type DatabaseDiaryUser, type DatabaseResponseLogin } from '../types/diaryTypes/types'
 
 /**
  * Регистрирует/авторизирует в оригинальном дневнике с сохранением данных в базе данных.
@@ -23,20 +24,24 @@ import { cookieExtractor } from 'src/utils/cookieExtractor'
  */
 export const registration = async (
   login: string,
-  password: string,
-): Promise<ResponseLogin> => {
+  password: string
+): Promise<DatabaseResponseLogin | ResponseLogin | null> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
-    body: JSON.stringify({ login, password, isRemember: true }),
+    body: JSON.stringify({ login, password, isRemember: true })
   })
 
   if (res === 501) {
-    return await offlineAuth(login, password).catch((err) => {
+    const authData = await offlineAuth(login, password).catch((err) => {
       throw new Error(
-        'Authorization error: access to the diary was denied, and authorization through the database failed',
+        'Authorization error: access to the diary was denied, and authorization through the database failed. Full: ' + err
       )
     })
+
+    // Краткую запись исправляет eslint, так что я не виноват...
+    if (authData) return authData
+    else return null
   }
   if (typeof res === 'number') throw new Error('Invalid username or password')
 
@@ -49,14 +54,13 @@ export const registration = async (
 
     const detailedInfo = await fetcher<PersonResponse>({
       url: `${SERVER_URL}/services/security/account-settings`,
-      cookie: cookie,
+      cookie
     })
 
-    if (typeof detailedInfo === 'number')
-      throw new Error('Error get detailed info!')
+    if (typeof detailedInfo === 'number') { throw new Error('Error get detailed info!') }
 
     // TODO: add ENCRYPT_KEY
-    const regData: DiaryUser = {
+    const regData: DatabaseDiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
@@ -67,6 +71,7 @@ export const registration = async (
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
       cookie: encrypt(cookie ?? '', ENCRYPT_KEY),
+      cookieLastDateUpdate: formatDate(new Date().toISOString())
     }
 
     const regSPO: SPO = {
@@ -78,16 +83,16 @@ export const registration = async (
       site: SPO.site,
       phone: SPO.phone,
       type: SPO.type,
-      directorName: SPO.directorName,
+      directorName: SPO.directorName
     }
 
     const regGroup: Group = {
       groupName: student.groupName,
-      diaryGroupId: student.groupId,
+      diaryGroupId: student.groupId
     }
 
     const groupQueryBuilder = createQueryBuilder<Group>(client)
-    const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
+    const userDiaryQueryBuilder = createQueryBuilder<DatabaseDiaryUser>(client)
     const SPOQueryBuilder = createQueryBuilder<SPO>(client)
 
     const existingGroup = await groupQueryBuilder
@@ -106,7 +111,7 @@ export const registration = async (
       .first()
 
     if (!existingSPO) {
-      const res = await SPOQueryBuilder.insert(regSPO)
+      const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
       if (!res) throw new Error('Error insert SPO')
       regSPO.id = res.id
     } else {
@@ -114,8 +119,9 @@ export const registration = async (
       regSPO.id = existingSPO.id
     }
 
+    regGroup.spoId = regSPO.id
     if (!existingGroup) {
-      const res = await groupQueryBuilder.insert(regGroup)
+      const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
       if (!res) throw new Error('Error insert group')
       regGroup.id = res.id
     } else {
@@ -124,7 +130,7 @@ export const registration = async (
     }
 
     // Если всё ок, вносим id группы в пользователя
-    regData.groupId = regGroup.id ?? -1 // <- ???
+    regData.groupId = regGroup?.id ?? -1 // <- ???
 
     // Дальше всё как обычно
     if (!existingDiaryUser) {
@@ -134,15 +140,11 @@ export const registration = async (
     }
 
     // Генерируем токен
-    const token = await generateToken(regData.id)
-
-    // Не вычисляем, т.к. не отдаём
-    //regData.cookie = decrypt(regData.cookie, ENCRYPT_KEY)
-    regData.token = token
+    regData.token = await generateToken(regData.id)
 
     // Убираем все "приватные" поля из ответа
     return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)
   } catch (err) {
-    throw new Error('Ошибка на этапе работы с базой: ' + err)
+    throw new Error('Ошибка на этапе работы с базой: ' + err.toString())
   }
 }

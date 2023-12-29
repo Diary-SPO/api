@@ -15,7 +15,7 @@ export const formatDate = (date: string): string => {
  */
 export const calculateDifferenceInDays = (
   start: string,
-  end: string,
+  end: string
 ): number => {
   const startTimestamp = new Date(start).getTime()
   const endTimestamp = new Date(end).getTime()
@@ -33,7 +33,7 @@ export const adjustEndDate = (start: string, end: string): string => {
 
   if (differenceInDays > 14) {
     const newEndDate = new Date(
-      new Date(start).getTime() + 14 * 24 * 60 * 60 * 1000,
+      new Date(start).getTime() + 14 * 24 * 60 * 60 * 1000
     )
     return formatDate(newEndDate.toISOString())
   }

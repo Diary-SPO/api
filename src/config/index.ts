@@ -4,7 +4,7 @@ import PARAMS_INIT from './params'
 
 if (!fs.existsSync('.env')) {
   throw new Error(
-    'Configuration file ".env" not found. Read README for instructions on how to create.',
+    'Configuration file ".env" not found. Read README for instructions on how to create.'
   )
 }
 
@@ -18,5 +18,5 @@ export const {
   DATABASE_NAME,
   DATABASE_USERNAME,
   DATABASE_PASSWORD,
-  ENCRYPT_KEY,
+  ENCRYPT_KEY
 } = PARAMS_INIT
