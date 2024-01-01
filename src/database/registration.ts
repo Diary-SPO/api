@@ -46,8 +46,9 @@ export const registration = async (
   if (typeof res === 'number') throw new Error('Invalid username or password')
 
   try {
-    const student = res.data.tenants[res.data.tenantName].students[0]
-    const SPO = res.data.tenants[res.data.tenantName].settings.organization
+    const tenant = res.data.tenants[res.data.tenantName]
+    const student = tenant.studentRole.students[0]
+    const SPO = tenant.settings.organization
 
     const setCookieHeader = res.headers.get('Set-Cookie')
     const cookie = cookieExtractor(setCookieHeader ?? '')
