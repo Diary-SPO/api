@@ -5,7 +5,7 @@ import { cookieExtractor } from '../../../utils/cookieExtractor'
 import { client } from '@db'
 import { type DiaryUser } from '@diary-spo/types'
 import { formatDate } from '@utils'
-import { logger } from '../../utils/logger'
+import { logger } from '../../../utils/logger'
 
 const log = logger('cookie updater')
 export const updateUserCookie = async (user: DiaryUser): Promise<void> => {

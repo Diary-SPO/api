@@ -1,7 +1,7 @@
 import createQueryBuilder from '@diary-spo/sql'
 import { client } from '@db'
 import { maxDateInactive } from '../submodules/maxDateInactive'
-import { maxLifeTimeInactiveTokenDays } from '../config'
+import { MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS } from '../config'
 import { formatDate } from '@utils'
 
 export const removeNotUsedTokens = async (): Promise<void> => {
@@ -14,7 +14,7 @@ export const removeNotUsedTokens = async (): Promise<void> => {
     .from('auth')
     .where(`"lastUsedDate" > '${
       formatDate(
-        maxDateInactive(maxLifeTimeInactiveTokenDays).toISOString()
+        maxDateInactive(MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS).toISOString()
       )
     }'`)
     .all()

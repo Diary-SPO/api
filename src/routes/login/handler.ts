@@ -2,7 +2,7 @@ import type { Context } from 'elysia'
 import { registration } from '../../database/registration'
 import Hashes from 'jshashes'
 import { type ResponseLogin } from '@diary-spo/types'
-import { DatabaseResponseLogin } from '../../types/diaryTypes/types'
+import { type DatabaseResponseLogin } from '../../types/diaryTypes/types'
 
 interface AuthContext extends Context {
   body: {
