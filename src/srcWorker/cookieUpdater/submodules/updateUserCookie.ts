@@ -1,10 +1,10 @@
-import createQueryBuilder, { decrypt, encrypt, fetcher } from '@diary-spo/sql'
-import { type UserData } from '@diary-spo/shared'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { cookieExtractor } from '../../../utils/cookieExtractor'
 import { client } from '@db'
+import { type UserData } from '@diary-spo/shared'
+import createQueryBuilder, { decrypt, encrypt, fetcher } from '@diary-spo/sql'
 import { type DiaryUser } from '@diary-spo/types'
 import { formatDate } from '@utils'
+import { cookieExtractor } from '../../../utils/cookieExtractor'
 import { logger } from '../../utils/logger'
 
 const log = logger('cookie updater')
@@ -22,9 +22,7 @@ export const updateUserCookie = async (user: DiaryUser): Promise<void> => {
 
   // Если дневник вернул что-то другое...
   if (typeof res === 'number') {
-    log(
-      'WORKER: Что-то не так... Дневник ответил чем-то другим ?'
-    )
+    log('WORKER: Что-то не так... Дневник ответил чем-то другим ?')
     return
   }
 

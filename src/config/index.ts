@@ -1,6 +1,6 @@
 import fs from 'fs'
-import checkEnvVariables from './utils'
 import PARAMS_INIT from './params'
+import checkEnvVariables from './utils'
 
 if (!fs.existsSync('.env')) {
   throw new Error(

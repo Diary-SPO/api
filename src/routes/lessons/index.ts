@@ -1,7 +1,7 @@
-import { Elysia, t } from 'elysia'
-import getLessons from './handler'
 import { handleErrors } from '@utils'
+import { Elysia, t } from 'elysia'
 import { checkCookie } from 'src/middleware'
+import getLessons from './handler'
 
 const schema = {
   params: t.Object({
@@ -9,7 +9,7 @@ const schema = {
     endDate: t.String(),
     startDate: t.String()
   }),
-  Headers: t.Object({
+  headers: t.Object({
     secret: t.String()
   })
 }

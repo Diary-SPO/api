@@ -1,9 +1,9 @@
 import {
   DATABASE_HOST,
-  DATABASE_PORT,
   DATABASE_NAME,
-  DATABASE_USERNAME,
-  DATABASE_PASSWORD
+  DATABASE_PASSWORD,
+  DATABASE_PORT,
+  DATABASE_USERNAME
 } from '@config'
 import { Client } from 'pg'
 import { exit } from 'process'

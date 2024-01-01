@@ -8,7 +8,7 @@ export const updaterCookies = async (): Promise<void> => {
   // 2. Обновляем куку у списка пользователей
   if (usersToUpdate) {
     for (let i = 0; i < usersToUpdate.length; i++) {
-    // тут обновить куку
+      // тут обновить куку
       await updateUserCookie(usersToUpdate[i])
     }
   }

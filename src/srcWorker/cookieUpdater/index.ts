@@ -1,8 +1,8 @@
-import { intervalRun } from './config'
 import { checkInterval } from '../utils/checkInterval'
 import { logger } from '../utils/logger'
-import { updaterCookies } from './modules/updaterCookies'
+import { intervalRun } from './config'
 import { removeNotUsedTokens } from './modules/removeNotUsedTokens'
+import { updaterCookies } from './modules/updaterCookies'
 
 let lastRunning: Date | null = null
 const log = logger('cookie updater')
@@ -14,7 +14,7 @@ export const cookieUpdater = async (): Promise<void> => {
 
   lastRunning = new Date()
 
-  log('Запускаю проход... ' + new Date().toISOString())
+  log(`Запускаю проход... ${new Date().toISOString()}`)
 
   // Обрабатываем и проверяем, нужно ли перевыпустить куки
   // ---------------------------------------------------->

@@ -1,15 +1,17 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
-import { type CookieGetDetailedInfo } from '@types'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 
-type CacheTokensCookie = Record<string, {
-  cookie: string
-  lastUsedDAte: string
-  addedSeconds: number // количество секунд с добавления
-}>
+type CacheTokensCookie = Record<
+  string,
+  {
+    cookie: string
+    lastUsedDate: string
+    addedSeconds: number // количество секунд с добавления
+  }
+>
 
 const cacheTokensCookie: CacheTokensCookie = {}
 let nearestExpiringToken = null // Ближайшая старая запись в кеше. Бережём ядро, не занимаем ненужными операциями
@@ -21,7 +23,7 @@ const maxElementsFromCache = 1000 // Максимум токенов, храня
  * @param token
  * @returns {string} cookie
  */
-const getCookieFromToken = async (token: string): Promise<string | null> => {
+const getCookieFromToken = async (token: string): Promise<string> => {
   if (token.length < 16) {
     throw new Error('The token cannot be shorter than 16 characters')
   }
@@ -29,22 +31,16 @@ const getCookieFromToken = async (token: string): Promise<string | null> => {
   const getCacheFromCookie = cacheGetter(token)
 
   if (getCacheFromCookie) {
-    // @ts-expect-error т.к. не задерживаем пользователя
     updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
-      .catch(err => { console.log(err.toString()) })
+      .catch((err) => {
+        console.log(err.toString())
+      })
     return getCacheFromCookie
   }
 
-  const getCookieQueryBuilder = await createQueryBuilder<CookieGetDetailedInfo>(
-    client
-  )
-    .select(
-      'auth.id',
-      '"idDiaryUser"',
-      'token',
-      '"lastUsedDate"',
-      'cookie'
-    )
+  // fix any
+  const getCookieQueryBuilder = await createQueryBuilder<any>(client)
+    .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
     .from('auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser')
     .where(`auth.token = '${protectInjection(token)}'`)
     .first()
@@ -58,13 +54,15 @@ const getCookieFromToken = async (token: string): Promise<string | null> => {
     ENCRYPT_KEY
   )
 
-  // @ts-expect-error т.к. не задерживаем пользователя
   taskScheduler(getCookieQueryBuilder) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
-    .catch(err => { console.log(err.toString()) })
+    .catch((err) => {
+      console.log(err.toString())
+    })
 
-  // @ts-expect-error т.к. не задерживаем пользователя
   updaterDateFromToken(token) // Обновляем дату последнего использования куки, если нужно
-    .catch(err => { console.log(err.toString()) })
+    .catch((err) => {
+      console.log(err.toString())
+    })
 
   return getCookieQueryBuilder.cookie
 }
@@ -75,7 +73,8 @@ const getCookieFromToken = async (token: string): Promise<string | null> => {
  * @returns {void}
  */
 const taskScheduler = async (
-  saveData: CookieGetDetailedInfo
+  // fix any
+  saveData: any
 ): Promise<void> => {
   // Добавляем/обновляем информацию в кэше
   const expiring = new Date().getTime() / 1000
@@ -101,7 +100,6 @@ const taskScheduler = async (
     Object.keys(cacheTokensCookie).forEach((token, index) => {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
-        // @ts-expect-error ну как бы работаем с объектом... Может как по-другому можно ?
         delete cacheTokensCookie[token]
         return
       }
@@ -118,13 +116,12 @@ const taskScheduler = async (
   }
 }
 
-const updaterDateFromToken = async (token: CookieGetDetailedInfo | string): Promise<void> => {
+// fix any
+const updaterDateFromToken = async (token: any | string): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
   const saveData =
-    typeof token !== 'string'
-      ? token
-      : (cacheTokensCookie?.[token] as unknown as CookieGetDetailedInfo)
+    typeof token !== 'string' ? token : (cacheTokensCookie?.[token] as any)
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return

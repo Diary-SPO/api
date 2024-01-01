@@ -1,6 +1,6 @@
+import { handleErrors } from '@utils'
 import { Elysia, t } from 'elysia'
 import postAuth from './handler'
-import { handleErrors } from '@utils'
 
 const schema = {
   body: t.Object({

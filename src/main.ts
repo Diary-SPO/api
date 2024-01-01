@@ -1,7 +1,7 @@
-import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors'
-import { helmet } from 'elysia-helmet'
 import { swagger } from '@elysiajs/swagger'
+import { Elysia } from 'elysia'
+import { helmet } from 'elysia-helmet'
 
 import routes from '@routes'
 import { compression } from 'elysia-compression'
@@ -41,6 +41,6 @@ console.log(
   `Backend running at http://${app.server?.hostname}:${app.server?.port}`
 )
 
-new Worker(new URL('worker', (import.meta.url)).href)
-
+const workerURL = new URL('worker', import.meta.url).href
+new Worker(workerURL)
 console.log('Worker running!')

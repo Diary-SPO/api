@@ -1,19 +1,22 @@
+import { ENCRYPT_KEY, SERVER_URL } from '@config'
+import { client } from '@db'
+import { type UserData } from '@diary-spo/shared'
+import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
 import type {
-  SPO,
   Group,
   PersonResponse,
-  ResponseLogin
+  ResponseLogin,
+  SPO
 } from '@diary-spo/types'
-import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { fetcher, encrypt } from '@diary-spo/sql'
-import { client } from '@db'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { generateToken } from './generateToken'
-import { offlineAuth } from './auth'
-import { cookieExtractor } from 'src/utils/cookieExtractor'
 import { formatDate } from '@utils'
-import { type DatabaseDiaryUser, type DatabaseResponseLogin } from '../types/diaryTypes/types'
+import { cookieExtractor } from 'src/utils/cookieExtractor'
+import {
+  type DatabaseDiaryUser,
+  type DatabaseResponseLogin
+} from '../types/diaryTypes/types'
+import { offlineAuth } from './auth'
+import { generateToken } from './generateToken'
 
 /**
  * Регистрирует/авторизирует в оригинальном дневнике с сохранением данных в базе данных.
@@ -35,19 +38,19 @@ export const registration = async (
   if (res === 501) {
     const authData = await offlineAuth(login, password).catch((err) => {
       throw new Error(
-        'Authorization error: access to the diary was denied, and authorization through the database failed. Full: ' + err
+        `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${err}`
       )
     })
 
     // Краткую запись исправляет eslint, так что я не виноват...
-    if (authData) return authData
-    else return null
+    if (authData) return authData ?? null
   }
   if (typeof res === 'number') throw new Error('Invalid username or password')
 
   try {
-    const student = res.data.tenants[res.data.tenantName].students[0]
-    const SPO = res.data.tenants[res.data.tenantName].settings.organization
+    const tenant = res.data.tenants[res.data.tenantName]
+    const student = tenant.studentRole.students[0]
+    const SPO = tenant.settings.organization
 
     const setCookieHeader = res.headers.get('Set-Cookie')
     const cookie = cookieExtractor(setCookieHeader ?? '')
@@ -57,7 +60,9 @@ export const registration = async (
       cookie
     })
 
-    if (typeof detailedInfo === 'number') { throw new Error('Error get detailed info!') }
+    if (typeof detailedInfo === 'number') {
+      throw new Error('Error get detailed info!')
+    }
 
     // TODO: add ENCRYPT_KEY
     const regData: DatabaseDiaryUser = {
@@ -145,6 +150,7 @@ export const registration = async (
     // Убираем все "приватные" поля из ответа
     return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)
   } catch (err) {
-    throw new Error('Ошибка на этапе работы с базой: ' + err.toString())
+    console.error(err)
+    throw new Error('Ошибка на этапе работы с базой: ')
   }
 }

@@ -9,10 +9,10 @@ export const cookieExtractor = (setCookieHeader: string): string => {
     .split(';')
     .map((value) => {
       if (value.includes('UID')) {
-        return value + '; path=/;'
+        return `${value}; path=/;`
       }
       if (value.includes('.AspNetCore.Cookies')) {
-        return value + '; path=/; samesite=lax; httponly'
+        return `${value}; path=/; samesite=lax; httponly`
       }
     })
     .join('')

@@ -1,7 +1,7 @@
 import { type DiaryUser, type Group, type SPO } from '@diary-spo/types'
 import { type DatabaseResponseLogin } from '../diaryTypes/types'
 
-export function ResponseLoginFromDiaryUser (
+export function ResponseLoginFromDiaryUser(
   diaryUser: DiaryUser,
   spo: SPO,
   group: Group

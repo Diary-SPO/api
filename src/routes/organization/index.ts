@@ -1,7 +1,7 @@
-import { Elysia, t } from 'elysia'
-import getOrganization from './handler'
 import { handleErrors } from '@utils'
+import { Elysia, t } from 'elysia'
 import { checkCookie } from 'src/middleware'
+import getOrganization from './handler'
 
 const schema = {
   headers: t.Object({

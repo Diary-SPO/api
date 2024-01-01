@@ -1,7 +1,12 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
-import { type ResponseLogin, type DiaryUser, type SPO, type Group } from '@diary-spo/types'
+import {
+  type DiaryUser,
+  type Group,
+  type ResponseLogin,
+  type SPO
+} from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
@@ -34,13 +39,12 @@ export const offlineAuth = async (
   }
 
   // Извлекаем организацию
-  const spoGetQueryBuilder = (await createQueryBuilder<SPO>(client)
-    .customQueryRun(
-      'SELECT * FROM "SPO"' +
-      '\nINNER JOIN groups ON groups."spoId" = "SPO".id' +
-      '\nWHERE groups.id = ' + diaryUserQueryBuilder.groupId +
-      '\nLIMIT 1'
-    ))?.[0] ?? null
+  const spoGetQueryBuilder =
+    (
+      await createQueryBuilder<SPO>(client).customQueryRun(
+        `SELECT * FROM "SPO"\nINNER JOIN groups ON groups."spoId" = "SPO".id\nWHERE groups.id = ${diaryUserQueryBuilder.groupId}\nLIMIT 1`
+      )
+    )?.[0] ?? null
 
   if (!spoGetQueryBuilder) {
     throw new Error('SPO for current user not found!')

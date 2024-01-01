@@ -1,6 +1,6 @@
 import type { Organization } from '@diary-spo/shared'
-import type { Context } from 'elysia'
 import { HeadersWithCookie } from '@utils'
+import type { Context } from 'elysia'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
 const getOrganization = async ({
