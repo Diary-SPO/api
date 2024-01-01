@@ -3,6 +3,6 @@ export const getGitCommitHash = () => {
     cmd: ['git', 'rev-parse', 'HEAD'],
     stdout: 'pipe'
   })
-
+  
   return stdout.toString().substring(0, 7)
 }

@@ -1,20 +1,20 @@
+import { INTERVAL_RUN } from './config'
 import { checkInterval } from '../utils/checkInterval'
-import { logger } from '../utils/logger'
-import { intervalRun } from './config'
-import { removeNotUsedTokens } from './modules/removeNotUsedTokens'
+import { logger } from '../../utils/logger'
 import { updaterCookies } from './modules/updaterCookies'
+import { removeNotUsedTokens } from './modules/removeNotUsedTokens'
 
 let lastRunning: Date | null = null
 const log = logger('cookie updater')
 
 export const cookieUpdater = async (): Promise<void> => {
-  if (lastRunning && !checkInterval(lastRunning, intervalRun)) {
+  if (lastRunning && !checkInterval(lastRunning, INTERVAL_RUN)) {
     return
   }
 
   lastRunning = new Date()
 
-  log(`Запускаю проход... ${new Date().toISOString()}`)
+  log('Запускаю проход... ' + new Date().toISOString())
 
   // Обрабатываем и проверяем, нужно ли перевыпустить куки
   // ---------------------------------------------------->
@@ -25,5 +25,5 @@ export const cookieUpdater = async (): Promise<void> => {
   // 2. Удаляем неиспользуемые токены
   await removeNotUsedTokens()
 
-  log(`Проход завершён. Следующий через ${intervalRun} секунд`)
+  log(`Проход завершён. Следующий через ${INTERVAL_RUN} секунд`)
 }

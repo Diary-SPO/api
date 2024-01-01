@@ -12,8 +12,8 @@ import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
 
 /**
- * Оффлайн авторизация через базу данных
- * Срабатывает в случае если оригинальный дневник упал и пользователь есть в базе данных
+ * Оффлайн авторизация через базу данных.
+ * Срабатывает в случае если оригинальный дневник упал и пользователь есть в базе данных.
  * @param login
  * @param password
  * @returns {ResponseLogin}
