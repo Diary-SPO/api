@@ -1,4 +1,4 @@
-import {DAY_IN_MS} from '../types/constaints'
+import { DAY_IN_MS } from '../types/constaints'
 
 /**
  * Функция для форматирования даты в формате "YYYY-MM-DD".
@@ -21,7 +21,7 @@ export const calculateDifferenceInDays = (
 ): number => {
   const startTimestamp = new Date(start).getTime()
   const endTimestamp = new Date(end).getTime()
-  return (endTimestamp - startTimestamp) / (DAY_IN_MS)
+  return (endTimestamp - startTimestamp) / DAY_IN_MS
 }
 
 /**
@@ -34,9 +34,7 @@ export const adjustEndDate = (start: string, end: string): string => {
   const differenceInDays = calculateDifferenceInDays(start, end)
 
   if (differenceInDays > 14) {
-    const newEndDate = new Date(
-      new Date(start).getTime() + 14 * DAY_IN_MS
-    )
+    const newEndDate = new Date(new Date(start).getTime() + 14 * DAY_IN_MS)
     return formatDate(newEndDate.toISOString())
   }
 

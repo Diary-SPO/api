@@ -2,8 +2,8 @@ import { client } from '@db'
 import createQueryBuilder from '@diary-spo/sql'
 import { type DiaryUser } from '@diary-spo/types'
 import { formatDate } from '@utils'
-import { maxDateInactive } from './maxDateInactive'
 import { MAX_NOT_UPDATE_TOKEN_IN_DAYS } from '../config'
+import { maxDateInactive } from './maxDateInactive'
 
 export const getUsersToUpdate = async (): Promise<DiaryUser[] | null> => {
   // 1. Получаем конечную дату
