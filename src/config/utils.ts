@@ -1,15 +1,18 @@
-import { type ParamsInit, type ParamsKeys } from './types'
-import dotenv from 'dotenv'
+import { type ParamsInit, type ParamsKeys, type StringOrNumber } from './types'
 
-dotenv.config()
-
-function checkEnvVariables (params: ParamsInit): void {
+/**
+ * Считывает .env файл
+ * Проверяет наличие всех полей из ParamsInit в конфигурационном файле
+ * @param {ParamsInit} params
+ */
+const checkEnvVariables = (params: StringOrNumber<ParamsInit>): void => {
   for (const key of Object.keys(params) as ParamsKeys[]) {
-    const value = process.env[key] ?? Bun.env[key]
+    const value = Bun.env[key] ?? params[key]
 
-    if (typeof value !== 'string' || value.trim() === '') {
+    if (typeof value !== 'number' && String(value).trim() === '') {
       throw new Error(`Environment variable ${key} is not defined or empty.`)
     }
+
     params[key] = value
   }
 }

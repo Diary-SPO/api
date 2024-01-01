@@ -5,22 +5,29 @@
     "start": "bun run ./src/main.ts",
     "dev": "bun run --watch ./src/main.ts",
     "build": "bun build ./src/main.ts --outdir dist --minify --target bun",
-    "serve": "bun run build && bun run ./dist/main.js",
-    "lint:fix": "eslint . --ext ts --fix"
+    "serve": "bun run build ./src/main.ts ./src/worker.ts && bun run ./dist/main.js",
+    "lint": "biome lint . --apply",
+    "format": "biome format . --write",
+    "checkAll": "biome check . --apply-unsafe"
   },
   "dependencies": {
+    "@diary-spo/sql": "^1.1.4",
     "@elysiajs/cors": "^0.7.2",
-    "elysia": "latest"
+    "elysia": "^0.8.5",
+    "elysia-compression": "^0.0.6",
+    "elysia-helmet": "^1.0.1",
+    "jshashes": "^1.0.8",
+    "pg": "^8.11.3",
+    "rand-token": "^1.0.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.4.1",
     "@diary-spo/shared": "^1.8.5",
+    "@diary-spo/types": "^1.0.0",
+    "@elysiajs/swagger": "^0.7.4",
+    "@types/pg": "^8.10.9",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
     "bun-types": "latest",
-    "eslint": "latest",
-    "eslint-config-standard-with-typescript": "^39.1.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-    "eslint-plugin-promise": "^6.0.0",
     "typescript": "^5.2.2"
   }
 }

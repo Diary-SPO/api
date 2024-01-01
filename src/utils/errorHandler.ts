@@ -1,8 +1,9 @@
-import { type Context, isIContext } from '@utils'
+import { isIContext } from '@utils'
 
 let i = 0
-export const handleErrors = (context: Context): void => {
+export const handleErrors = (context: unknown): void => {
   if (!isIContext(context)) {
+    console.error('No context')
     return
   }
 

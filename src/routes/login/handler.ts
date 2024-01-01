@@ -1,40 +1,40 @@
-import type { AuthData } from '@diary-spo/shared'
+import { type ResponseLogin } from '@diary-spo/types'
 import type { Context } from 'elysia'
-import { BaseHeaders } from '@utils'
+import Hashes from 'jshashes'
+import { registration } from '../../database/registration'
+import { type DatabaseResponseLogin } from '../../types/diaryTypes/types'
 
-interface AuthContext extends Omit<Context, 'params'> {
+interface AuthContext extends Context {
   body: {
     login: string
     password: string
-    isRemember: boolean
+    isHash: boolean
   }
 }
 
-const postAuth = async ({ set, body }: AuthContext): Promise<AuthData | string> => {
-  const { login, password, isRemember } = body
-
-  if (!login || !password) {
-    console.error(`login ${login}\t invalid login or password`)
-    set.status = 400
-    return 'Invalid login or password'
+const postAuth = async ({
+  set,
+  body
+}: AuthContext): Promise<
+  DatabaseResponseLogin | ResponseLogin | null | string
+> => {
+  // Захешировать пароль ? (Для отладки, потом можно вырезать)
+  if (!body?.isHash ?? true) {
+    body.password = new Hashes.SHA256().b64(body.password)
   }
 
-  const path = `${process.env.SERVER_URL}/services/security/login`
-  const response = await fetch(path, {
-    method: 'POST',
-    body: JSON.stringify({ login, password, isRemember }),
-    headers: BaseHeaders
-  })
+  const { login, password } = body
 
-  console.log(`${response.status} ${path}`)
+  const data = await registration(login, password).catch(
+    (err): ResponseLogin | string => {
+      set.status = 401
+      return `Error working authorization. Detailed info: "${err}"`
+    }
+  )
 
-  const data = await response.json()
+  console.log(`/login ${set.status}`)
 
-  const setCookieHeader = response.headers.getAll('Set-Cookie')
-  const cookieString = Array.isArray(setCookieHeader) ? setCookieHeader.join('; ') : setCookieHeader
-
-  set.status = response.status
-  return { data, cookie: cookieString }
+  return data
 }
 
 export default postAuth

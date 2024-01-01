@@ -1,10 +1,15 @@
 import type { PerformanceCurrent } from '@diary-spo/shared'
 import { type ContextWithID, HeadersWithCookie } from '@utils'
+import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
-const getPerformanceCurrent = async ({ request, set, params }: ContextWithID): Promise<PerformanceCurrent | string> => {
+const getPerformanceCurrent = async ({
+  request,
+  set,
+  params
+}: ContextWithID): Promise<PerformanceCurrent | string> => {
   const { id } = params
-  const secret = request.headers.toJSON().secret
-  const path = `${process.env.SERVER_URL}/services/reports/current/performance/${id}`
+  const secret = await getCookieFromToken(request.headers.toJSON().secret)
+  const path = `${Bun.env.SERVER_URL}/services/reports/current/performance/${id}`
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret)
   })
