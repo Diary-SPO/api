@@ -9,7 +9,7 @@ const schema = {
     endDate: t.String(),
     startDate: t.String()
   }),
-  Headers: t.Object({
+  headers: t.Object({
     secret: t.String()
   })
 }
