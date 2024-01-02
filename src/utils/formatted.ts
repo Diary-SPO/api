@@ -1,4 +1,4 @@
-import { DAY_IN_MS } from '../config/constaints'
+import { DAY_IN_MS } from '../config/constants'
 
 /**
  * Функция для форматирования даты в формате "YYYY-MM-DD".
