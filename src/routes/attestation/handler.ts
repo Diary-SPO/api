@@ -1,7 +1,7 @@
 import type { AttestationResponse } from '@diary-spo/shared'
+import { ContextWithID } from '@types'
 import { HeadersWithCookie } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
-import { ContextWithID } from '@types'
 
 const getAttestation = async ({
   request,

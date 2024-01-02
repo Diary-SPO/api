@@ -1,10 +1,6 @@
 import type { Day } from '@diary-spo/shared'
 import { IContext } from '@types'
-import {
-  HeadersWithCookie,
-  adjustEndDate,
-  formatDate
-} from '@utils'
+import { HeadersWithCookie, adjustEndDate, formatDate } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
 const getLessons = async ({
