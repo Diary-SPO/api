@@ -1,6 +1,7 @@
 import type { AttestationResponse } from '@diary-spo/shared'
-import { type ContextWithID, HeadersWithCookie } from '@utils'
+import { HeadersWithCookie } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
+import { ContextWithID } from '@types'
 
 const getAttestation = async ({
   request,
@@ -16,7 +17,7 @@ const getAttestation = async ({
 
   console.log(`${response.status} ${path}`)
   set.status = 200
-  return await response.json()
+  return response.json()
 }
 
 export default getAttestation
