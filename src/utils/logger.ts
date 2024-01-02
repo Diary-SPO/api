@@ -1,5 +1,5 @@
 export const logger = (nameUtils: string) => {
-  return (message) => {
+  return (message: string) => {
     console.log(`WORKER [${nameUtils}]: ${message}`)
   }
 }

@@ -1,4 +1,4 @@
-import type { IContext } from '@utils'
+import { IContext } from '@types'
 
 export const isIContext = (obj: unknown): obj is IContext => {
   return Boolean(
