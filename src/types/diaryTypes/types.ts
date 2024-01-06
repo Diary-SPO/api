@@ -11,3 +11,11 @@ export interface DatabaseResponseLogin extends ResponseLogin {
   lastName: string
   middleName: string
 }
+
+export interface CookieInfoFromDatabase {
+  id: number
+  idDiaryUser: number
+  token: string
+  lastUsedDate: string
+  cookie: string
+}

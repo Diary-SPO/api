@@ -3,6 +3,7 @@ import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
+import {CookieInfoFromDatabase} from "../types/diaryTypes/types";
 
 type CacheTokensCookie = Record<
   string,
@@ -38,8 +39,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  // fix any
-  const getCookieQueryBuilder = await createQueryBuilder<any>(client)
+  const getCookieQueryBuilder = await createQueryBuilder<CookieInfoFromDatabase>(client)
     .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
     .from('auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser')
     .where(`auth.token = '${protectInjection(token)}'`)
@@ -73,8 +73,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
  * @returns {void}
  */
 const taskScheduler = async (
-  // fix any
-  saveData: any
+  saveData: CookieInfoFromDatabase
 ): Promise<void> => {
   // Добавляем/обновляем информацию в кэше
   const expiring = new Date().getTime() / 1000

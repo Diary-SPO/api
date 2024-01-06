@@ -34,7 +34,6 @@ export const registration = async (
     method: 'POST',
     body: JSON.stringify({ login, password, isRemember: true })
   })
-  console.log(res)
 
   if (res > 401) {
     const authData = await offlineAuth(login, password).catch((err) => {
