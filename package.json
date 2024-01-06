@@ -6,9 +6,9 @@
     "dev": "bun run --watch ./src/main.ts",
     "build": "bun build ./src/main.ts --outdir dist --minify --target bun",
     "serve": "bun run build ./src/main.ts ./src/worker.ts && bun run ./dist/main.js",
-    "lint": "biome lint api --apply",
-    "format": "biome format api --write",
-    "checkAll": "biome check api --apply-unsafe"
+    "lint": "biome lint . --apply",
+    "format": "biome format . --write",
+    "checkAll": "biome check . --apply-unsafe"
   },
   "dependencies": {
     "@diary-spo/sql": "^1.1.4",
