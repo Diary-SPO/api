@@ -22,7 +22,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
       await createQueryBuilder<Auth>(client).from('auth').insert({
         idDiaryUser,
         token,
-        lastDate: formattedDate
+        lastUsedDate: formattedDate
       })
     )?.[0] ?? null
 

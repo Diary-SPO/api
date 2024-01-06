@@ -34,8 +34,9 @@ export const registration = async (
     method: 'POST',
     body: JSON.stringify({ login, password, isRemember: true })
   })
+  console.log(res)
 
-  if (res === 501) {
+  if (res > 400) {
     const authData = await offlineAuth(login, password).catch((err) => {
       throw new Error(
         `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${err}`
