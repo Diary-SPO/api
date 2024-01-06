@@ -3,7 +3,7 @@ import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
-import {CookieInfoFromDatabase} from "../types/diaryTypes/types";
+import {CookieInfoFromDatabase} from "@diary-spo/types";
 
 type CacheTokensCookie = Record<
   string,
@@ -96,7 +96,7 @@ const taskScheduler = async (
     }
 
     let newNearestExpiringToken = Number.MAX_VALUE
-    Object.keys(cacheTokensCookie).forEach((token, index) => {
+    Object.keys(cacheTokensCookie).forEach((token) => {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
         delete cacheTokensCookie[token]
@@ -115,12 +115,11 @@ const taskScheduler = async (
   }
 }
 
-// fix any
-const updaterDateFromToken = async (token: any | string): Promise<void> => {
+const updaterDateFromToken = async (token: CookieInfoFromDatabase | string): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
   const saveData =
-    typeof token !== 'string' ? token : (cacheTokensCookie?.[token] as any)
+    typeof token !== 'string' ? token : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return

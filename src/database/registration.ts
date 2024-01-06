@@ -6,15 +6,13 @@ import type {
   Group,
   PersonResponse,
   ResponseLogin,
+  DatabaseDiaryUser,
+  DatabaseResponseLogin,
   SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { formatDate } from '@utils'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
-import {
-  type DatabaseDiaryUser,
-  type DatabaseResponseLogin
-} from '../types/diaryTypes/types'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
 
