@@ -3,11 +3,11 @@ import { client } from '@db'
 import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
 import type {
+  DatabaseDiaryUser,
+  DatabaseResponseLogin,
   Group,
   PersonResponse,
   ResponseLogin,
-  DatabaseDiaryUser,
-  DatabaseResponseLogin,
   SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
@@ -33,14 +33,13 @@ export const registration = async (
     body: JSON.stringify({ login, password, isRemember: true })
   })
 
-  if (res > 401) {
+  if (Number(res) > 401) {
     const authData = await offlineAuth(login, password).catch((err) => {
       throw new Error(
         `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${err}`
       )
     })
 
-    // Краткую запись исправляет eslint, так что я не виноват...
     if (authData) return authData ?? null
   }
   if (typeof res === 'number') throw new Error('Invalid username or password')

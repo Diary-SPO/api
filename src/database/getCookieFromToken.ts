@@ -1,9 +1,9 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
+import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
-import {CookieInfoFromDatabase} from "@diary-spo/types";
 
 type CacheTokensCookie = Record<
   string,
@@ -39,11 +39,14 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  const getCookieQueryBuilder = await createQueryBuilder<CookieInfoFromDatabase>(client)
-    .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
-    .from('auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser')
-    .where(`auth.token = '${protectInjection(token)}'`)
-    .first()
+  const getCookieQueryBuilder =
+    await createQueryBuilder<CookieInfoFromDatabase>(client)
+      .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
+      .from(
+        'auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser'
+      )
+      .where(`auth.token = '${protectInjection(token)}'`)
+      .first()
 
   if (!getCookieQueryBuilder) {
     throw new Error('Token not finded!')
@@ -115,11 +118,15 @@ const taskScheduler = async (
   }
 }
 
-const updaterDateFromToken = async (token: CookieInfoFromDatabase | string): Promise<void> => {
+const updaterDateFromToken = async (
+  token: CookieInfoFromDatabase | string
+): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
   const saveData =
-    typeof token !== 'string' ? token : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
+    typeof token !== 'string'
+      ? token
+      : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return

@@ -1,4 +1,4 @@
-import type { ResponseLogin, DatabaseResponseLogin } from '@diary-spo/types'
+import type { DatabaseResponseLogin, ResponseLogin } from '@diary-spo/types'
 import type { Context } from 'elysia'
 import Hashes from 'jshashes'
 import { registration } from '../../database/registration'
