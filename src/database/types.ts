@@ -1,4 +1,4 @@
-import { Organization, type Teacher } from '@diary-spo/shared'
+import { Organization } from '@diary-spo/shared'
 import { Person } from '@diary-spo/shared/src/base'
 
 /**
@@ -75,65 +75,57 @@ export interface Schedule {
   endTime: string
 }
 
-/**
- * Структура таблицы, хранящей преподавателей
- */
-export interface TeacherDB extends Teacher {
-  spoId: number
-}
-
-/**
- * Структура таблицы, хранящей задание
- */
-export interface GradebookDB {
-  id?: number
-  scheduleId: number
-  lessonTypeId: number
-}
-
-/**
- * Структура таблицы, хранящей тип занятия
- */
-export interface LessonTypeDB {
-  id?: number
-  name: string
-}
-
-/**
- * Структура таблицы, хранящей темы
- */
-export interface ThemeDB {
-  id?: number
-  gradebookId: number
-  description: string
-}
-
-/**
- * Структура таблицы, хранящей темы занятий
- */
-export interface TaskDB {
-  id: number
-  gradebookId: number
-  taskTypeId: number
-  topic: string
-}
-
-/**
- * Структура таблицы, хранящей обязательность выполнения задания (получения оценки)
- */
-export interface RequiredDB {
-  diaryUserId: number
-  taskId: number
-  isRequired: boolean
-}
-
-/**
- * ???
- */
-export interface AuthData {
-  cookie: string
-  data: DiaryUser
-}
+// /**
+//  * Структура таблицы, хранящей преподавателей
+//  */
+// export interface TeacherDB extends Teacher {
+//   spoId: number
+// }
+//
+// /**
+//  * Структура таблицы, хранящей задание
+//  */
+// export interface GradebookDB {
+//   id?: number
+//   scheduleId: number
+//   lessonTypeId: number
+// }
+//
+// /**
+//  * Структура таблицы, хранящей тип занятия
+//  */
+// export interface LessonTypeDB {
+//   id?: number
+//   name: string
+// }
+//
+// /**
+//  * Структура таблицы, хранящей темы
+//  */
+// export interface ThemeDB {
+//   id?: number
+//   gradebookId: number
+//   description: string
+// }
+//
+// /**
+//  * Структура таблицы, хранящей темы занятий
+//  */
+// export interface TaskDB {
+//   id: number
+//   gradebookId: number
+//   taskTypeId: number
+//   topic: string
+// }
+//
+// /**
+//  * Структура таблицы, хранящей обязательность выполнения задания (получения оценки)
+//  */
+// export interface RequiredDB {
+//   diaryUserId: number
+//   taskId: number
+//   isRequired: boolean
+// }
 
 /**
  * Структура таблицы, хранящей токены доступа через пользователя
