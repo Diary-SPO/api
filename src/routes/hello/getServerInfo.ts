@@ -6,6 +6,6 @@ export const getServerInfo = (): object => {
     status: 'ok',
     arch: process.arch,
     targetDiary: SERVER_URL,
-    backend: 'bun+elysia',
+    backend: 'bun+elysia'
   }
 }

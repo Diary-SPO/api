@@ -13,7 +13,7 @@ export interface DiaryUser
   phone: string
   birthday: string
   cookie: string
-  token: string
+  // token: string
   cookieLastDateUpdate: string
 }
 
