@@ -3,8 +3,7 @@ import { client } from '@db'
 import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
 import type {
-  DatabaseDiaryUser,
-  DatabaseResponseLogin,
+  DiaryUser,
   Group,
   PersonResponse,
   ResponseLogin,
@@ -26,7 +25,7 @@ import { generateToken } from './generateToken'
 export const registration = async (
   login: string,
   password: string
-): Promise<DatabaseResponseLogin | ResponseLogin | null> => {
+): Promise<DiaryUser | ResponseLogin | null> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
@@ -62,7 +61,7 @@ export const registration = async (
     }
 
     // TODO: add ENCRYPT_KEY
-    const regData: DatabaseDiaryUser = {
+    const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
@@ -94,7 +93,7 @@ export const registration = async (
     }
 
     const groupQueryBuilder = createQueryBuilder<Group>(client)
-    const userDiaryQueryBuilder = createQueryBuilder<DatabaseDiaryUser>(client)
+    const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
     const SPOQueryBuilder = createQueryBuilder<SPO>(client)
 
     const existingGroup = await groupQueryBuilder

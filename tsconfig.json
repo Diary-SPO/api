@@ -9,7 +9,8 @@
       "@config": ["src/config"],
       "@routes": ["src/routes"],
       "@utils": ["src/utils"],
-      "@db": ["src/database"]
+      "@db": ["src/database"],
+      "@diary-spo/types": ["src/database/types"],
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     "types": [
       "bun-types"
