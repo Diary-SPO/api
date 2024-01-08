@@ -1,5 +1,6 @@
 import type { NotificationsResponse } from '@diary-spo/shared'
-import { type ContextWithID, HeadersWithCookie } from '@utils'
+import { ContextWithID } from '@types'
+import { HeadersWithCookie } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
 
 const getAds = async ({

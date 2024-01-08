@@ -3,6 +3,7 @@ import { client } from '@db'
 import { type UserData } from '@diary-spo/shared'
 import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
 import type {
+  DiaryUser,
   Group,
   PersonResponse,
   ResponseLogin,
@@ -11,10 +12,6 @@ import type {
 import { ResponseLoginFromDiaryUser } from '@types'
 import { formatDate } from '@utils'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
-import {
-  type DatabaseDiaryUser,
-  type DatabaseResponseLogin
-} from '../types/diaryTypes/types'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
 
@@ -28,21 +25,20 @@ import { generateToken } from './generateToken'
 export const registration = async (
   login: string,
   password: string
-): Promise<DatabaseResponseLogin | ResponseLogin | null> => {
+): Promise<DiaryUser | ResponseLogin | null> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
     body: JSON.stringify({ login, password, isRemember: true })
   })
 
-  if (res === 501) {
+  if (Number(res) > 401) {
     const authData = await offlineAuth(login, password).catch((err) => {
       throw new Error(
         `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${err}`
       )
     })
 
-    // Краткую запись исправляет eslint, так что я не виноват...
     if (authData) return authData ?? null
   }
   if (typeof res === 'number') throw new Error('Invalid username or password')
@@ -65,7 +61,7 @@ export const registration = async (
     }
 
     // TODO: add ENCRYPT_KEY
-    const regData: DatabaseDiaryUser = {
+    const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
@@ -97,7 +93,7 @@ export const registration = async (
     }
 
     const groupQueryBuilder = createQueryBuilder<Group>(client)
-    const userDiaryQueryBuilder = createQueryBuilder<DatabaseDiaryUser>(client)
+    const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
     const SPOQueryBuilder = createQueryBuilder<SPO>(client)
 
     const existingGroup = await groupQueryBuilder

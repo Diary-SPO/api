@@ -1,6 +1,6 @@
 import { client } from '@db'
 import createQueryBuilder from '@diary-spo/sql'
-import { type Auth } from '@types'
+import { Auth } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { suid } from 'rand-token'
 

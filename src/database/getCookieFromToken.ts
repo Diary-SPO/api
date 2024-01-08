@@ -1,6 +1,7 @@
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
+import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 
@@ -38,12 +39,14 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  // fix any
-  const getCookieQueryBuilder = await createQueryBuilder<any>(client)
-    .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
-    .from('auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser')
-    .where(`auth.token = '${protectInjection(token)}'`)
-    .first()
+  const getCookieQueryBuilder =
+    await createQueryBuilder<CookieInfoFromDatabase>(client)
+      .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
+      .from(
+        'auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser'
+      )
+      .where(`auth.token = '${protectInjection(token)}'`)
+      .first()
 
   if (!getCookieQueryBuilder) {
     throw new Error('Token not finded!')
@@ -73,8 +76,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
  * @returns {void}
  */
 const taskScheduler = async (
-  // fix any
-  saveData: any
+  saveData: CookieInfoFromDatabase
 ): Promise<void> => {
   // Добавляем/обновляем информацию в кэше
   const expiring = new Date().getTime() / 1000
@@ -97,7 +99,7 @@ const taskScheduler = async (
     }
 
     let newNearestExpiringToken = Number.MAX_VALUE
-    Object.keys(cacheTokensCookie).forEach((token, index) => {
+    Object.keys(cacheTokensCookie).forEach((token) => {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
         delete cacheTokensCookie[token]
@@ -116,12 +118,15 @@ const taskScheduler = async (
   }
 }
 
-// fix any
-const updaterDateFromToken = async (token: any | string): Promise<void> => {
+const updaterDateFromToken = async (
+  token: CookieInfoFromDatabase | string
+): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
   const saveData =
-    typeof token !== 'string' ? token : (cacheTokensCookie?.[token] as any)
+    typeof token !== 'string'
+      ? token
+      : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return

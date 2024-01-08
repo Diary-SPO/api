@@ -1,11 +1,10 @@
-import { type DiaryUser, type Group, type SPO } from '@diary-spo/types'
-import { type DatabaseResponseLogin } from '../diaryTypes/types'
+import type { DiaryUser, Group, ResponseLogin, SPO } from '@diary-spo/types'
 
 export function ResponseLoginFromDiaryUser(
   diaryUser: DiaryUser,
   spo: SPO,
   group: Group
-): DatabaseResponseLogin {
+): ResponseLogin {
   return {
     id: diaryUser.id,
     groupId: diaryUser.groupId,
