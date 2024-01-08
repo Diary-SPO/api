@@ -1,4 +1,4 @@
-import type { DatabaseResponseLogin, ResponseLogin } from '@diary-spo/types'
+import type {DatabaseResponseLogin, DiaryUser, ResponseLogin} from '@diary-spo/types'
 import type { Context } from 'elysia'
 import Hashes from 'jshashes'
 import { registration } from '../../database/registration'
@@ -14,9 +14,7 @@ interface AuthContext extends Context {
 const postAuth = async ({
   set,
   body
-}: AuthContext): Promise<
-  DatabaseResponseLogin | ResponseLogin | null | string
-> => {
+}: AuthContext): Promise<DiaryUser | ResponseLogin | null | string> => {
   // Захешировать пароль ? (Для отладки, потом можно вырезать)
   if (!body?.isHash ?? true) {
     body.password = new Hashes.SHA256().b64(body.password)
@@ -27,7 +25,7 @@ const postAuth = async ({
   const data = await registration(login, password).catch(
     (err): ResponseLogin | string => {
       set.status = 401
-      return `Error working authorization. Detailed info: "${err}"`
+      throw new Error(`Error working authorization. Detailed info: "${err}"`)
     }
   )
 
