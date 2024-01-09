@@ -9,14 +9,14 @@ export const saveGradebook = async (
     lesson: Lesson
 ): Promise<GradebookDB | null> => {
     if (!lesson.gradebook?.lessonType) {
-        console.error(`Не удалось сохранить тип для gradebook: отсутствует lessonType!`)
+        console.error('Не удалось сохранить тип для gradebook: отсутствует lessonType!')
         return
     }
 
     const lessonType = await updateLessonType(lesson.gradebook.lessonType.toString())
 
     if (!lessonType) {
-        console.error(`Не удалось сохранить lessonType!`)
+        console.error('Не удалось сохранить lessonType!')
         return
     }
 

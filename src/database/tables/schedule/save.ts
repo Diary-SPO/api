@@ -17,7 +17,7 @@ export const saveSchedule = async (
     const groupInfo = await getGroupInfo(groupId)
 
     if (!groupInfo || !groupInfo?.spoId) {
-        console.error(`Ошибка получения/сохранения группы во время сохранения расписания в базе!`)
+        console.error('Ошибка получения/сохранения группы во время сохранения расписания в базе!')
         return
     }
 
@@ -25,7 +25,7 @@ export const saveSchedule = async (
     const teacher: DBTeacher = await saveTeacher(schedule.timetable.teacher, groupInfo.spoId)
 
     if (!teacher || ! teacher?.id) {
-        console.error(`Ошибка сохранения/получения учителя при внесении занятия в базу!`)
+        console.error('Ошибка сохранения/получения учителя при внесении занятия в базу!')
         return
     }
 

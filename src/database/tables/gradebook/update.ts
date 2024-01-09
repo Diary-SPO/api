@@ -22,14 +22,14 @@ export const updateGradebook = async (
 
         // Повторяется в gradebook/save. Нужно вынести
         if (!lesson.gradebook?.lessonType) {
-            console.error(`Не удалось сохранить тип для gradebook при обновлении: отсутствует lessonType!`)
+            console.error('Не удалось сохранить тип для gradebook при обновлении: отсутствует lessonType!')
             return
         }
 
         const lessonType = await updateLessonType(lesson.gradebook.lessonType.toString())
 
         if (!lessonType) {
-            console.error(`Не удалось сохранить lessonType!`)
+            console.error('Не удалось сохранить lessonType!')
             return
         }
 

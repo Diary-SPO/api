@@ -8,7 +8,7 @@ export const updateSchedule = async (schedule: DBSchedule): Promise<DBSchedule |
 
     // Проверяем входные параметры
     if (schedule?.id) {
-        console.error(`Хоть тип DBSchedule и допускает свойство id, но оно не должно быть передано при сохранении или обновлении!`)
+        console.error('Хоть тип DBSchedule и допускает свойство id, но оно не должно быть передано при сохранении или обновлении!')
         return
     }
 

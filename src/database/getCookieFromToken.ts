@@ -99,7 +99,8 @@ const taskScheduler = async (
     }
 
     let newNearestExpiringToken = Number.MAX_VALUE
-    Object.keys(cacheTokensCookie).forEach((token) => {
+    // ВОТ ТУТ ПРОВЕРИТЬ ИТЕРАЦИЮ, ПЕРЕДЕЛАЛ !
+    for(const token of cacheTokensCookie) {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
         delete cacheTokensCookie[token]
@@ -112,7 +113,7 @@ const taskScheduler = async (
       ) {
         newNearestExpiringToken = currAddedSeconds
       }
-    })
+    }
 
     nearestExpiringToken = newNearestExpiringToken
   }
