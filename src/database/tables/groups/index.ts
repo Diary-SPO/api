@@ -1,1 +1,1 @@
-export {getGroupInfo} from './get'
+export { getGroupInfo } from './get'

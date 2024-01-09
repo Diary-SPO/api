@@ -1,2 +1,2 @@
-export {updateGradebook} from './update'
-export {saveGradebook} from './save'
+export { updateGradebook } from './update'
+export { saveGradebook } from './save'

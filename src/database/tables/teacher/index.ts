@@ -1,1 +1,1 @@
-export {saveTeacher} from './save'
+export { saveTeacher } from './save'

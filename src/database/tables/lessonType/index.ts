@@ -1,1 +1,1 @@
-export {updateLessonType} from './updateLessonType'
+export { updateLessonType } from './updateLessonType'

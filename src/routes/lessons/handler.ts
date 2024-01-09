@@ -2,7 +2,7 @@ import type { Day } from '@diary-spo/shared'
 import { IContext } from '@types'
 import { adjustEndDate, formatDate } from '@utils'
 import { getCookieFromToken } from 'src/database/getCookieFromToken'
-import {getLessons as getLessonsFromDB} from "../../database/lessons";
+import { getLessons as getLessonsFromDB } from '../../database/lessons'
 
 const getLessons = async ({
   request,
@@ -23,7 +23,12 @@ const getLessons = async ({
 
   console.log(`${response.status} ${path}`)*/
 
-  const response = getLessonsFromDB(formattedStartDate, formattedEndDate, id, secret)
+  const response = getLessonsFromDB(
+    formattedStartDate,
+    formattedEndDate,
+    id,
+    secret
+  )
 
   set.status = 200
   return response

@@ -2,7 +2,7 @@ export const getGitCommitHash = async (): Promise<string | null> => {
   let stdout
   try {
     // Крутая деструкция объекта
-    ({stdout} = Bun.spawnSync({
+    ;({ stdout } = Bun.spawnSync({
       cmd: ['git', 'rev-parse', 'HEAD'],
       stdout: 'pipe'
     }))
