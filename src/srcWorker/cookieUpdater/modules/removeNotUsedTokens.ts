@@ -13,7 +13,7 @@ export const removeNotUsedTokens = async (): Promise<void> => {
   }>(client)
     .from('auth')
     .where(
-      `"lastUsedDate" > '${formatDate(
+      `"lastUsedDate" < '${formatDate(
         maxDateInactive(MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS).toISOString()
       )}'`
     )
