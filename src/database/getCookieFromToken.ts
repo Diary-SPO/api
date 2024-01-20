@@ -24,10 +24,6 @@ const maxElementsFromCache = 1000 // Максимум токенов, храня
  * @returns {string} cookie
  */
 const getCookieFromToken = async (token: string): Promise<string> => {
-  if (token.length < 16) {
-    throw new Error('The token cannot be shorter than 16 characters')
-  }
-
   const getCacheFromCookie = cacheGetter(token)
 
   if (getCacheFromCookie) {

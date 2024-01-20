@@ -65,6 +65,7 @@ export const registration = async (
     }
 
     // TODO: add ENCRYPT_KEY
+    // FIXME: review this
     const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
@@ -150,8 +151,15 @@ export const registration = async (
       await userDiaryQueryBuilder.update(regData)
     }
 
+    const token = await generateToken(regData.id)
+
+    if (!token) {
+      error('No token found!')
+      return null
+    }
+
     // Генерируем токен
-    regData.token = await generateToken(regData.id)
+    regData.token = token
 
     // Убираем все "приватные" поля из ответа
     return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)

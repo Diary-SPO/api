@@ -13,6 +13,6 @@ export const HeadersWithCookie = (cookie: string): Headers => ({
 
 export const headersSchema = {
   headers: t.Object({
-    secret: t.String()
+    secret: t.String({ minLength: 16 })
   })
 }
