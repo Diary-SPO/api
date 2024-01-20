@@ -41,7 +41,7 @@ export const registration = async (
       )
     })
 
-    if (authData) return authData ?? null
+    return authData
   }
   if (typeof res === 'number') throw new Error('Invalid username or password')
 
@@ -109,6 +109,8 @@ export const registration = async (
       SPORecord.update({...regSPO})
     }
 
+    regSPO.id = SPORecord.dataValues.id
+
     // Определяем группу
     const [groupRecord, groupCreated] = await GroupsModel().findOrCreate({
       where: {
@@ -126,6 +128,8 @@ export const registration = async (
         spoId: SPORecord.dataValues.id
       })
     }
+
+    regData.groupId = groupRecord.dataValues.id
 
     // Определяем пользователя
     const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel().findOrCreate({

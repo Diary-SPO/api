@@ -1,4 +1,5 @@
 import { SPOModel } from './SPO'
+import { AuthModel } from './auth'
 import { DiaryUserModel } from './diaryUser'
 import { GroupsModel } from './groups'
 
@@ -23,4 +24,12 @@ GroupsModel().hasMany(DiaryUserModel(), {
 })
 DiaryUserModel().belongsTo(GroupsModel(), {
     foreignKey: 'groupId'
+})
+
+// DiaryUser <--->> Auth
+DiaryUserModel().hasMany(AuthModel(), {
+    foreignKey: 'id'
+})
+AuthModel().belongsTo(DiaryUserModel(), {
+    foreignKey: 'idDiaryUser'
 })

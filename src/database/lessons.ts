@@ -6,6 +6,7 @@ import { getDiaryUser } from './tables/diaryUser'
 import { saveSchedule } from './tables/schedule'
 import { removeScheduleForList } from './tables/schedule/remove'
 
+/*
 const save = async (days: Day[], userId: number): Promise<void> => {
   const userInfo: DiaryUser | null = await getDiaryUser(userId)
 
@@ -62,6 +63,7 @@ const save = async (days: Day[], userId: number): Promise<void> => {
     }
   }
 }
+*/
 
 export const getLessons = async (
   startDate: string,
@@ -84,8 +86,8 @@ export const getLessons = async (
 
   // Сохраняем и отдаём
   const days: Day[] = await response.json()
-  save(days, id).catch((err) =>
+  /*save(days, id).catch((err) =>
     console.error(`Ошибка сохранения расписания: ${err}`)
-  )
+  )*/
   return days
 }

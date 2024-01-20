@@ -28,7 +28,7 @@ export const offlineAuth = async (
   const diaryUserRecord = await DiaryUserModel().findOne({
     where: {
       login,
-      //password
+      password: encrypt(password, ENCRYPT_KEY)
     },
     include: {
       model: GroupsModel(),
@@ -44,15 +44,18 @@ export const offlineAuth = async (
     throw new Error('User not found or incorrect password!')
   }
 
-  console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)
-  return null
+  //console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)
+
+  const diaryUserData = diaryUserRecord.dataValues
+  const groupData = diaryUserData.group.dataValues
+  const spoData = groupData.SPO.dataValues
 
   // Если пользователь найден, генерируем токен и отдаём
-  //diaryUserQueryBuilder.token = await generateToken(diaryUserQueryBuilder.id)
+  diaryUserData.token = await generateToken(diaryUserData.id)
 
-  /*return ResponseLoginFromDiaryUser(
-    diaryUserQueryBuilder,
-    spoGetQueryBuilder,
-    groupGetQueryBuilder
-  )*/
+  return ResponseLoginFromDiaryUser(
+    diaryUserData,
+    groupData,
+    spoData
+  )
 }

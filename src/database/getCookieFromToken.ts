@@ -1,9 +1,6 @@
-import { ENCRYPT_KEY } from '@config'
-import { client } from '@db'
-import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
-import { protectInjection } from 'src/utils/protectInjection'
+import { AuthModel, DiaryUserModel } from './models'
 
 type CacheTokensCookie = Record<
   string,
@@ -39,7 +36,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  const getCookieQueryBuilder =
+  /*const getCookieQueryBuilder =
     await createQueryBuilder<CookieInfoFromDatabase>(client)
       .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
       .from(
@@ -55,9 +52,31 @@ const getCookieFromToken = async (token: string): Promise<string> => {
   getCookieQueryBuilder.cookie = decrypt(
     getCookieQueryBuilder.cookie,
     ENCRYPT_KEY
-  )
+  )*/
 
-  taskScheduler(getCookieQueryBuilder) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
+  const DiaryUserAuth = await AuthModel().findOne({
+    where: {
+      token
+    },
+    include: {
+      model: DiaryUserModel(),
+      required: true
+    }
+  })
+
+  if (!DiaryUserAuth) {
+    throw new Error('Token not found!')
+  }
+
+  const authData: CookieInfoFromDatabase = {
+    id: DiaryUserAuth.dataValues.id,
+    idDiaryUser: DiaryUserAuth.dataValues.diaryUser.id,
+    token: DiaryUserAuth.dataValues.token,
+    lastUsedDate: DiaryUserAuth.dataValues.lastUsedDate,
+    cookie: DiaryUserAuth.dataValues.diaryUser.cookie
+  }
+
+  taskScheduler(authData) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
     .catch((err) => {
       console.log(err.toString())
     })
@@ -67,7 +86,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       console.log(err.toString())
     })
 
-  return getCookieQueryBuilder.cookie
+  return authData.cookie
 }
 
 /**
@@ -134,13 +153,22 @@ const updaterDateFromToken = async (
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
+  /*const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
     .from('auth')
     .where(`token = '${token}'`)
-    .update({ lastUsedDate: currDateFormatted })
+    .update({ lastUsedDate: currDateFormatted })*/
+  const updateToken = await AuthModel().update({
+    lastUsedDate: currDateFormatted
+  },
+  {
+    where: {
+      token
+    },
+    returning: true
+  })
 
   // Если смогли обновить, то сохраняем новую дату
-  if (updateLastDateFromTokenQueryBuilder) {
+  if (updateToken) {
     saveData.lastUsedDate = currDateFormatted
   }
 }
