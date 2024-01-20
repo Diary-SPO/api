@@ -2,7 +2,7 @@ import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
-import { formatDate } from '@utils'
+import { error, formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 
 type TokenType = {
@@ -44,7 +44,8 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       .first()
 
   if (!getCookieQueryBuilder) {
-    throw new Error('Token not found!')
+    error('Token not found!')
+    return ''
   }
 
   getCookieQueryBuilder.cookie = decrypt(

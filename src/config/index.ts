@@ -1,5 +1,5 @@
 import fs from 'fs'
-import PARAMS_INIT from './params'
+import { PARAMS_INIT } from './params'
 import checkEnvVariables from './utils'
 
 if (!fs.existsSync('.env')) {
@@ -12,7 +12,6 @@ checkEnvVariables(PARAMS_INIT)
 
 export const {
   SERVER_URL,
-  PORT,
   DATABASE_HOST,
   DATABASE_PORT,
   DATABASE_NAME,

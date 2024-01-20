@@ -1,11 +1,8 @@
-import type { NumericParams, ParamsInit, StringParams } from './types'
+import type { ParamsInit } from './types'
 
-const NUMERIC_PARAMS: NumericParams = {
+export const PARAMS_INIT: ParamsInit = {
   PORT: 3003,
-  DATABASE_PORT: 5432
-}
-
-const STRING_PARAMS: StringParams = {
+  DATABASE_PORT: 5432,
   SERVER_URL: '',
   DATABASE_HOST: '',
   DATABASE_NAME: '',
@@ -13,7 +10,3 @@ const STRING_PARAMS: StringParams = {
   DATABASE_PASSWORD: '',
   ENCRYPT_KEY: '' // 32 символа
 }
-
-const PARAMS_INIT: ParamsInit = { ...NUMERIC_PARAMS, ...STRING_PARAMS }
-
-export default PARAMS_INIT
