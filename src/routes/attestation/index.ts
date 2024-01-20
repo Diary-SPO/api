@@ -1,4 +1,3 @@
-import { handleErrors } from '@utils'
 import { Elysia, t } from 'elysia'
 import getAttestation from './handler'
 
@@ -10,7 +9,6 @@ const schema = {
 
 const attestation = new Elysia().guard(schema, (app) =>
   app.get('/attestation/:id', getAttestation, {
-    afterHandle: handleErrors,
     detail: {
       tags: ['Student']
     }

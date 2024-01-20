@@ -1,4 +1,3 @@
-import { handleErrors } from '@utils'
 import { Elysia, t } from 'elysia'
 import getLessons from './handler'
 
@@ -12,7 +11,6 @@ const schema = {
 
 const lessons = new Elysia().guard(schema, (app) =>
   app.get('/lessons/:id/:startDate/:endDate', getLessons, {
-    afterHandle: handleErrors,
     detail: {
       tags: ['Student']
     }

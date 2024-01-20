@@ -44,7 +44,10 @@ export const registration = async (
     }
   }
 
-  if (typeof res === 'number') throw new Error('Invalid username or password')
+  if (typeof res === 'number') {
+    error('Invalid username or password')
+    return null
+  }
 
   try {
     const tenant = res.data.tenants[res.data.tenantName]
@@ -64,7 +67,6 @@ export const registration = async (
       return null
     }
 
-    // TODO: add ENCRYPT_KEY
     // FIXME: review this
     const regData: DiaryUser = {
       id: student.id,
@@ -76,7 +78,7 @@ export const registration = async (
       firstName: detailedInfo.data.person.firstName,
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
-      cookie: encrypt(cookie ?? '', ENCRYPT_KEY),
+      cookie: encrypt(cookie, ENCRYPT_KEY),
       cookieLastDateUpdate: formatDate(new Date().toISOString())
     }
 
@@ -118,10 +120,12 @@ export const registration = async (
 
     if (!existingSPO) {
       const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
+      
       if (!res) {
         error('Error insert SPO!')
         return null
       }
+      
       regSPO.id = res.id
     } else {
       await SPOQueryBuilder.update(regSPO)
@@ -129,12 +133,15 @@ export const registration = async (
     }
 
     regGroup.spoId = regSPO.id
+    
     if (!existingGroup) {
       const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
+    
       if (!res) {
         error('Error insert group')
         return null
       }
+    
       regGroup.id = res.id
     } else {
       await groupQueryBuilder.update(regGroup)

@@ -1,4 +1,4 @@
-import { headersSchema } from '@utils'
+import { handleErrors, headersSchema } from '@utils'
 import { Elysia } from 'elysia'
 import ads from './ads'
 import attestation from './attestation'
@@ -18,6 +18,7 @@ const routes = new Elysia()
       .use(attestation)
       .use(ads)
   )
+  .onAfterHandle(handleErrors)
   .use(hello)
 
 export default routes
