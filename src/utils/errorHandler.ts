@@ -2,6 +2,7 @@ import { isIContext } from '@utils'
 
 let i = 0
 export const handleErrors = (context: unknown): void => {
+  console.log(context)
   if (!isIContext(context)) {
     console.error('No context')
     return

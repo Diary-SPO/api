@@ -18,6 +18,16 @@ let nearestExpiringToken = null // Ближайшая старая запись 
 const maxTokenLifeTimeCache = 60 * 5 // 5 минут
 const maxElementsFromCache = 1000 // Максимум токенов, хранящихся в памяти
 
+class ApiError extends Error {
+  code: number
+
+  constructor(message: string, code: number) {
+    super(message)
+    this.code = code
+    Object.setPrototypeOf(this, ApiError.prototype)
+  }
+}
+
 /**
  * Возвращает куку при предъявлении токена
  * @param token
@@ -31,6 +41,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       .catch((err) => {
         console.log(err.toString())
       })
+
     return getCacheFromCookie
   }
 
@@ -44,8 +55,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       .first()
 
   if (!getCookieQueryBuilder) {
-    error('Token not found!')
-    return ''
+    throw new ApiError('Token not found!', 401)
   }
 
   getCookieQueryBuilder.cookie = decrypt(
@@ -121,7 +131,7 @@ const updaterDateFromToken = async (
   const currDateFormatted = formatDate(new Date().toISOString())
   const saveData = typeof token !== 'string' ? token : cacheTokensCookie[token]
 
-  if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
+  if (formatDate(saveData.lastUsedDate) === currDateFormatted) {
     return
   }
 
