@@ -10,7 +10,7 @@ import type {
   SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { formatDate } from '@utils'
+import { error, formatDate } from '@utils'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
@@ -25,7 +25,7 @@ import { generateToken } from './generateToken'
 export const registration = async (
   login: string,
   password: string
-): Promise<DiaryUser | ResponseLogin | null> => {
+): Promise<ResponseLogin | null> => {
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
@@ -39,8 +39,11 @@ export const registration = async (
       )
     })
 
-    if (authData) return authData ?? null
+    if (authData) {
+      return authData
+    }
   }
+
   if (typeof res === 'number') throw new Error('Invalid username or password')
 
   try {
@@ -57,7 +60,8 @@ export const registration = async (
     })
 
     if (typeof detailedInfo === 'number') {
-      throw new Error('Error get detailed info!')
+      error('Error get detailed info!')
+      return null
     }
 
     // TODO: add ENCRYPT_KEY
@@ -113,7 +117,10 @@ export const registration = async (
 
     if (!existingSPO) {
       const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
-      if (!res) throw new Error('Error insert SPO')
+      if (!res) {
+        error('Error insert SPO!')
+        return null
+      }
       regSPO.id = res.id
     } else {
       await SPOQueryBuilder.update(regSPO)
@@ -123,7 +130,10 @@ export const registration = async (
     regGroup.spoId = regSPO.id
     if (!existingGroup) {
       const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
-      if (!res) throw new Error('Error insert group')
+      if (!res) {
+        error('Error insert group')
+        return null
+      }
       regGroup.id = res.id
     } else {
       await groupQueryBuilder.update(regGroup)
@@ -146,7 +156,7 @@ export const registration = async (
     // Убираем все "приватные" поля из ответа
     return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)
   } catch (err) {
-    console.error(err)
+    error(err)
     throw new Error('Ошибка на этапе работы с базой: ')
   }
 }

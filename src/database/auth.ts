@@ -8,6 +8,7 @@ import {
   type SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
+import { error } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
 
@@ -35,7 +36,8 @@ export const offlineAuth = async (
     .first()
 
   if (!diaryUserQueryBuilder) {
-    throw new Error('User not found or incorrect password!')
+    error('User not found or incorrect password!')
+    return null
   }
 
   // Извлекаем организацию
@@ -47,7 +49,8 @@ export const offlineAuth = async (
     )?.[0] ?? null
 
   if (!spoGetQueryBuilder) {
-    throw new Error('SPO for current user not found!')
+    error('SPO for current user not found!')
+    return null
   }
 
   // Извлекаем группу
@@ -58,11 +61,19 @@ export const offlineAuth = async (
     .first()
 
   if (!groupGetQueryBuilder) {
-    throw new Error('Group for current user not found!')
+    error('Group for current user not found!')
+    return null
+  }
+
+  const token = await generateToken(diaryUserQueryBuilder.id)
+
+  if (!token) {
+    error('No token found!')
+    return null
   }
 
   // Если пользователь найден, генерируем токен и отдаём
-  diaryUserQueryBuilder.token = await generateToken(diaryUserQueryBuilder.id)
+  diaryUserQueryBuilder.token = token
 
   return ResponseLoginFromDiaryUser(
     diaryUserQueryBuilder,

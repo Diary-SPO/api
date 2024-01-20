@@ -23,20 +23,3 @@ export const calculateDifferenceInDays = (
   const endTimestamp = new Date(end).getTime()
   return (endTimestamp - startTimestamp) / DAY_IN_MS
 }
-
-/**
- * Функция для корректировки конечной даты, если разница в днях больше 14.
- * @param {string} start - Начальная дата.
- * @param {string} end - Конечная дата.
- * @returns {string} - Откорректированная конечная дата.
- */
-export const adjustEndDate = (start: string, end: string): string => {
-  const differenceInDays = calculateDifferenceInDays(start, end)
-
-  if (differenceInDays > 14) {
-    const newEndDate = new Date(new Date(start).getTime() + 14 * DAY_IN_MS)
-    return formatDate(newEndDate.toISOString())
-  }
-
-  return formatDate(end)
-}

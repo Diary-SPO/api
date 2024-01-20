@@ -1,7 +1,7 @@
 import { client } from '@db'
 import createQueryBuilder from '@diary-spo/sql'
 import { Auth } from '@diary-spo/types'
-import { formatDate } from '@utils'
+import { error, formatDate } from '@utils'
 import { suid } from 'rand-token'
 
 /**
@@ -10,7 +10,9 @@ import { suid } from 'rand-token'
  * @param idDiaryUser
  * @returns {string} token
  */
-export const generateToken = async (idDiaryUser: number): Promise<string> => {
+export const generateToken = async (
+  idDiaryUser: number
+): Promise<string | null> => {
   // Генерируем токен
   const token = suid(16)
 
@@ -27,7 +29,8 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
     )?.[0] ?? null
 
   if (!tokenQueryBuilder) {
-    throw new Error('Error insert token!')
+    error('Error insert token!')
+    return null
   }
 
   return token

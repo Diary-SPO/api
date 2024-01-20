@@ -7,14 +7,30 @@ export const handleErrors = (context: unknown): void => {
     return
   }
 
-  if (context.response.errors) {
+  const response = context.response
+  console.error(`[ERROR] #${++i}: ${String(context.response)}`)
+  console.error('[path]', context.path)
+
+  if (typeof response === 'number') {
+    context.set.status = 401
+    context.response = {
+      errors: 'Auth failed',
+      title: 'Where is your access token?'
+    }
+
+    console.error('[response]', context.response)
+    return
+  }
+
+  if (response.errors) {
     context.set.status = 400
 
-    console.error(`[ERROR] #${++i}: ${context.response.title as string}`)
-    console.error(context.response)
     context.response = {
-      errors: context.response.errors,
-      title: context.response.title
+      errors: response.errors,
+      title: response.title
     }
+
+    console.error('[response]', context.response)
+    return
   }
 }

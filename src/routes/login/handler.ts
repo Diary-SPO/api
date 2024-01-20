@@ -1,4 +1,4 @@
-import type { DatabaseResponseLogin, ResponseLogin } from '@diary-spo/types'
+import type { ResponseLogin } from '@diary-spo/types'
 import type { Context } from 'elysia'
 import Hashes from 'jshashes'
 import { registration } from '../../database/registration'
@@ -14,14 +14,7 @@ interface AuthContext extends Context {
 const postAuth = async ({
   set,
   body
-}: AuthContext): Promise<
-  DatabaseResponseLogin | ResponseLogin | null | string
-> => {
-  // Захешировать пароль ? (Для отладки, потом можно вырезать)
-  if (!body?.isHash ?? true) {
-    body.password = new Hashes.SHA256().b64(body.password)
-  }
-
+}: AuthContext): Promise<ResponseLogin | null | string> => {
   const { login, password } = body
 
   const data = await registration(login, password).catch(
@@ -31,7 +24,10 @@ const postAuth = async ({
     }
   )
 
-  console.log(`/login ${set.status}`)
+  if (!data) {
+    set.status = 500
+    return null
+  }
 
   return data
 }

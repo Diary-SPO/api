@@ -5,14 +5,13 @@ import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 
-type CacheTokensCookie = Record<
-  string,
-  {
-    cookie: string
-    lastUsedDate: string
-    addedSeconds: number // количество секунд с добавления
-  }
->
+type TokenType = {
+  cookie: string
+  lastUsedDate: string
+  addedSeconds: number // количество секунд с добавления
+}
+
+type CacheTokensCookie = Record<string, TokenType>
 
 const cacheTokensCookie: CacheTokensCookie = {}
 let nearestExpiringToken = null // Ближайшая старая запись в кеше. Бережём ядро, не занимаем ненужными операциями
@@ -49,7 +48,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       .first()
 
   if (!getCookieQueryBuilder) {
-    throw new Error('Token not finded!')
+    throw new Error('Token not found!')
   }
 
   getCookieQueryBuilder.cookie = decrypt(
@@ -123,10 +122,7 @@ const updaterDateFromToken = async (
 ): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
-  const saveData =
-    typeof token !== 'string'
-      ? token
-      : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
+  const saveData = typeof token !== 'string' ? token : cacheTokensCookie[token]
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return

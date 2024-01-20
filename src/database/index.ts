@@ -5,6 +5,7 @@ import {
   DATABASE_PORT,
   DATABASE_USERNAME
 } from '@config'
+import { error } from '@utils'
 import { Client } from 'pg'
 import { exit } from 'process'
 
@@ -18,7 +19,7 @@ const client = new Client({
 
 client.connect((err) => {
   if (err) {
-    console.log('Ошибка подключения к Базе Данных: ', err)
+    error('Ошибка подключения к Базе Данных: ', err)
     exit()
   }
 })
