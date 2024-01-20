@@ -10,8 +10,7 @@ import type {
   SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { error, formatDate } from '@utils'
-import { cookieExtractor } from 'src/utils/cookieExtractor'
+import { cookieExtractor, error, formatDate } from '@utils'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
 
@@ -120,12 +119,12 @@ export const registration = async (
 
     if (!existingSPO) {
       const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
-      
+
       if (!res) {
         error('Error insert SPO!')
         return null
       }
-      
+
       regSPO.id = res.id
     } else {
       await SPOQueryBuilder.update(regSPO)
@@ -133,15 +132,15 @@ export const registration = async (
     }
 
     regGroup.spoId = regSPO.id
-    
+
     if (!existingGroup) {
       const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
-    
+
       if (!res) {
         error('Error insert group')
         return null
       }
-    
+
       regGroup.id = res.id
     } else {
       await groupQueryBuilder.update(regGroup)
