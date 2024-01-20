@@ -4,6 +4,7 @@ import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { error, formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
+import { ApiError } from '../ApiError'
 
 type TokenType = {
   cookie: string
@@ -44,8 +45,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
       .first()
 
   if (!getCookieQueryBuilder) {
-    error('Token not found!')
-    return ''
+    throw new ApiError('Token not found!', 500)
   }
 
   getCookieQueryBuilder.cookie = decrypt(

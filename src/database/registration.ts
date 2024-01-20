@@ -11,6 +11,7 @@ import type {
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { cookieExtractor, error, formatDate } from '@utils'
+import { ApiError } from '../ApiError'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
 
@@ -44,8 +45,7 @@ export const registration = async (
   }
 
   if (typeof res === 'number') {
-    error('Invalid username or password')
-    return null
+    throw new ApiError('AUTH_ERROR', 401)
   }
 
   try {

@@ -17,12 +17,7 @@ const postAuth = async ({
 }: AuthContext): Promise<ResponseLogin | null | string> => {
   const { login, password } = body
 
-  const data = await registration(login, password).catch(
-    (err): ResponseLogin | string => {
-      set.status = 401
-      return `Error working authorization. Detailed info: "${err}"`
-    }
-  )
+  const data = await registration(login, password)
 
   if (!data) {
     set.status = 500

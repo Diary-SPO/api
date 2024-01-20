@@ -1,5 +1,3 @@
-export * from './errorHandler'
-export * from './isIContext'
 export * from './helpers'
 export * from './records'
 export * from './formatted'
