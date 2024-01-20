@@ -1,7 +1,6 @@
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { client } from '@db'
 import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
+import { fetcher } from '@diary-spo/sql'
 import type {
   DiaryUser,
   Group,
@@ -14,6 +13,9 @@ import { formatDate } from '@utils'
 import { cookieExtractor } from 'src/utils/cookieExtractor'
 import { offlineAuth } from './auth'
 import { generateToken } from './generateToken'
+import { SPOModel } from './models'
+import { GroupsModel } from './models'
+import { DiaryUserModel } from './models'
 
 /**
  * Регистрирует/авторизирует в оригинальном дневнике с сохранением данных в базе данных.
@@ -60,18 +62,17 @@ export const registration = async (
       throw new Error('Error get detailed info!')
     }
 
-    // TODO: add ENCRYPT_KEY
     const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
-      password: encrypt(password ?? '', ENCRYPT_KEY),
+      password,
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,
       firstName: detailedInfo.data.person.firstName,
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
-      cookie: encrypt(cookie ?? '', ENCRYPT_KEY),
+      cookie,
       cookieLastDateUpdate: formatDate(new Date().toISOString())
     }
 
@@ -92,52 +93,56 @@ export const registration = async (
       diaryGroupId: student.groupId
     }
 
-    const groupQueryBuilder = createQueryBuilder<Group>(client)
-    const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
-    const SPOQueryBuilder = createQueryBuilder<SPO>(client)
+    // Определяем СПО
+    const [SPORecord, SPOCreated] = await SPOModel().findOrCreate(
+      {
+        where: {
+          abbreviation: regSPO.abbreviation
+        },
+        defaults: {
+          ...regSPO
+        }
+      }
+    )
 
-    const existingGroup = await groupQueryBuilder
-      .from('groups')
-      .select('*')
-      .where(`"diaryGroupId" = ${regGroup.diaryGroupId}`)
-      .first()
-    const existingDiaryUser = await userDiaryQueryBuilder
-      .from('diaryUser')
-      .select('*')
-      .where(`id = ${regData.id}`)
-      .first()
-    const existingSPO = await SPOQueryBuilder.from('SPO')
-      .select('*')
-      .where(`abbreviation = '${regSPO.abbreviation}'`)
-      .first()
-
-    if (!existingSPO) {
-      const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
-      if (!res) throw new Error('Error insert SPO')
-      regSPO.id = res.id
-    } else {
-      await SPOQueryBuilder.update(regSPO)
-      regSPO.id = existingSPO.id
+    if (!SPOCreated) {
+      SPORecord.update({...regSPO})
     }
 
-    regGroup.spoId = regSPO.id
-    if (!existingGroup) {
-      const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
-      if (!res) throw new Error('Error insert group')
-      regGroup.id = res.id
-    } else {
-      await groupQueryBuilder.update(regGroup)
-      regGroup.id = existingGroup.id
+    // Определяем группу
+    const [groupRecord, groupCreated] = await GroupsModel().findOrCreate({
+      where: {
+        diaryGroupId: regGroup.diaryGroupId
+      },
+      defaults: {
+        ...regGroup,
+        spoId: SPORecord.dataValues.id
+      }
+    })
+
+    if (!groupCreated) {
+      groupRecord.update({
+        ...regGroup,
+        spoId: SPORecord.dataValues.id
+      })
     }
 
-    // Если всё ок, вносим id группы в пользователя
-    regData.groupId = regGroup?.id ?? -1 // <- ???
+    // Определяем пользователя
+    const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel().findOrCreate({
+      where: {
+        id: regData.id
+      },
+      defaults: {
+        ...regData,
+        groupId: groupRecord.dataValues.id
+      }
+    })
 
-    // Дальше всё как обычно
-    if (!existingDiaryUser) {
-      await userDiaryQueryBuilder.insert(regData)
-    } else {
-      await userDiaryQueryBuilder.update(regData)
+    if (!diaryUserCreated) {
+      diaryUserRecord.update({
+        ...regData,
+        groupId: groupRecord.dataValues.id
+      })
     }
 
     // Генерируем токен

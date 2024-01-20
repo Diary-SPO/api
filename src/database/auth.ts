@@ -1,5 +1,4 @@
 import { ENCRYPT_KEY } from '@config'
-import { client } from '@db'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
 import {
   type DiaryUser,
@@ -10,6 +9,9 @@ import {
 import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
+import { DiaryUserModel } from './models'
+import { SPOModel } from './models'
+import { GroupsModel } from './models'
 
 /**
  * Оффлайн авторизация через базу данных.
@@ -23,50 +25,34 @@ export const offlineAuth = async (
   password: string
 ): Promise<ResponseLogin | null> => {
   // пробуем войти "оффлайн", если пользователь есть в базе (в случае, если упал основной дневник)
-  const diaryUserQueryBuilder = await createQueryBuilder<DiaryUser>(client)
-    .from('diaryUser')
-    .select('*')
-    .where(
-      `login = '${protectInjection(login)}' and password = '${encrypt(
-        password,
-        ENCRYPT_KEY
-      )}'`
-    )
-    .first()
+  const diaryUserRecord = await DiaryUserModel().findOne({
+    where: {
+      login,
+      //password
+    },
+    include: {
+      model: GroupsModel(),
+      required: true,
+      include: [{
+        model: SPOModel(),
+        required: true
+      }]
+    }
+  })
 
-  if (!diaryUserQueryBuilder) {
+  if (!diaryUserRecord) {
     throw new Error('User not found or incorrect password!')
   }
 
-  // Извлекаем организацию
-  const spoGetQueryBuilder =
-    (
-      await createQueryBuilder<SPO>(client).customQueryRun(
-        `SELECT * FROM "SPO"\nINNER JOIN groups ON groups."spoId" = "SPO".id\nWHERE groups.id = ${diaryUserQueryBuilder.groupId}\nLIMIT 1`
-      )
-    )?.[0] ?? null
-
-  if (!spoGetQueryBuilder) {
-    throw new Error('SPO for current user not found!')
-  }
-
-  // Извлекаем группу
-  const groupGetQueryBuilder = await createQueryBuilder<Group>(client)
-    .select('*')
-    .from('groups')
-    .where(`id = ${diaryUserQueryBuilder.groupId}`)
-    .first()
-
-  if (!groupGetQueryBuilder) {
-    throw new Error('Group for current user not found!')
-  }
+  console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)
+  return null
 
   // Если пользователь найден, генерируем токен и отдаём
-  diaryUserQueryBuilder.token = await generateToken(diaryUserQueryBuilder.id)
+  //diaryUserQueryBuilder.token = await generateToken(diaryUserQueryBuilder.id)
 
-  return ResponseLoginFromDiaryUser(
+  /*return ResponseLoginFromDiaryUser(
     diaryUserQueryBuilder,
     spoGetQueryBuilder,
     groupGetQueryBuilder
-  )
+  )*/
 }

@@ -5,22 +5,24 @@ import {
   DATABASE_PORT,
   DATABASE_USERNAME
 } from '@config'
-import { Client } from 'pg'
-import { exit } from 'process'
+import {exit} from 'process'
+import { Sequelize } from 'sequelize'
 
-const client = new Client({
+export const sequelize = new Sequelize({
+  database: DATABASE_NAME,
+  username: DATABASE_USERNAME,
+  password: DATABASE_PASSWORD,
   host: DATABASE_HOST,
   port: DATABASE_PORT,
-  database: DATABASE_NAME,
-  user: DATABASE_USERNAME,
-  password: DATABASE_PASSWORD
+  dialect: 'postgres'
 })
 
-client.connect((err) => {
-  if (err) {
-    console.log('Ошибка подключения к Базе Данных: ', err)
-    exit()
-  }
-})
+try {
+  await sequelize.authenticate()
+  console.log('Database: Connection succefully!')
+} catch (error) {
+  console.error('Unable to connect to the database:', error)
+  exit()
+}
 
-export { client }
+// !!! TODO: Сделать миграции !!!
