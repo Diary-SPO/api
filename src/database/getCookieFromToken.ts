@@ -36,24 +36,6 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  /*const getCookieQueryBuilder =
-    await createQueryBuilder<CookieInfoFromDatabase>(client)
-      .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
-      .from(
-        'auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser'
-      )
-      .where(`auth.token = '${protectInjection(token)}'`)
-      .first()
-
-  if (!getCookieQueryBuilder) {
-    throw new Error('Token not finded!')
-  }
-
-  getCookieQueryBuilder.cookie = decrypt(
-    getCookieQueryBuilder.cookie,
-    ENCRYPT_KEY
-  )*/
-
   const DiaryUserAuth = await AuthModel().findOne({
     where: {
       token
@@ -153,10 +135,6 @@ const updaterDateFromToken = async (
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  /*const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
-    .from('auth')
-    .where(`token = '${token}'`)
-    .update({ lastUsedDate: currDateFormatted })*/
   const updateToken = await AuthModel().update({
     lastUsedDate: currDateFormatted
   },
