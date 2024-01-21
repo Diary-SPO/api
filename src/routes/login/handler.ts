@@ -39,7 +39,10 @@ const postAuth = async ({
         const authData = await offlineAuth(login, password)
 
         if (!authData) {
-          throw new ApiError('Offline auth error', API_CODES.INTERNAL_SERVER_ERROR)
+          throw new ApiError(
+            'Offline auth error',
+            API_CODES.INTERNAL_SERVER_ERROR
+          )
         }
 
         return authData

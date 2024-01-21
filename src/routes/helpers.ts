@@ -1,6 +1,6 @@
+import { API_CODES } from '@api'
 import { error as errorLog } from '@utils'
 import { ErrorHandler } from 'elysia'
-import { API_CODES } from '@api'
 
 interface ErrorResponse {
   code: number

@@ -35,7 +35,10 @@ export const offlineAuth = async (
   })
 
   if (!diaryUserRecord) {
-    throw new ApiError('User not found or incorrect password!', API_CODES.NOT_FOUND)
+    throw new ApiError(
+      'User not found or incorrect password!',
+      API_CODES.NOT_FOUND
+    )
   }
 
   //console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)

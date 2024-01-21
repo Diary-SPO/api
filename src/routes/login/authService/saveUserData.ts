@@ -31,7 +31,10 @@ export const saveUserData = async (
     })
 
     if (typeof detailedInfo === 'number') {
-      throw new ApiError('Error get detailed info!', API_CODES.INTERNAL_SERVER_ERROR)
+      throw new ApiError(
+        'Error get detailed info!',
+        API_CODES.INTERNAL_SERVER_ERROR
+      )
     }
 
     const regData: DiaryUser = {
