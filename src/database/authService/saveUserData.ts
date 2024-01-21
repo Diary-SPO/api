@@ -1,59 +1,30 @@
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { client } from '@db'
-import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { encrypt, fetcher } from '@diary-spo/sql'
-import type {
-  DiaryUser,
-  Group,
-  PersonResponse,
-  ResponseLogin,
-  SPO
-} from '@diary-spo/types'
+import type { UserData } from '@diary-spo/shared'
+import createQueryBuilder, { encrypt } from '@diary-spo/sql'
+import type { DiaryUser, Group, PersonResponse, SPO } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { cookieExtractor, error, formatDate } from '@utils'
-import { ApiError } from '../ApiError'
-import { offlineAuth } from './auth'
-import { generateToken } from './generateToken'
+import {
+  ApiResponse,
+  cookieExtractor,
+  error,
+  fetcher,
+  formatDate
+} from '@utils'
+import { ApiError } from '../../ApiError'
+import { generateToken } from '../generateToken'
 
-/**
- * Регистрирует/авторизирует в оригинальном дневнике с сохранением данных в базе данных.
- * Может сохранять и обновлять данные о пользователе/группе/образовательной организации в случае успешной авторизации
- * @param login
- * @param password
- * @returns {ResponseLogin}
- */
-export const registration = async (
+export const saveUserData = async (
+  parsedRes: ApiResponse<UserData>,
   login: string,
   password: string
-): Promise<ResponseLogin | null> => {
-  const res = await fetcher<UserData>({
-    url: `${SERVER_URL}/services/security/login`,
-    method: 'POST',
-    body: JSON.stringify({ login, password, isRemember: true })
-  })
-
-  if (Number(res) > 401) {
-    const authData = await offlineAuth(login, password).catch((err) => {
-      throw new Error(
-        `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${err}`
-      )
-    })
-
-    if (authData) {
-      return authData
-    }
-  }
-
-  if (typeof res === 'number') {
-    throw new ApiError('AUTH_ERROR', 401)
-  }
-
+) => {
   try {
-    const tenant = res.data.tenants[res.data.tenantName]
+    const tenant = parsedRes.data.tenants[parsedRes.data.tenantName]
     const student = tenant.studentRole.students[0]
     const SPO = tenant.settings.organization
 
-    const setCookieHeader = res.headers.get('Set-Cookie')
+    const setCookieHeader = parsedRes.headers.get('Set-Cookie')
     const cookie = cookieExtractor(setCookieHeader ?? '')
 
     const detailedInfo = await fetcher<PersonResponse>({
@@ -62,8 +33,7 @@ export const registration = async (
     })
 
     if (typeof detailedInfo === 'number') {
-      error('Error get detailed info!')
-      return null
+      throw new ApiError('Error get detailed info!', 500)
     }
 
     // FIXME: review this

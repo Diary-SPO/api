@@ -9,3 +9,5 @@ export class ApiError extends Error {
     Object.setPrototypeOf(this, ApiError.prototype)
   }
 }
+
+export class API_CODES {}

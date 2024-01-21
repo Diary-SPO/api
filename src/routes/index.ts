@@ -1,5 +1,5 @@
 import { headersSchema } from '@utils'
-import { Elysia } from 'elysia'
+import { Elysia, ErrorHandler, MergeSchema } from 'elysia'
 
 import { ApiError } from '../ApiError'
 import ads from './ads'
@@ -10,7 +10,14 @@ import login from './login'
 import organization from './organization'
 import performanceCurrent from './performance.current'
 
+interface ErrorResponse {
+  code: number
+  message: string
+  errors?: unknown[]
+}
+
 const routes = new Elysia()
+  /** Роуты с проверкой на наличие secret поля **/
   .guard(headersSchema, (app) =>
     app
       .use(organization)
@@ -19,18 +26,32 @@ const routes = new Elysia()
       .use(attestation)
       .use(ads)
   )
-  .onError(({ code, error }) => {
+  /** Роуты без проверки **/
+  .use(hello)
+  .use(login)
+  /** Обработка любых ошибок в кажом роуте **/
+  .onError(({ code, error }): ErrorResponse => {
+    console.error(code)
+    console.error(error.message)
     console.error('bbbb')
-    console.error(error)
-    if (error.code === 'NOT_FOUND') {
+
+    if (code === 'NOT_FOUND') {
       return {
         message: 'NOT_FOUND',
         code: 404
       }
     }
 
+    /** Обработка ошибки от ApiError **/
+    if (Number(code) === 401) {
+      return {
+        message: 'INVALID_DATA',
+        code: 401
+      }
+    }
+
     const formattedError = JSON.parse(error.message)
-    // TODO: refactor this
+
     if (code === 'VALIDATION') {
       return {
         message: code,
@@ -38,6 +59,7 @@ const routes = new Elysia()
         errors: formattedError.errors
       }
     }
+
     if (code === 'INTERNAL_SERVER_ERROR') {
       return {
         message: code,
@@ -50,7 +72,5 @@ const routes = new Elysia()
       code: 500
     }
   })
-  .use(hello)
-  .use(login)
 
 export default routes

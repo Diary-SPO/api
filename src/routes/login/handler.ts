@@ -1,9 +1,7 @@
 import type { ResponseLogin } from '@diary-spo/types'
-import type { Context } from 'elysia'
-import Hashes from 'jshashes'
-import { registration } from '../../database/registration'
+import { registration } from '../../database/authService'
 
-interface AuthContext extends Context {
+interface AuthContext {
   body: {
     login: string
     password: string
@@ -12,19 +10,11 @@ interface AuthContext extends Context {
 }
 
 const postAuth = async ({
-  set,
   body
 }: AuthContext): Promise<ResponseLogin | null | string> => {
   const { login, password } = body
 
-  const data = await registration(login, password)
-
-  if (!data) {
-    set.status = 500
-    return null
-  }
-
-  return data
+  return await registration(login, password)
 }
 
 export default postAuth

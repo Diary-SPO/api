@@ -2,7 +2,7 @@ import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
-import { error, formatDate } from '@utils'
+import { formatDate } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 import { ApiError } from '../ApiError'
 
@@ -24,7 +24,7 @@ const maxElementsFromCache = 1000 // Максимум токенов, храня
  * @param token
  * @returns {string} cookie
  */
-const getCookieFromToken = async (token: string): Promise<string> => {
+export const getCookieFromToken = async (token: string): Promise<string> => {
   const getCacheFromCookie = cacheGetter(token)
 
   if (getCacheFromCookie) {
@@ -152,5 +152,3 @@ const cacheGetter = (token: string): string | null => {
 
   return cacheCookie.cookie
 }
-
-export { getCookieFromToken }

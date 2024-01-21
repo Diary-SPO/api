@@ -8,7 +8,6 @@ import {
   type SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { error } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
 import { ApiError } from '../ApiError'
 import { generateToken } from './generateToken'
@@ -49,7 +48,6 @@ export const offlineAuth = async (
     )?.[0] ?? null
 
   if (!spoGetQueryBuilder) {
-    error('SPO for current user not found!')
     throw new ApiError('SPO for current user not found!', 500)
   }
 
@@ -61,14 +59,12 @@ export const offlineAuth = async (
     .first()
 
   if (!groupGetQueryBuilder) {
-    error('Group for current user not found!')
     throw new ApiError('Group for current user not found!', 500)
   }
 
   const token = await generateToken(diaryUserQueryBuilder.id)
 
   if (!token) {
-    error('No token found!')
     throw new ApiError('No token found!', 401)
   }
 
