@@ -1,7 +1,7 @@
+import { ApiError } from '@api'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { AuthModel, DiaryUserModel } from './models'
-import { ApiError } from '@api'
 
 type TokenType = {
   cookie: string
@@ -128,15 +128,17 @@ const updaterDateFromToken = async (
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  const updateToken = await AuthModel.update({
-    lastUsedDate: currDateFormatted
-  },
-  {
-    where: {
-      token
+  const updateToken = await AuthModel.update(
+    {
+      lastUsedDate: currDateFormatted
     },
-    returning: true
-  })
+    {
+      where: {
+        token
+      },
+      returning: true
+    }
+  )
 
   // Если смогли обновить, то сохраняем новую дату
   if (updateToken) {

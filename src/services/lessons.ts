@@ -1,3 +1,4 @@
+import { SERVER_URL } from '@config'
 import { Day } from '@diary-spo/shared'
 import { DiaryUser } from '@diary-spo/types'
 import { HeadersWithCookie } from '@utils'
@@ -5,7 +6,6 @@ import { DBSchedule } from '../types/databaseTypes'
 import { getDiaryUser } from './tables'
 import { saveSchedule } from './tables'
 import { removeScheduleForList } from './tables/schedule/remove'
-import { SERVER_URL } from '@config'
 
 /*
 const save = async (days: Day[], userId: number): Promise<void> => {

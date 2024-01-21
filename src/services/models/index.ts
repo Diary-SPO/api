@@ -12,24 +12,24 @@ export * from './auth'
 
 // SPO <--->> Groups
 SPOModel.hasMany(GroupsModel, {
-    foreignKey: 'id'
+  foreignKey: 'id'
 })
 GroupsModel.belongsTo(SPOModel, {
-    foreignKey: 'spoId'
+  foreignKey: 'spoId'
 })
 
 // Groups <--->> DaryUser
 GroupsModel.hasMany(DiaryUserModel, {
-    foreignKey: 'id'
+  foreignKey: 'id'
 })
 DiaryUserModel.belongsTo(GroupsModel, {
-    foreignKey: 'groupId'
+  foreignKey: 'groupId'
 })
 
 // DiaryUser <--->> Auth
 DiaryUserModel.hasMany(AuthModel, {
-    foreignKey: 'id'
+  foreignKey: 'id'
 })
 AuthModel.belongsTo(DiaryUserModel, {
-    foreignKey: 'idDiaryUser'
+  foreignKey: 'idDiaryUser'
 })

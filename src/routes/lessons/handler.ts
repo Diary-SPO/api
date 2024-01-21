@@ -1,7 +1,7 @@
+import { getCookieFromToken, getLessonsService } from '@db'
 import type { Day } from '@diary-spo/shared'
 import { IContext } from '@types'
 import { formatDate } from '@utils'
-import { getCookieFromToken, getLessonsService } from '@db'
 
 const getLessons = async ({
   request,
@@ -14,12 +14,7 @@ const getLessons = async ({
 
   const secret = await getCookieFromToken(request.headers.toJSON().secret)
 
-  return getLessonsService(
-    formattedStartDate,
-    formattedEndDate,
-    id,
-    secret
-  )
+  return getLessonsService(formattedStartDate, formattedEndDate, id, secret)
 }
 
 export default getLessons

@@ -5,9 +5,9 @@ import {
   DATABASE_PORT,
   DATABASE_USERNAME
 } from '@config'
-import {exit} from 'process'
-import { Sequelize } from 'sequelize'
 import { error } from '@utils'
+import { exit } from 'process'
+import { Sequelize } from 'sequelize'
 
 export const sequelize = new Sequelize({
   database: DATABASE_NAME,

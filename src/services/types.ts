@@ -80,8 +80,8 @@ export interface DBLessonType {
 }
 
 /**
-* Структура таблицы, хранящей задание
-*/
+ * Структура таблицы, хранящей задание
+ */
 export interface GradebookDB {
   id?: number
   scheduleId: number

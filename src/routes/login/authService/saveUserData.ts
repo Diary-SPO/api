@@ -1,6 +1,8 @@
 import { ApiError } from '@api'
-import {  SERVER_URL } from '@config'
+import { SERVER_URL } from '@config'
+import { DiaryUserModel, GroupsModel, SPOModel, generateToken } from '@db'
 import type { UserData } from '@diary-spo/shared'
+import { DiaryUser, Group, PersonResponse, SPO } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import {
   ApiResponse,
@@ -9,8 +11,6 @@ import {
   fetcher,
   formatDate
 } from '@utils'
-import { DiaryUser, Group, PersonResponse, SPO } from '@diary-spo/types'
-import { DiaryUserModel, generateToken, GroupsModel, SPOModel } from '@db'
 
 export const saveUserData = async (
   parsedRes: ApiResponse<UserData>,
@@ -66,19 +66,17 @@ export const saveUserData = async (
     }
 
     // Определяем СПО
-    const [SPORecord, SPOCreated] = await SPOModel.findOrCreate(
-      {
-        where: {
-          abbreviation: regSPO.abbreviation
-        },
-        defaults: {
-          ...regSPO
-        }
+    const [SPORecord, SPOCreated] = await SPOModel.findOrCreate({
+      where: {
+        abbreviation: regSPO.abbreviation
+      },
+      defaults: {
+        ...regSPO
       }
-    )
+    })
 
     if (!SPOCreated) {
-      SPORecord.update({...regSPO})
+      SPORecord.update({ ...regSPO })
     }
 
     regSPO.id = SPORecord.dataValues.id
@@ -104,15 +102,16 @@ export const saveUserData = async (
     regData.groupId = groupRecord.dataValues.id
 
     // Определяем пользователя
-    const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel.findOrCreate({
-      where: {
-        id: regData.id
-      },
-      defaults: {
-        ...regData,
-        groupId: groupRecord.dataValues.id
-      }
-    })
+    const [diaryUserRecord, diaryUserCreated] =
+      await DiaryUserModel.findOrCreate({
+        where: {
+          id: regData.id
+        },
+        defaults: {
+          ...regData,
+          groupId: groupRecord.dataValues.id
+        }
+      })
 
     if (!diaryUserCreated) {
       diaryUserRecord.update({

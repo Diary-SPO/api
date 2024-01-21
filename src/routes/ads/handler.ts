@@ -5,7 +5,7 @@ import { HeadersWithCookie } from '@utils'
 import { getCookieFromToken } from '../../services/getCookieFromToken'
 
 const getAds = async ({
-  request,
+  request
 }: ContextWithID): Promise<NotificationsResponse | string> => {
   const secret = await getCookieFromToken(request.headers.toJSON().secret)
   const path = `${SERVER_URL}/services/people/organization/news/last/10`

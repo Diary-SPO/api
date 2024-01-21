@@ -7,7 +7,11 @@ interface ErrorResponse {
   errors?: unknown[]
 }
 
-export const errorHandler: ErrorHandler = ({ set, code, error }): ErrorResponse => {
+export const errorHandler: ErrorHandler = ({
+  set,
+  code,
+  error
+}): ErrorResponse => {
   errorLog(error.message)
 
   if (code === 'NOT_FOUND') {
