@@ -1,6 +1,7 @@
 import { API_CODES, ApiError } from '@api'
 import { ApiResponse } from '@utils'
 
+/** Обрабатывает ответ от сервера **/
 export const handleResponse = <T>(
   res: number | ApiResponse<T>
 ): ApiResponse<T> | 'DOWN' | 'UNKNOWN' => {

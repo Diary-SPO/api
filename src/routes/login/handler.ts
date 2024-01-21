@@ -16,9 +16,7 @@ interface AuthContext {
   }
 }
 
-const postAuth = async ({
-  body
-}: AuthContext): Promise<ResponseLogin | null | string> => {
+const postAuth = async ({ body }: AuthContext): Promise<ResponseLogin> => {
   let { login, password, isHash } = body
 
   /** Если пароль передан в исходном виде, то хешируем его на сервере **/
@@ -35,6 +33,7 @@ const postAuth = async ({
   const parsedRes = handleResponse(res)
 
   switch (parsedRes) {
+    /** Авторизация через нашу БД **/
     case 'DOWN': {
       try {
         const authData = await offlineAuth(login, password)
@@ -53,9 +52,15 @@ const postAuth = async ({
         )
       }
     }
+    /** Неизвестная ошибка **/
     case 'UNKNOWN':
       throw new ApiError('Unknown auth error', API_CODES.UNKNOWN_ERROR)
+    /** Сервер выернул корректные данные, сохраняем их в БД **/
     default:
+      /**
+       * Если сетевой город поменял тип своего ответа, то мы бы хотели об этом узнать
+       * Поэтому проверяем хотя бы наличие одного обязательного поля
+       **/
       if (!parsedRes.data.tenants) {
         throw new ApiError('Unreachable auth error', API_CODES.UNKNOWN_ERROR)
       }
