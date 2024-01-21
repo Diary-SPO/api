@@ -1,8 +1,6 @@
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { client } from '@db'
 import type { UserData } from '@diary-spo/shared'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
-import type { DiaryUser, Group, PersonResponse, SPO } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import {
   ApiResponse,
@@ -11,8 +9,10 @@ import {
   fetcher,
   formatDate
 } from '@utils'
-import { ApiError } from '../../ApiError'
+import { ApiError } from '@api'
 import { generateToken } from '../generateToken'
+import { DiaryUser, Group, PersonResponse, SPO } from '../types'
+import { client } from '@db'
 
 export const saveUserData = async (
   parsedRes: ApiResponse<UserData>,

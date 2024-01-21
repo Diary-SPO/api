@@ -1,5 +1,5 @@
 import type { ResponseLogin } from '@diary-spo/types'
-import { registration } from '../../database/authService'
+import { registration } from '@services'
 
 interface AuthContext {
   body: {

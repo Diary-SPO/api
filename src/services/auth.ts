@@ -9,7 +9,7 @@ import {
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
-import { ApiError } from '../ApiError'
+import { ApiError } from '@api'
 import { generateToken } from './generateToken'
 
 /**

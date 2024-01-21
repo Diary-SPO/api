@@ -2,7 +2,7 @@ import { SERVER_URL } from '@config'
 import type { Day } from '@diary-spo/shared'
 import { IContext } from '@types'
 import { HeadersWithCookie, formatDate } from '@utils'
-import { getCookieFromToken } from 'src/database/getCookieFromToken'
+import { getCookieFromToken } from '../../services/getCookieFromToken'
 
 const getLessons = async ({
   request,

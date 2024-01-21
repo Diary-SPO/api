@@ -3,7 +3,7 @@ import createQueryBuilder from '@diary-spo/sql'
 import { Auth } from '@diary-spo/types'
 import { error, formatDate } from '@utils'
 import { suid } from 'rand-token'
-import { ApiError } from '../ApiError'
+import { ApiError } from '@api'
 
 /**
  * Генерирует токен и вставляет в базу

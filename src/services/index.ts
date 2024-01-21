@@ -9,7 +9,7 @@ import { error } from '@utils'
 import { Client } from 'pg'
 import { exit } from 'process'
 
-const client = new Client({
+export const client = new Client({
   host: DATABASE_HOST,
   port: DATABASE_PORT,
   database: DATABASE_NAME,
@@ -24,4 +24,4 @@ client.connect((err) => {
   }
 })
 
-export { client }
+export * from './authService'
