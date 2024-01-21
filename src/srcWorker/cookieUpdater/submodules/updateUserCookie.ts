@@ -1,11 +1,9 @@
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
 import { client } from '@db'
 import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { decrypt, encrypt, fetcher } from '@diary-spo/sql'
+import createQueryBuilder, { decrypt, encrypt } from '@diary-spo/sql'
 import { type DiaryUser } from '@diary-spo/types'
-import { formatDate } from '@utils'
-import { cookieExtractor } from '../../../utils/cookieExtractor'
-import { logger } from '../../../utils/logger'
+import { cookieExtractor, fetcher, formatDate, logger } from '@utils'
 
 const log = logger('cookie updater')
 export const updateUserCookie = async (user: DiaryUser): Promise<void> => {

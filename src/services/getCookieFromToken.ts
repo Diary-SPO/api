@@ -1,15 +1,15 @@
+import { ApiError } from '@api'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { AuthModel, DiaryUserModel } from './models'
 
-type CacheTokensCookie = Record<
-  string,
-  {
-    cookie: string
-    lastUsedDate: string
-    addedSeconds: number // количество секунд с добавления
-  }
->
+type TokenType = {
+  cookie: string
+  lastUsedDate: string
+  addedSeconds: number // количество секунд с добавления
+}
+
+type CacheTokensCookie = Record<string, TokenType>
 
 const cacheTokensCookie: CacheTokensCookie = {}
 let nearestExpiringToken = null // Ближайшая старая запись в кеше. Бережём ядро, не занимаем ненужными операциями
@@ -21,11 +21,7 @@ const maxElementsFromCache = 1000 // Максимум токенов, храня
  * @param token
  * @returns {string} cookie
  */
-const getCookieFromToken = async (token: string): Promise<string> => {
-  if (token.length < 16) {
-    throw new Error('The token cannot be shorter than 16 characters')
-  }
-
+export const getCookieFromToken = async (token: string): Promise<string> => {
   const getCacheFromCookie = cacheGetter(token)
 
   if (getCacheFromCookie) {
@@ -47,7 +43,7 @@ const getCookieFromToken = async (token: string): Promise<string> => {
   })
 
   if (!DiaryUserAuth) {
-    throw new Error('Token not found!')
+    throw new ApiError('Token not found!', 500)
   }
 
   const authData: CookieInfoFromDatabase = {
@@ -125,25 +121,24 @@ const updaterDateFromToken = async (
 ): Promise<void> => {
   // Предварительно обновляем дату использования, если нужно
   const currDateFormatted = formatDate(new Date().toISOString())
-  const saveData =
-    typeof token !== 'string'
-      ? token
-      : (cacheTokensCookie?.[token] as CookieInfoFromDatabase)
+  const saveData = typeof token !== 'string' ? token : cacheTokensCookie[token]
 
   if (formatDate(String(saveData.lastUsedDate)) === currDateFormatted) {
     return
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  const updateToken = await AuthModel.update({
-    lastUsedDate: currDateFormatted
-  },
-  {
-    where: {
-      token
+  const updateToken = await AuthModel.update(
+    {
+      lastUsedDate: currDateFormatted
     },
-    returning: true
-  })
+    {
+      where: {
+        token
+      },
+      returning: true
+    }
+  )
 
   // Если смогли обновить, то сохраняем новую дату
   if (updateToken) {
@@ -166,5 +161,3 @@ const cacheGetter = (token: string): string | null => {
 
   return cacheCookie.cookie
 }
-
-export { getCookieFromToken }

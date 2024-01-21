@@ -1,16 +1,9 @@
+import { ApiError } from '@api'
 import { ENCRYPT_KEY } from '@config'
-import createQueryBuilder, { encrypt } from '@diary-spo/sql'
-import {
-  type DiaryUser,
-  type Group,
-  type ResponseLogin,
-  type SPO
-} from '@diary-spo/types'
+import { DiaryUserModel, GroupsModel, SPOModel, generateToken } from '@db'
+import { encrypt } from '@diary-spo/sql'
+import { type ResponseLogin } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { generateToken } from './generateToken'
-import { DiaryUserModel } from './models'
-import { SPOModel } from './models'
-import { GroupsModel } from './models'
 
 /**
  * Оффлайн авторизация через базу данных.
@@ -23,7 +16,7 @@ export const offlineAuth = async (
   login: string,
   password: string
 ): Promise<ResponseLogin | null> => {
-  // пробуем войти "оффлайн", если пользователь есть в базе (в случае, если упал основной дневник)
+  /** Пробуем войти "оффлайн", если пользователь есть в базе (в случае, если упал основной дневник) **/
   const diaryUserRecord = await DiaryUserModel.findOne({
     where: {
       login,
@@ -32,15 +25,17 @@ export const offlineAuth = async (
     include: {
       model: GroupsModel,
       required: true,
-      include: [{
-        model: SPOModel,
-        required: true
-      }]
+      include: [
+        {
+          model: SPOModel,
+          required: true
+        }
+      ]
     }
   })
 
   if (!diaryUserRecord) {
-    throw new Error('User not found or incorrect password!')
+    throw new ApiError('User not found or incorrect password!', 404)
   }
 
   //console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)
@@ -52,9 +47,5 @@ export const offlineAuth = async (
   // Если пользователь найден, генерируем токен и отдаём
   diaryUserData.token = await generateToken(diaryUserData.id)
 
-  return ResponseLoginFromDiaryUser(
-    diaryUserData,
-    groupData,
-    spoData
-  )
+  return ResponseLoginFromDiaryUser(diaryUserData, groupData, spoData)
 }

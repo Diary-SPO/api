@@ -1,9 +1,10 @@
+import { SERVER_URL } from '@config'
 import { Day } from '@diary-spo/shared'
 import { DiaryUser } from '@diary-spo/types'
 import { HeadersWithCookie } from '@utils'
 import { DBSchedule } from '../types/databaseTypes'
-import { getDiaryUser } from './tables/diaryUser'
-import { saveSchedule } from './tables/schedule'
+import { getDiaryUser } from './tables'
+import { saveSchedule } from './tables'
 import { removeScheduleForList } from './tables/schedule/remove'
 
 /*
@@ -65,13 +66,13 @@ const save = async (days: Day[], userId: number): Promise<void> => {
 }
 */
 
-export const getLessons = async (
+export const getLessonsService = async (
   startDate: string,
   endDate: string,
   id: number,
   secret: string
 ): Promise<Day[] | string> => {
-  const path = `${Bun.env.SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
+  const path = `${SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
 
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret)

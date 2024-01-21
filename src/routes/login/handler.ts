@@ -1,9 +1,13 @@
-import type { DiaryUser, ResponseLogin } from '@diary-spo/types'
-import type { Context } from 'elysia'
-import Hashes from 'jshashes'
-import { registration } from '../../database/registration'
+import { ApiError } from '@api'
+import { SERVER_URL } from '@config'
+import type { UserData } from '@diary-spo/shared'
+import type { ResponseLogin } from '@diary-spo/types'
+import { fetcher } from '@utils'
+import { offlineAuth } from './authService/auth'
+import { handleResponse } from './authService/helpers'
+import { saveUserData } from './authService/saveUserData'
 
-interface AuthContext extends Context {
+interface AuthContext {
   body: {
     login: string
     password: string
@@ -12,26 +16,43 @@ interface AuthContext extends Context {
 }
 
 const postAuth = async ({
-  set,
   body
-}: AuthContext): Promise<DiaryUser | ResponseLogin | null | string> => {
-  // Захешировать пароль ? (Для отладки, потом можно вырезать)
-  if (!body?.isHash ?? true) {
-    body.password = new Hashes.SHA256().b64(body.password)
-  }
-
+}: AuthContext): Promise<ResponseLogin | null | string> => {
   const { login, password } = body
 
-  const data = await registration(login, password).catch(
-    (err): ResponseLogin | string => {
-      set.status = 401
-      throw new Error(`Error working authorization. Detailed info: "${err}"`)
+  const res = await fetcher<UserData>({
+    url: `${SERVER_URL}/services/security/login`,
+    method: 'POST',
+    body: JSON.stringify({ login, password, isRemember: true })
+  })
+
+  const parsedRes = handleResponse(res)
+
+  switch (parsedRes) {
+    case 'DOWN': {
+      try {
+        const authData = await offlineAuth(login, password)
+
+        if (!authData) {
+          throw new ApiError('Offline auth error', 500)
+        }
+
+        return authData
+      } catch (e) {
+        throw new Error(
+          `Authorization error: access to the diary was denied, and authorization through the database failed. Full: ${e}`
+        )
+      }
     }
-  )
+    case 'UNKNOWN':
+      throw new ApiError('Unknown auth error', 500)
+    default:
+      if (!parsedRes.data.tenants) {
+        throw new ApiError('Unreachable auth error', 500)
+      }
 
-  console.log(`/login ${set.status}`)
-
-  return data
+      return saveUserData(parsedRes, login, password)
+  }
 }
 
 export default postAuth
