@@ -78,8 +78,6 @@ export const getLessonsService = async (
     headers: HeadersWithCookie(secret)
   })
 
-  console.log(`${response.status} ${path}`)
-
   if (!response.ok) {
     // Получаем из базы
     return 'error'
