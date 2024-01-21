@@ -6,7 +6,6 @@ import { getCookieFromToken } from '../../services/getCookieFromToken'
 
 const getOrganization = async ({
   request,
-  set
 }: Context): Promise<Organization | string> => {
   const secret = await getCookieFromToken(request.headers.toJSON().secret)
   const path = `${SERVER_URL}/services/people/organization`
@@ -14,7 +13,6 @@ const getOrganization = async ({
     headers: HeadersWithCookie(secret)
   })
 
-  set.status = 200
   return await response.json()
 }
 

@@ -5,6 +5,7 @@ import { DBSchedule } from '../types/databaseTypes'
 import { getDiaryUser } from './tables/diaryUser'
 import { saveSchedule } from './tables/schedule'
 import { removeScheduleForList } from './tables/schedule/remove'
+import { SERVER_URL } from '@config'
 
 /*
 const save = async (days: Day[], userId: number): Promise<void> => {
@@ -65,13 +66,13 @@ const save = async (days: Day[], userId: number): Promise<void> => {
 }
 */
 
-export const getLessons = async (
+export const getLessonsService = async (
   startDate: string,
   endDate: string,
   id: number,
   secret: string
 ): Promise<Day[] | string> => {
-  const path = `${Bun.env.SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
+  const path = `${SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
 
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret)

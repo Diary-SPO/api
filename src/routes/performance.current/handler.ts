@@ -6,7 +6,6 @@ import { getCookieFromToken } from '../../services/getCookieFromToken'
 
 const getPerformanceCurrent = async ({
   request,
-  set,
   params
 }: ContextWithID): Promise<PerformanceCurrent | string> => {
   const { id } = params
@@ -16,7 +15,6 @@ const getPerformanceCurrent = async ({
     headers: HeadersWithCookie(secret)
   })
 
-  set.status = 200
   return await response.json()
 }
 

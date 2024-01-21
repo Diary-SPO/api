@@ -1,7 +1,4 @@
 import { ApiError } from '@api'
-import { client } from '@db'
-import createQueryBuilder from '@diary-spo/sql'
-import { Auth } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { suid } from 'rand-token'
 import { AuthModel } from './models'
@@ -18,7 +15,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
 
   const formattedDate = formatDate(new Date().toISOString())
 
-  AuthModel.create({
+ await AuthModel.create({
     idDiaryUser,
     token,
     lastUsedDate: formattedDate

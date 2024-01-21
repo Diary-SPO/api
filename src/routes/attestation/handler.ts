@@ -6,7 +6,6 @@ import { getCookieFromToken } from '../../services/getCookieFromToken'
 
 const getAttestation = async ({
   request,
-  set,
   params
 }: ContextWithID): Promise<AttestationResponse | string> => {
   const { id } = params
@@ -16,7 +15,6 @@ const getAttestation = async ({
     headers: HeadersWithCookie(secret)
   })
 
-  set.status = 200
   return response.json()
 }
 
