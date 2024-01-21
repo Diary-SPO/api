@@ -1,4 +1,4 @@
-import { API_CODES, ApiError } from '@api'
+import { API_CODES, API_ERRORS, ApiError } from '@api'
 import { SERVER_URL } from '@config'
 import type { UserData } from '@diary-spo/shared'
 import type { ResponseLogin } from '@diary-spo/types'
@@ -40,7 +40,7 @@ const postAuth = async ({ body }: AuthContext): Promise<ResponseLogin> => {
 
         if (!authData) {
           throw new ApiError(
-            'Offline auth error',
+            API_ERRORS.USER_NOT_FOUND,
             API_CODES.INTERNAL_SERVER_ERROR
           )
         }

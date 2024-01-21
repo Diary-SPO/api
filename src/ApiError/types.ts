@@ -7,3 +7,8 @@ export const API_CODES = {
   SERVICE_UNAVAILABLE: 503,
   UNKNOWN_ERROR: 520
 } as const
+
+export const API_ERRORS = {
+  INVALID_TOKEN: 'INVALID_TOKEN',
+  USER_NOT_FOUND: 'USER_NOT_FOUND'
+}

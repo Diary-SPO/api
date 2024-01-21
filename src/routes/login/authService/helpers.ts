@@ -10,12 +10,12 @@ export const handleResponse = <T>(
   }
 
   /** Неправильные данные для авторизации **/
-  if (res === 401) {
+  if (res === API_CODES.UNAUTHORIZED) {
     throw new ApiError('Invalid data', API_CODES.UNAUTHORIZED)
   }
 
   /** Сетевой город упал. Пробуем найти юзера в нашей базе **/
-  if (res > 401) {
+  if (res > API_CODES.UNAUTHORIZED) {
     return 'DOWN'
   }
 

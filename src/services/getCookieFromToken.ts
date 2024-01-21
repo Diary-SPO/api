@@ -43,7 +43,7 @@ export const getCookieFromToken = async (token: string): Promise<string> => {
   })
 
   if (!DiaryUserAuth) {
-    throw new ApiError('Token not found!', 500)
+    throw new ApiError('INVALID_TOKEN', 401)
   }
 
   const authData: CookieInfoFromDatabase = {
