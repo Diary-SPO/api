@@ -6,6 +6,7 @@ import { fetcher } from '@utils'
 import { offlineAuth } from './authService/auth'
 import { handleResponse } from './authService/helpers'
 import { saveUserData } from './authService/saveUserData'
+import Hashes from 'jshashes'
 
 interface AuthContext {
   body: {
@@ -18,7 +19,11 @@ interface AuthContext {
 const postAuth = async ({
   body
 }: AuthContext): Promise<ResponseLogin | null | string> => {
-  const { login, password } = body
+  let { login, password, isHash } = body
+
+  if (!isHash ?? true) {
+    password = new Hashes.SHA256().b64(body.password)
+  }
 
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
