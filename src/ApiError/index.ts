@@ -10,4 +10,12 @@ export class ApiError extends Error {
   }
 }
 
-export class API_CODES {}
+export const API_CODES = {
+  NOT_FOUND: 404,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  BAD_REQUEST: 400,
+  INTERNAL_SERVER_ERROR: 500,
+  SERVICE_UNAVAILABLE: 503,
+  UNKNOWN_ERROR: 520
+} as const

@@ -1,4 +1,4 @@
-import { ApiError } from '@api'
+import { API_CODES, ApiError } from '@api'
 import { formatDate } from '@utils'
 import { suid } from 'rand-token'
 import { AuthModel } from './models'
@@ -20,7 +20,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
     token,
     lastUsedDate: formattedDate
   }).catch(() => {
-    throw new ApiError('Error insert token!', 500)
+    throw new ApiError('Error insert token!', API_CODES.INTERNAL_SERVER_ERROR)
   })
 
   return token

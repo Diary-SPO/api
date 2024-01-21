@@ -1,5 +1,6 @@
 import { error as errorLog } from '@utils'
 import { ErrorHandler } from 'elysia'
+import { API_CODES } from '@api'
 
 interface ErrorResponse {
   code: number
@@ -19,10 +20,10 @@ export const errorHandler: ErrorHandler = ({
 
   /** Обработка ошибки от ApiError **/
   if (Number(code) === 401) {
-    set.status = 401
+    set.status = API_CODES.UNAUTHORIZED
     return {
       message: 'INVALID_DATA',
-      code: 401,
+      code: API_CODES.UNAUTHORIZED,
       path
     }
   }
@@ -30,7 +31,7 @@ export const errorHandler: ErrorHandler = ({
   if (code === 'NOT_FOUND') {
     return {
       message: 'NOT_FOUND',
-      code: 404,
+      code: API_CODES.NOT_FOUND,
       path
     }
   }
@@ -40,7 +41,7 @@ export const errorHandler: ErrorHandler = ({
   if (code === 'VALIDATION') {
     return {
       message: code,
-      code: 400,
+      code: API_CODES.BAD_REQUEST,
       errors: formattedError.errors,
       path
     }
@@ -49,14 +50,15 @@ export const errorHandler: ErrorHandler = ({
   if (code === 'INTERNAL_SERVER_ERROR') {
     return {
       message: code,
-      code: 500,
+      code: API_CODES.INTERNAL_SERVER_ERROR,
       path
     }
   }
 
+  set.status = API_CODES.UNKNOWN_ERROR
   return {
     message: 'Unknown error',
-    code: 520,
+    code: API_CODES.UNKNOWN_ERROR,
     path
   }
 }

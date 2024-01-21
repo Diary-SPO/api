@@ -1,4 +1,4 @@
-import { ApiError } from '@api'
+import { API_CODES, ApiError } from '@api'
 import { ENCRYPT_KEY } from '@config'
 import { DiaryUserModel, GroupsModel, SPOModel, generateToken } from '@db'
 import { encrypt } from '@diary-spo/sql'
@@ -35,7 +35,7 @@ export const offlineAuth = async (
   })
 
   if (!diaryUserRecord) {
-    throw new ApiError('User not found or incorrect password!', 404)
+    throw new ApiError('User not found or incorrect password!', API_CODES.NOT_FOUND)
   }
 
   //console.log(diaryUserRecord.dataValues.group.dataValues.SPO.dataValues.abbreviation)

@@ -1,4 +1,4 @@
-import { ApiError } from '@api'
+import { API_CODES, ApiError } from '@api'
 import { SERVER_URL } from '@config'
 import type { UserData } from '@diary-spo/shared'
 import type { ResponseLogin } from '@diary-spo/types'
@@ -39,7 +39,7 @@ const postAuth = async ({
         const authData = await offlineAuth(login, password)
 
         if (!authData) {
-          throw new ApiError('Offline auth error', 500)
+          throw new ApiError('Offline auth error', API_CODES.INTERNAL_SERVER_ERROR)
         }
 
         return authData
@@ -50,10 +50,10 @@ const postAuth = async ({
       }
     }
     case 'UNKNOWN':
-      throw new ApiError('Unknown auth error', 500)
+      throw new ApiError('Unknown auth error', API_CODES.UNKNOWN_ERROR)
     default:
       if (!parsedRes.data.tenants) {
-        throw new ApiError('Unreachable auth error', 500)
+        throw new ApiError('Unreachable auth error', API_CODES.UNKNOWN_ERROR)
       }
 
       return saveUserData(parsedRes, login, password)

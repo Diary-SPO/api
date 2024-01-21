@@ -1,4 +1,4 @@
-import { ApiError } from '@api'
+import { API_CODES, ApiError } from '@api'
 import { ApiResponse } from '@utils'
 
 export const handleResponse = <T>(
@@ -10,7 +10,7 @@ export const handleResponse = <T>(
 
   /** Неправильные данные для авторизации **/
   if (res === 401) {
-    throw new ApiError('Invalid data', 401)
+    throw new ApiError('Invalid data', API_CODES.UNAUTHORIZED)
   }
 
   /** Сетевой город упал. Пробуем найти юзера в нашей базе **/

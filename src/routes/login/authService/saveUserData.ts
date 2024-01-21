@@ -1,4 +1,4 @@
-import { ApiError } from '@api'
+import { API_CODES, ApiError } from '@api'
 import { SERVER_URL } from '@config'
 import { DiaryUserModel, GroupsModel, SPOModel, generateToken } from '@db'
 import type { UserData } from '@diary-spo/shared'
@@ -31,7 +31,7 @@ export const saveUserData = async (
     })
 
     if (typeof detailedInfo === 'number') {
-      throw new ApiError('Error get detailed info!', 500)
+      throw new ApiError('Error get detailed info!', API_CODES.INTERNAL_SERVER_ERROR)
     }
 
     const regData: DiaryUser = {
