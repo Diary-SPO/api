@@ -41,6 +41,6 @@ console.log(
   `Backend running at http://${app.server?.hostname}:${app.server?.port}`
 )
 
-//const workerURL = new URL('worker', import.meta.url).href
-//new Worker(workerURL)
-//console.log('Worker running!')
+const workerURL = new URL('worker', import.meta.url).href
+new Worker(workerURL)
+console.log('Worker running!')
