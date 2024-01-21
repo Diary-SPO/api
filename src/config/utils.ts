@@ -1,4 +1,4 @@
-import { type ParamsInit, type ParamsKeys, type StringOrNumber } from './types'
+import type { ParamsInit, ParamsKeys, StringOrNumber } from './types'
 
 /**
  * Считывает .env файл

@@ -14,11 +14,19 @@ export interface IResponse {
  * Интерфейс контекста с расширенными свойствами.
  */
 export interface IContext extends Context {
-  response: IResponse
+  response: IResponse | number
 }
 
 export interface ContextWithID extends Omit<Context, 'params'> {
   params: {
     id: string
   }
+}
+
+export interface IServerInfo {
+  status: string
+  arch: string
+  targetDiary: string
+  backend: string
+  commit: string
 }

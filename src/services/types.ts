@@ -13,7 +13,6 @@ export interface DiaryUser
   phone: string
   birthday: string
   cookie: string
-  // token: string
   cookieLastDateUpdate: string
 }
 
@@ -75,21 +74,19 @@ export interface Schedule {
   endTime: string
 }
 
-// /**
-//  * Структура таблицы, хранящей преподавателей
-//  */
-// export interface TeacherDB extends Teacher {
-//   spoId: number
-// }
-//
-// /**
-//  * Структура таблицы, хранящей задание
-//  */
-// export interface GradebookDB {
-//   id?: number
-//   scheduleId: number
-//   lessonTypeId: number
-// }
+export interface DBLessonType {
+  id: number
+  name: string
+}
+
+/**
+ * Структура таблицы, хранящей задание
+ */
+export interface GradebookDB {
+  id?: number
+  scheduleId: number
+  lessonTypeId: number
+}
 //
 // /**
 //  * Структура таблицы, хранящей тип занятия

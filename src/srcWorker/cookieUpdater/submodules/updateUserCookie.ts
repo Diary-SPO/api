@@ -1,21 +1,23 @@
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { client } from '@db'
+import { AuthModel, DiaryUserModel } from '@db'
 import { type UserData } from '@diary-spo/shared'
-import createQueryBuilder, { decrypt, encrypt, fetcher } from '@diary-spo/sql'
 import { type DiaryUser } from '@diary-spo/types'
-import { formatDate } from '@utils'
-import { cookieExtractor } from '../../../utils/cookieExtractor'
-import { logger } from '../../../utils/logger'
+import { cookieExtractor, fetcher, formatDate, logger } from '@utils'
+import { Model, Sequelize } from 'sequelize'
 
 const log = logger('cookie updater')
 export const updateUserCookie = async (user: DiaryUser): Promise<void> => {
+
+  const userInfo = `'${user.login}' [${user.id}]`
+  console.log('Обновляю cookie пользователя', userInfo)
+
   // 1. Авторизируемся
   const res = await fetcher<UserData>({
     url: `${SERVER_URL}/services/security/login`,
     method: 'POST',
     body: JSON.stringify({
       login: user.login,
-      password: decrypt(user.password, ENCRYPT_KEY),
+      password: user.password,
       isRemember: true
     })
   })
@@ -29,14 +31,14 @@ export const updateUserCookie = async (user: DiaryUser): Promise<void> => {
   // 2. Подготавливаем куку
   const setCookieHeader = res.headers.get('Set-Cookie')
   const cookie = cookieExtractor(setCookieHeader ?? '')
-  const encryptCookie = encrypt(String(cookie), ENCRYPT_KEY)
-
+  
   // 3. Обновляем куку и дату обновления
-  await createQueryBuilder(client)
-    .from('diaryUser')
-    .where(`id = ${user.id}`)
-    .update({
-      cookie: encryptCookie,
+  user.update({
+      cookie,
       cookieLastDateUpdate: formatDate(new Date().toISOString())
+    }).then(() => {
+      console.log('Успешно обновил в базе для', userInfo)
+    }).catch((err) => {
+      console.error('Ошибка обновления в базе для', userInfo, 'Подробнее:', err.toISOString())
     })
 }
