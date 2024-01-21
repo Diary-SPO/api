@@ -21,7 +21,7 @@ const postAuth = async ({
 }: AuthContext): Promise<ResponseLogin | null | string> => {
   let { login, password, isHash } = body
 
-  if (!isHash ?? true) {
+  if (!isHash) {
     password = new Hashes.SHA256().b64(body.password)
   }
 
