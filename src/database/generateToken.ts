@@ -3,6 +3,7 @@ import createQueryBuilder from '@diary-spo/sql'
 import { Auth } from '@diary-spo/types'
 import { error, formatDate } from '@utils'
 import { suid } from 'rand-token'
+import { ApiError } from '../ApiError'
 
 /**
  * Генерирует токен и вставляет в базу
@@ -30,7 +31,7 @@ export const generateToken = async (
 
   if (!tokenQueryBuilder) {
     error('Error insert token!')
-    return null
+    throw new ApiError('Error insert token!', 500)
   }
 
   return token

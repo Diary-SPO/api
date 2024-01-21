@@ -4,8 +4,8 @@ import getLessons from './handler'
 const schema = {
   params: t.Object({
     id: t.String(),
-    endDate: t.String(),
-    startDate: t.String()
+    endDate: t.Date(),
+    startDate: t.Date()
   })
 }
 

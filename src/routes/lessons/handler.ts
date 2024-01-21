@@ -11,7 +11,7 @@ const getLessons = async ({
   params
 }: IContext): Promise<Day[] | string> => {
   const { id, startDate, endDate } = params
-
+  console.log(params)
   const formattedStartDate = formatDate(startDate)
   const formattedEndDate = formatDate(endDate)
 

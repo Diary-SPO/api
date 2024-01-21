@@ -10,6 +10,7 @@ import {
 import { ResponseLoginFromDiaryUser } from '@types'
 import { error } from '@utils'
 import { protectInjection } from 'src/utils/protectInjection'
+import { ApiError } from '../ApiError'
 import { generateToken } from './generateToken'
 
 /**
@@ -36,8 +37,7 @@ export const offlineAuth = async (
     .first()
 
   if (!diaryUserQueryBuilder) {
-    error('User not found or incorrect password!')
-    return null
+    throw new ApiError('User not found or incorrect password!', 404)
   }
 
   // Извлекаем организацию
@@ -50,7 +50,7 @@ export const offlineAuth = async (
 
   if (!spoGetQueryBuilder) {
     error('SPO for current user not found!')
-    return null
+    throw new ApiError('SPO for current user not found!', 500)
   }
 
   // Извлекаем группу
@@ -62,14 +62,14 @@ export const offlineAuth = async (
 
   if (!groupGetQueryBuilder) {
     error('Group for current user not found!')
-    return null
+    throw new ApiError('Group for current user not found!', 500)
   }
 
   const token = await generateToken(diaryUserQueryBuilder.id)
 
   if (!token) {
     error('No token found!')
-    return null
+    throw new ApiError('No token found!', 401)
   }
 
   // Если пользователь найден, генерируем токен и отдаём
