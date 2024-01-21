@@ -21,10 +21,15 @@ export const sequelize = new Sequelize({
 try {
   await sequelize.authenticate()
   console.log('Database: Connection succefully!')
-} catch (error) {
+} catch (err) {
   error('Ошибка подключения к Базе Данных: ', err)
   exit()
 }
 
 // !!! TODO: Сделать миграции !!!
-export * from './authService'
+export * from './models'
+export * from './tables'
+export * from './types'
+export * from './getCookieFromToken'
+export * from './lessons'
+export * from './generateToken'

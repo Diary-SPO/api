@@ -1,8 +1,6 @@
 import { ApiError } from '@api'
-import { ENCRYPT_KEY, SERVER_URL } from '@config'
-import { client } from '@db'
+import {  SERVER_URL } from '@config'
 import type { UserData } from '@diary-spo/shared'
-import createQueryBuilder, { encrypt } from '@diary-spo/sql'
 import { ResponseLoginFromDiaryUser } from '@types'
 import {
   ApiResponse,
@@ -11,8 +9,8 @@ import {
   fetcher,
   formatDate
 } from '@utils'
-import { generateToken } from '../generateToken'
-import { DiaryUser, Group, PersonResponse, SPO } from '../types'
+import { DiaryUser, Group, PersonResponse, SPO } from '@diary-spo/types'
+import { DiaryUserModel, generateToken, GroupsModel, SPOModel } from '@db'
 
 export const saveUserData = async (
   parsedRes: ApiResponse<UserData>,
@@ -41,7 +39,6 @@ export const saveUserData = async (
       groupId: student.groupId,
       login,
       password,
-      token: '',
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,
       firstName: detailedInfo.data.person.firstName,
@@ -125,6 +122,7 @@ export const saveUserData = async (
     }
 
     // Генерируем токен
+    // FIXME: there is no token in model
     regData.token = await generateToken(regData.id)
 
     // Убираем все "приватные" поля из ответа

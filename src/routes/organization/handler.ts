@@ -2,7 +2,7 @@ import { SERVER_URL } from '@config'
 import type { Organization } from '@diary-spo/shared'
 import { HeadersWithCookie } from '@utils'
 import type { Context } from 'elysia'
-import { getCookieFromToken } from '../../services/getCookieFromToken'
+import { getCookieFromToken } from '@db'
 
 const getOrganization = async ({
   request,

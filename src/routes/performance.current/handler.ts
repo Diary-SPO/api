@@ -2,7 +2,7 @@ import { SERVER_URL } from '@config'
 import type { PerformanceCurrent } from '@diary-spo/shared'
 import { ContextWithID } from '@types'
 import { HeadersWithCookie } from '@utils'
-import { getCookieFromToken } from '../../services/getCookieFromToken'
+import { getCookieFromToken } from '@db'
 
 const getPerformanceCurrent = async ({
   request,

@@ -1,11 +1,11 @@
-import {DataTypes} from 'sequelize'
-import { sequelize } from '@db'
+import { DataTypes} from 'sequelize'
+import { DiaryUser as Test, sequelize } from '@db'
 import { formatDate } from '@utils'
 import { decrypt, encrypt } from '@diary-spo/sql'
 import { ENCRYPT_KEY } from '@config'
 import { GroupsModel } from './groups'
 
-export const DiaryUserModel = sequelize.define('diaryUser', {
+export const DiaryUserModel = sequelize.define<any, Test>('diaryUser', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
