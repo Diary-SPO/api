@@ -69,7 +69,8 @@ export const DiaryUserModel = sequelize.define(
     },
     middleName: {
       type: DataTypes.STRING(40),
-      allowNull: false,
+      allowNull: true,
+      defaultValue: null,
       comment: 'Отчество пользователя из Сетевого города'
     },
     cookie: {
