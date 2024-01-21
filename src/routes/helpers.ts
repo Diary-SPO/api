@@ -13,13 +13,12 @@ export const errorHandler: ErrorHandler = ({
   set,
   code,
   error,
-
   path
 }): ErrorResponse => {
   errorLog(error.message)
 
   /** Обработка ошибки от ApiError **/
-  if (Number(code) === 401) {
+  if (Number(code) === API_CODES.UNAUTHORIZED) {
     set.status = API_CODES.UNAUTHORIZED
     return {
       message: 'INVALID_DATA',
