@@ -21,6 +21,7 @@ const postAuth = async ({
 }: AuthContext): Promise<ResponseLogin | null | string> => {
   let { login, password, isHash } = body
 
+  /** Если пароль передан в исходном виде, то хешируем его на сервере **/
   if (!isHash) {
     password = new Hashes.SHA256().b64(body.password)
   }
