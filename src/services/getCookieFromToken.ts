@@ -1,10 +1,6 @@
-import { ApiError } from '@api'
-import { ENCRYPT_KEY } from '@config'
-import { client } from '@db'
-import createQueryBuilder, { decrypt } from '@diary-spo/sql'
 import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
-import { protectInjection } from 'src/utils/protectInjection'
+import { AuthModel, DiaryUserModel } from './models'
 
 type TokenType = {
   cookie: string
@@ -35,25 +31,29 @@ export const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  const getCookieQueryBuilder =
-    await createQueryBuilder<CookieInfoFromDatabase>(client)
-      .select('auth.id', '"idDiaryUser"', 'token', '"lastUsedDate"', 'cookie')
-      .from(
-        'auth" INNER JOIN "diaryUser" ON "diaryUser".id = auth."idDiaryUser'
-      )
-      .where(`auth.token = '${protectInjection(token)}'`)
-      .first()
+  const DiaryUserAuth = await AuthModel.findOne({
+    where: {
+      token
+    },
+    include: {
+      model: DiaryUserModel,
+      required: true
+    }
+  })
 
-  if (!getCookieQueryBuilder) {
+  if (!DiaryUserAuth) {
     throw new ApiError('Token not found!', 500)
   }
 
-  getCookieQueryBuilder.cookie = decrypt(
-    getCookieQueryBuilder.cookie,
-    ENCRYPT_KEY
-  )
+  const authData: CookieInfoFromDatabase = {
+    id: DiaryUserAuth.dataValues.id,
+    idDiaryUser: DiaryUserAuth.dataValues.diaryUser.id,
+    token: DiaryUserAuth.dataValues.token,
+    lastUsedDate: DiaryUserAuth.dataValues.lastUsedDate,
+    cookie: DiaryUserAuth.dataValues.diaryUser.cookie
+  }
 
-  taskScheduler(getCookieQueryBuilder) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
+  taskScheduler(authData) // Запускает обслуживание кеширования токенов + сохраняет текущий токен в кэше
     .catch((err) => {
       console.log(err.toString())
     })
@@ -63,7 +63,7 @@ export const getCookieFromToken = async (token: string): Promise<string> => {
       console.log(err.toString())
     })
 
-  return getCookieQueryBuilder.cookie
+  return authData.cookie
 }
 
 /**
@@ -95,7 +95,8 @@ const taskScheduler = async (
     }
 
     let newNearestExpiringToken = Number.MAX_VALUE
-    Object.keys(cacheTokensCookie).forEach((token) => {
+    // ВОТ ТУТ ПРОВЕРИТЬ ИТЕРАЦИЮ, ПЕРЕДЕЛАЛ !
+    for (const token of cacheTokensCookie) {
       const currAddedSeconds = cacheTokensCookie[token].addedSeconds
       if (currAddedSeconds < actualSeconds) {
         delete cacheTokensCookie[token]
@@ -108,7 +109,7 @@ const taskScheduler = async (
       ) {
         newNearestExpiringToken = currAddedSeconds
       }
-    })
+    }
 
     nearestExpiringToken = newNearestExpiringToken
   }
@@ -126,13 +127,18 @@ const updaterDateFromToken = async (
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  const updateLastDateFromTokenQueryBuilder = await createQueryBuilder(client)
-    .from('auth')
-    .where(`token = '${token}'`)
-    .update({ lastUsedDate: currDateFormatted })
+  const updateToken = await AuthModel.update({
+    lastUsedDate: currDateFormatted
+  },
+  {
+    where: {
+      token
+    },
+    returning: true
+  })
 
   // Если смогли обновить, то сохраняем новую дату
-  if (updateLastDateFromTokenQueryBuilder) {
+  if (updateToken) {
     saveData.lastUsedDate = currDateFormatted
   }
 }

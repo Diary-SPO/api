@@ -40,14 +40,14 @@ export const saveUserData = async (
       id: student.id,
       groupId: student.groupId,
       login,
+      password,
       token: '',
-      password: encrypt(password ?? '', ENCRYPT_KEY),
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,
       firstName: detailedInfo.data.person.firstName,
       lastName: detailedInfo.data.person.lastName,
       middleName: detailedInfo.data.person.middleName,
-      cookie: encrypt(cookie, ENCRYPT_KEY),
+      cookie,
       cookieLastDateUpdate: formatDate(new Date().toISOString())
     }
 
@@ -68,74 +68,64 @@ export const saveUserData = async (
       diaryGroupId: student.groupId
     }
 
-    const groupQueryBuilder = createQueryBuilder<Group>(client)
-    const userDiaryQueryBuilder = createQueryBuilder<DiaryUser>(client)
-    const SPOQueryBuilder = createQueryBuilder<SPO>(client)
-
-    const existingGroup = await groupQueryBuilder
-      .from('groups')
-      .select('*')
-      .where(`"diaryGroupId" = ${regGroup.diaryGroupId}`)
-      .first()
-    const existingDiaryUser = await userDiaryQueryBuilder
-      .from('diaryUser')
-      .select('*')
-      .where(`id = ${regData.id}`)
-      .first()
-    const existingSPO = await SPOQueryBuilder.from('SPO')
-      .select('*')
-      .where(`abbreviation = '${regSPO.abbreviation}'`)
-      .first()
-
-    if (!existingSPO) {
-      const res = (await SPOQueryBuilder.insert(regSPO))?.[0] ?? null
-
-      if (!res) {
-        error('Error insert SPO!')
-        return null
+    // Определяем СПО
+    const [SPORecord, SPOCreated] = await SPOModel.findOrCreate(
+      {
+        where: {
+          abbreviation: regSPO.abbreviation
+        },
+        defaults: {
+          ...regSPO
+        }
       }
+    )
 
-      regSPO.id = res.id
-    } else {
-      await SPOQueryBuilder.update(regSPO)
-      regSPO.id = existingSPO.id
+    if (!SPOCreated) {
+      SPORecord.update({...regSPO})
     }
 
-    regGroup.spoId = regSPO.id
+    regSPO.id = SPORecord.dataValues.id
 
-    if (!existingGroup) {
-      const res = (await groupQueryBuilder.insert(regGroup))?.[0] ?? null
-
-      if (!res) {
-        error('Error insert group')
-        return null
+    // Определяем группу
+    const [groupRecord, groupCreated] = await GroupsModel.findOrCreate({
+      where: {
+        diaryGroupId: regGroup.diaryGroupId
+      },
+      defaults: {
+        ...regGroup,
+        spoId: SPORecord.dataValues.id
       }
+    })
 
-      regGroup.id = res.id
-    } else {
-      await groupQueryBuilder.update(regGroup)
-      regGroup.id = existingGroup.id
+    if (!groupCreated) {
+      groupRecord.update({
+        ...regGroup,
+        spoId: SPORecord.dataValues.id
+      })
     }
 
-    // Если всё ок, вносим id группы в пользователя
-    regData.groupId = regGroup?.id ?? -1 // <- ???
+    regData.groupId = groupRecord.dataValues.id
 
-    // Дальше всё как обычно
-    if (!existingDiaryUser) {
-      await userDiaryQueryBuilder.insert(regData)
-    } else {
-      await userDiaryQueryBuilder.update(regData)
-    }
+    // Определяем пользователя
+    const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel.findOrCreate({
+      where: {
+        id: regData.id
+      },
+      defaults: {
+        ...regData,
+        groupId: groupRecord.dataValues.id
+      }
+    })
 
-    const token = await generateToken(regData.id)
-
-    if (!token) {
-      error('No token found!')
-      return null
+    if (!diaryUserCreated) {
+      diaryUserRecord.update({
+        ...regData,
+        groupId: groupRecord.dataValues.id
+      })
     }
 
     // Генерируем токен
-    regData.token = token
+    regData.token = await generateToken(regData.id)
 
     // Убираем все "приватные" поля из ответа
     return ResponseLoginFromDiaryUser(regData, regSPO, regGroup)

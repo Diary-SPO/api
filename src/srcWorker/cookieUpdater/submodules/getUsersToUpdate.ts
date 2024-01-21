@@ -13,7 +13,7 @@ export const getUsersToUpdate = async (): Promise<DiaryUser[] | null> => {
   const usersQueryBuilder = await createQueryBuilder<DiaryUser>(client)
     .select('*')
     .from('diaryUser')
-    .where(`"cookieLastDateUpdate" > '${formatDate(maxDate.toISOString())}'`)
+    .where(`"cookieLastDateUpdate" < '${formatDate(maxDate.toISOString())}'`)
     .all()
 
   return usersQueryBuilder
