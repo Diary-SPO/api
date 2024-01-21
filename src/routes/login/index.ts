@@ -1,3 +1,4 @@
+import { handleErrors } from '@utils'
 import { Elysia, t } from 'elysia'
 import postAuth from './handler'
 
@@ -11,6 +12,7 @@ const schema = {
 
 const performanceCurrent = new Elysia().guard(schema, (app) =>
   app.post('/login', postAuth, {
+    afterHandle: handleErrors,
     detail: {
       tags: ['Auth']
     }

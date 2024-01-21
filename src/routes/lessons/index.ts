@@ -1,16 +1,23 @@
+import { handleErrors } from '@utils'
 import { Elysia, t } from 'elysia'
+import { checkCookie } from 'src/middleware'
 import getLessons from './handler'
 
 const schema = {
   params: t.Object({
     id: t.String(),
-    endDate: t.RegExp(/^\d{4}-\d{2}-\d{2}$/),
-    startDate: t.RegExp(/^\d{4}-\d{2}-\d{2}$/)
+    endDate: t.String(),
+    startDate: t.String()
+  }),
+  headers: t.Object({
+    secret: t.String()
   })
 }
 
 const lessons = new Elysia().guard(schema, (app) =>
   app.get('/lessons/:id/:startDate/:endDate', getLessons, {
+    afterHandle: handleErrors,
+    beforeHandle: checkCookie,
     detail: {
       tags: ['Student']
     }

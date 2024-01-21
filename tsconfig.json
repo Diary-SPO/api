@@ -9,10 +9,8 @@
       "@config": ["src/config"],
       "@routes": ["src/routes"],
       "@utils": ["src/utils"],
-      "@db": ["src/services"],
-      "@diary-spo/types": ["src/services/types"],
-      "@api": ["src/ApiError"],
-      "@services": ["src/services"],
+      "@db": ["src/database"],
+      "@diary-spo/types": ["src/database/types"],
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     "types": [
       "bun-types"
@@ -22,6 +20,5 @@
 
     "strict": true /* Enable all strict type-checking options. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  },
-  "include": ["src"]
+  }
 }

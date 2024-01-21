@@ -19,7 +19,7 @@ export function ResponseLoginFromDiaryUser(
     firstName: diaryUser.firstName,
     lastName: diaryUser.lastName,
     middleName: diaryUser.middleName,
-    spoId: spo.id,
-    token: diaryUser.token
+    spoId: spo.id ?? -1,
+    token: diaryUser.token ?? 'ERROR'
   }
 }

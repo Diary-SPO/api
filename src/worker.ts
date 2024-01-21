@@ -1,17 +1,7 @@
-import { error } from '@utils'
 import { sleep } from 'bun'
 import { cookieUpdater } from './srcWorker'
 
-async function runWorker(): Promise<void> {
-  while (true) {
-    try {
-      await Promise.all([cookieUpdater()])
-      await sleep(1000) // разгружаем немного
-    } catch (e) {
-      error('Error at worker', e)
-      break
-    }
-  }
+while (true) {
+  await Promise.all<unknown>([cookieUpdater()])
+  await sleep(1000) // разгружаем немного
 }
-
-runWorker().catch((error) => console.error(error))

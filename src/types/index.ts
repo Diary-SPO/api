@@ -14,7 +14,7 @@ export interface IResponse {
  * Интерфейс контекста с расширенными свойствами.
  */
 export interface IContext extends Context {
-  response: IResponse | number
+  response: IResponse
 }
 
 export interface ContextWithID extends Omit<Context, 'params'> {

@@ -1,7 +1,8 @@
-import { API_CODES, ApiError } from '@api'
+import { client } from '@db'
+import createQueryBuilder from '@diary-spo/sql'
+import { Auth } from '@diary-spo/types'
 import { formatDate } from '@utils'
 import { suid } from 'rand-token'
-import { AuthModel } from './models'
 
 /**
  * Генерирует токен и вставляет в базу
@@ -15,13 +16,19 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
 
   const formattedDate = formatDate(new Date().toISOString())
 
-  await AuthModel.create({
-    idDiaryUser,
-    token,
-    lastUsedDate: formattedDate
-  }).catch(() => {
-    throw new ApiError('Error insert token!', API_CODES.INTERNAL_SERVER_ERROR)
-  })
+  // Вставляем токен
+  const tokenQueryBuilder =
+    (
+      await createQueryBuilder<Auth>(client).from('auth').insert({
+        idDiaryUser,
+        token,
+        lastUsedDate: formattedDate
+      })
+    )?.[0] ?? null
+
+  if (!tokenQueryBuilder) {
+    throw new Error('Error insert token!')
+  }
 
   return token
 }

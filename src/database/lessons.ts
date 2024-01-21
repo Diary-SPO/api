@@ -1,13 +1,11 @@
-import { SERVER_URL } from '@config'
 import { Day } from '@diary-spo/shared'
 import { DiaryUser } from '@diary-spo/types'
 import { HeadersWithCookie } from '@utils'
 import { DBSchedule } from '../types/databaseTypes'
-import { getDiaryUser } from './tables'
-import { saveSchedule } from './tables'
+import { getDiaryUser } from './tables/diaryUser'
+import { saveSchedule } from './tables/schedule'
 import { removeScheduleForList } from './tables/schedule/remove'
 
-/*
 const save = async (days: Day[], userId: number): Promise<void> => {
   const userInfo: DiaryUser | null = await getDiaryUser(userId)
 
@@ -64,19 +62,20 @@ const save = async (days: Day[], userId: number): Promise<void> => {
     }
   }
 }
-*/
 
-export const getLessonsService = async (
+export const getLessons = async (
   startDate: string,
   endDate: string,
   id: number,
   secret: string
 ): Promise<Day[] | string> => {
-  const path = `${SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
+  const path = `${Bun.env.SERVER_URL}/services/students/${id}/lessons/${startDate}/${endDate}`
 
   const response = await fetch(path, {
     headers: HeadersWithCookie(secret)
   })
+
+  console.log(`${response.status} ${path}`)
 
   if (!response.ok) {
     // Получаем из базы
@@ -85,8 +84,8 @@ export const getLessonsService = async (
 
   // Сохраняем и отдаём
   const days: Day[] = await response.json()
-  /*save(days, id).catch((err) =>
+  save(days, id).catch((err) =>
     console.error(`Ошибка сохранения расписания: ${err}`)
-  )*/
+  )
   return days
 }
