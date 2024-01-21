@@ -8,7 +8,7 @@ export const removeNotUsedTokens = async (): Promise<void> => {
   const tokens = await AuthModel.findAll({
     where: {
       lastUsedDate: {
-        [Op.gt]: formatDate(
+        [Op.lt]: formatDate(
           maxDateInactive(MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS).toISOString()
         )
       }

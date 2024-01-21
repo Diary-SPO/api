@@ -31,18 +31,14 @@ export const updateUserCookie = async (user: DiaryUser): Promise<void> => {
   // 2. Подготавливаем куку
   const setCookieHeader = res.headers.get('Set-Cookie')
   const cookie = cookieExtractor(setCookieHeader ?? '')
-
+  
   // 3. Обновляем куку и дату обновления
-  await AuthModel.update({
+  user.update({
       cookie,
       cookieLastDateUpdate: formatDate(new Date().toISOString())
-    }, {
-      where: {
-        idDiaryUser: user.id
-      }
     }).then(() => {
       console.log('Успешно обновил в базе для', userInfo)
     }).catch((err) => {
-      console.error('Ошибка обновления в базе для', userInfo)
+      console.error('Ошибка обновления в базе для', userInfo, 'Подробнее:', err.toISOString())
     })
 }
