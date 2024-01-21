@@ -1,8 +1,8 @@
+import { ApiError } from '@api'
 import { SERVER_URL } from '@config'
 import { type UserData } from '@diary-spo/shared'
 import type { ResponseLogin } from '@diary-spo/types'
 import { fetcher } from '@utils'
-import { ApiError } from '@api'
 import { offlineAuth } from '../auth'
 import { handleResponse } from './helpers'
 import { saveUserData } from './saveUserData'
@@ -48,7 +48,7 @@ export const registration = async (
       if (!parsedRes.data.tenants) {
         throw new ApiError('Unreachable auth error', 500)
       }
-      
+
       return saveUserData(parsedRes, login, password)
   }
 }

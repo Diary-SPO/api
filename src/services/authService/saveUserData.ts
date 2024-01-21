@@ -1,4 +1,6 @@
+import { ApiError } from '@api'
 import { ENCRYPT_KEY, SERVER_URL } from '@config'
+import { client } from '@db'
 import type { UserData } from '@diary-spo/shared'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
 import { ResponseLoginFromDiaryUser } from '@types'
@@ -9,10 +11,8 @@ import {
   fetcher,
   formatDate
 } from '@utils'
-import { ApiError } from '@api'
 import { generateToken } from '../generateToken'
 import { DiaryUser, Group, PersonResponse, SPO } from '../types'
-import { client } from '@db'
 
 export const saveUserData = async (
   parsedRes: ApiResponse<UserData>,
@@ -36,11 +36,11 @@ export const saveUserData = async (
       throw new ApiError('Error get detailed info!', 500)
     }
 
-    // FIXME: review this
     const regData: DiaryUser = {
       id: student.id,
       groupId: student.groupId,
       login,
+      token: '',
       password: encrypt(password ?? '', ENCRYPT_KEY),
       phone: detailedInfo.data.person.phone,
       birthday: detailedInfo.data.person.birthday,

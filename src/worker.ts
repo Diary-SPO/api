@@ -2,7 +2,7 @@ import { error } from '@utils'
 import { sleep } from 'bun'
 import { cookieUpdater } from './srcWorker'
 
-async function runWorker(): Promise<never | void> {
+async function runWorker(): Promise<void> {
   while (true) {
     try {
       await Promise.all([cookieUpdater()])

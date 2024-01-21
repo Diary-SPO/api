@@ -1,5 +1,5 @@
-import { ApiResponse } from '@utils'
 import { ApiError } from '@api'
+import { ApiResponse } from '@utils'
 
 export const handleResponse = <T>(
   res: number | ApiResponse<T>

@@ -1,3 +1,4 @@
+import { ApiError } from '@api'
 import { ENCRYPT_KEY } from '@config'
 import { client } from '@db'
 import createQueryBuilder, { encrypt } from '@diary-spo/sql'
@@ -9,7 +10,6 @@ import {
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
 import { protectInjection } from 'src/utils/protectInjection'
-import { ApiError } from '@api'
 import { generateToken } from './generateToken'
 
 /**
