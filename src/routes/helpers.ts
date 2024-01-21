@@ -1,4 +1,4 @@
-import { API_CODES } from '@api'
+import { API_CODES, API_ERRORS } from '@api'
 import { error as errorLog } from '@utils'
 import { ErrorHandler } from 'elysia'
 
@@ -17,7 +17,24 @@ export const errorHandler: ErrorHandler = ({
 }): ErrorResponse => {
   errorLog(error.message)
 
-  /** Обработка ошибки от ApiError **/
+  /**
+   * Обработка ошибки от ApiError
+   **/
+
+  /** Токен юзера был удалён или он отправил не валидный **/
+  if (
+    Number(code) === API_CODES.UNAUTHORIZED &&
+    error.message === API_ERRORS.INVALID_TOKEN
+  ) {
+    set.status = API_CODES.UNAUTHORIZED
+    return {
+      message: API_ERRORS.INVALID_TOKEN,
+      code: API_CODES.UNAUTHORIZED,
+      path
+    }
+  }
+
+  /** Не валидные данные для авторизации **/
   if (Number(code) === API_CODES.UNAUTHORIZED) {
     set.status = API_CODES.UNAUTHORIZED
     return {
@@ -26,6 +43,10 @@ export const errorHandler: ErrorHandler = ({
       path
     }
   }
+
+  /**
+   * Обработка дефолтных ошибок
+   **/
 
   if (code === 'NOT_FOUND') {
     return {
@@ -37,6 +58,7 @@ export const errorHandler: ErrorHandler = ({
 
   const formattedError = JSON.parse(error.message)
 
+  /** Не валидные данные в теле запроса **/
   if (code === 'VALIDATION') {
     return {
       message: code,
