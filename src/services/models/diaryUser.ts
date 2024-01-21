@@ -5,6 +5,7 @@ import { decrypt, encrypt } from '@diary-spo/sql'
 import { ENCRYPT_KEY } from '@config'
 import { GroupsModel } from './groups'
 
+// FIXME: че ему надо первым параметром отдать?
 export const DiaryUserModel = sequelize.define<any, Test>('diaryUser', {
     id: {
         type: DataTypes.INTEGER,
