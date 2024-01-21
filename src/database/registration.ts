@@ -94,7 +94,7 @@ export const registration = async (
     }
 
     // Определяем СПО
-    const [SPORecord, SPOCreated] = await SPOModel().findOrCreate(
+    const [SPORecord, SPOCreated] = await SPOModel.findOrCreate(
       {
         where: {
           abbreviation: regSPO.abbreviation
@@ -112,7 +112,7 @@ export const registration = async (
     regSPO.id = SPORecord.dataValues.id
 
     // Определяем группу
-    const [groupRecord, groupCreated] = await GroupsModel().findOrCreate({
+    const [groupRecord, groupCreated] = await GroupsModel.findOrCreate({
       where: {
         diaryGroupId: regGroup.diaryGroupId
       },
@@ -132,7 +132,7 @@ export const registration = async (
     regData.groupId = groupRecord.dataValues.id
 
     // Определяем пользователя
-    const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel().findOrCreate({
+    const [diaryUserRecord, diaryUserCreated] = await DiaryUserModel.findOrCreate({
       where: {
         id: regData.id
       },

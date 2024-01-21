@@ -2,7 +2,7 @@ import { sequelize } from "@db";
 import { DataTypes } from "sequelize";
 import { DiaryUserModel } from "./diaryUser";
 
-const auth = sequelize.define('auth', {
+export const AuthModel = sequelize.define('auth', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -12,7 +12,7 @@ const auth = sequelize.define('auth', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: DiaryUserModel(),
+            model: DiaryUserModel,
             key: 'id'
         }
     },
@@ -31,5 +31,3 @@ const auth = sequelize.define('auth', {
     createdAt: false,
     updatedAt: false
 })
-
-export const AuthModel = () => auth

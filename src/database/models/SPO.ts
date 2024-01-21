@@ -1,7 +1,7 @@
 import { sequelize } from "@db"
 import { DataTypes } from "sequelize"
 
-const SPO = sequelize.define('SPO', {
+export const SPOModel = sequelize.define('SPO', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -49,5 +49,3 @@ const SPO = sequelize.define('SPO', {
     createdAt: false,
     updatedAt: false
 })
-
-export const SPOModel = () => SPO

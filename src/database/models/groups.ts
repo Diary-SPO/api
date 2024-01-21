@@ -1,9 +1,8 @@
 import { sequelize } from "@db";
 import { DataTypes } from "sequelize";
 import { SPOModel } from "./SPO";
-import { DiaryUserModel } from "./diaryUser";
 
-const groups = sequelize.define('groups', {
+export const GroupsModel = sequelize.define('groups', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -13,7 +12,7 @@ const groups = sequelize.define('groups', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: SPOModel(),
+            model: SPOModel,
             key: 'id'
         }
     },
@@ -31,5 +30,3 @@ const groups = sequelize.define('groups', {
     createdAt: false,
     updatedAt: false
 })
-
-export const GroupsModel = () => groups

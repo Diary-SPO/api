@@ -5,7 +5,7 @@ import { decrypt, encrypt } from '@diary-spo/sql'
 import { ENCRYPT_KEY } from '@config'
 import { GroupsModel } from './groups'
 
-const DiaryUser = sequelize.define('diaryUser', {
+export const DiaryUserModel = sequelize.define('diaryUser', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -16,7 +16,7 @@ const DiaryUser = sequelize.define('diaryUser', {
         allowNull: false,
         comment: 'id группы пользователя. Берётся из базы',
         references: {
-            model: GroupsModel(),
+            model: GroupsModel,
             key: 'id',
         }
     },
@@ -84,5 +84,3 @@ const DiaryUser = sequelize.define('diaryUser', {
     createdAt: false,
     updatedAt: false
 })
-
-export const DiaryUserModel = () => DiaryUser

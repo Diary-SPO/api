@@ -11,25 +11,25 @@ export * from './auth'
 // Устанавливаем связи
 
 // SPO <--->> Groups
-SPOModel().hasMany(GroupsModel(), {
+SPOModel.hasMany(GroupsModel, {
     foreignKey: 'id'
 })
-GroupsModel().belongsTo(SPOModel(), {
+GroupsModel.belongsTo(SPOModel, {
     foreignKey: 'spoId'
 })
 
 // Groups <--->> DaryUser
-GroupsModel().hasMany(DiaryUserModel(), {
+GroupsModel.hasMany(DiaryUserModel, {
     foreignKey: 'id'
 })
-DiaryUserModel().belongsTo(GroupsModel(), {
+DiaryUserModel.belongsTo(GroupsModel, {
     foreignKey: 'groupId'
 })
 
 // DiaryUser <--->> Auth
-DiaryUserModel().hasMany(AuthModel(), {
+DiaryUserModel.hasMany(AuthModel, {
     foreignKey: 'id'
 })
-AuthModel().belongsTo(DiaryUserModel(), {
+AuthModel.belongsTo(DiaryUserModel, {
     foreignKey: 'idDiaryUser'
 })

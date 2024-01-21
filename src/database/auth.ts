@@ -7,7 +7,6 @@ import {
   type SPO
 } from '@diary-spo/types'
 import { ResponseLoginFromDiaryUser } from '@types'
-import { protectInjection } from 'src/utils/protectInjection'
 import { generateToken } from './generateToken'
 import { DiaryUserModel } from './models'
 import { SPOModel } from './models'
@@ -25,16 +24,16 @@ export const offlineAuth = async (
   password: string
 ): Promise<ResponseLogin | null> => {
   // пробуем войти "оффлайн", если пользователь есть в базе (в случае, если упал основной дневник)
-  const diaryUserRecord = await DiaryUserModel().findOne({
+  const diaryUserRecord = await DiaryUserModel.findOne({
     where: {
       login,
       password: encrypt(password, ENCRYPT_KEY)
     },
     include: {
-      model: GroupsModel(),
+      model: GroupsModel,
       required: true,
       include: [{
-        model: SPOModel(),
+        model: SPOModel,
         required: true
       }]
     }

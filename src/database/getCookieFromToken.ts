@@ -36,12 +36,12 @@ const getCookieFromToken = async (token: string): Promise<string> => {
     return getCacheFromCookie
   }
 
-  const DiaryUserAuth = await AuthModel().findOne({
+  const DiaryUserAuth = await AuthModel.findOne({
     where: {
       token
     },
     include: {
-      model: DiaryUserModel(),
+      model: DiaryUserModel,
       required: true
     }
   })
@@ -135,7 +135,7 @@ const updaterDateFromToken = async (
   }
 
   // Обновляем в базе последнее время активности токена, если оно отличается от "сегодня"
-  const updateToken = await AuthModel().update({
+  const updateToken = await AuthModel.update({
     lastUsedDate: currDateFormatted
   },
   {

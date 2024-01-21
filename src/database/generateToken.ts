@@ -14,7 +14,7 @@ export const generateToken = async (idDiaryUser: number): Promise<string> => {
 
   const formattedDate = formatDate(new Date().toISOString())
 
-  AuthModel().create({
+  AuthModel.create({
     idDiaryUser,
     token,
     lastUsedDate: formattedDate
