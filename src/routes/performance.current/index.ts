@@ -1,25 +1,14 @@
-import { handleErrors } from '@utils'
-import { Elysia, t } from 'elysia'
-import { checkCookie } from 'src/middleware'
+import { Elysia } from 'elysia'
 import getPerformanceCurrent from './handler'
 
-const schema = {
-  params: t.Object({
-    id: t.String()
-  }),
-  headers: t.Object({
-    secret: t.String()
-  })
-}
-
-const performanceCurrent = new Elysia().guard(schema, (app) =>
-  app.get('/performance.current/:id', getPerformanceCurrent, {
-    afterHandle: handleErrors,
-    beforeHandle: checkCookie,
+const performanceCurrent = new Elysia().get(
+  '/performance.current/:id',
+  getPerformanceCurrent,
+  {
     detail: {
       tags: ['Student']
     }
-  })
+  }
 )
 
 export default performanceCurrent
