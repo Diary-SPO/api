@@ -48,7 +48,8 @@ export const DiaryUserModel = sequelize.define(
     },
     phone: {
       type: DataTypes.STRING(25),
-      allowNull: false,
+      allowNull: true,
+      defaultValue: null,
       comment: 'Номер телефона пользователя из Сетевого города'
     },
     birthday: {

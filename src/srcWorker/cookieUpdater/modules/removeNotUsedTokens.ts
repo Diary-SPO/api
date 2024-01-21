@@ -1,4 +1,3 @@
-import createQueryBuilder from '@diary-spo/sql'
 import { formatDate } from '@utils'
 import { MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS } from '../config'
 import { maxDateInactive } from '../submodules/maxDateInactive'
