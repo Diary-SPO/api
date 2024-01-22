@@ -1,8 +1,8 @@
+import { AuthModel } from '@db'
 import { formatDate } from '@utils'
+import { Op } from 'sequelize'
 import { MAX_LIFE_TIME_INACTIVE_TOKEN_DAYS } from '../config'
 import { maxDateInactive } from '../submodules/maxDateInactive'
-import { AuthModel } from '@db'
-import { Op } from 'sequelize'
 
 export const removeNotUsedTokens = async (): Promise<void> => {
   const tokens = await AuthModel.findAll({
@@ -19,16 +19,22 @@ export const removeNotUsedTokens = async (): Promise<void> => {
   if (!tokens) {
     return
   }
-  
+
   for (let i = 0; i < tokens?.length; i++) {
     await AuthModel.destroy({
       where: {
         id: tokens[i].id
       }
-    }).then(() => {
-      console.log(`Успешно удалил токен [${tokens[i].id}]: ${tokens[i].token}`)
-    }).catch (() => {
-      console.error(`Ошибка удаления токена [${tokens[i].id}]: ${tokens[i].token}`)
     })
+      .then(() => {
+        console.log(
+          `Успешно удалил токен [${tokens[i].id}]: ${tokens[i].token}`
+        )
+      })
+      .catch(() => {
+        console.error(
+          `Ошибка удаления токена [${tokens[i].id}]: ${tokens[i].token}`
+        )
+      })
   }
 }

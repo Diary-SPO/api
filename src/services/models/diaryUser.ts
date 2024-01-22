@@ -1,14 +1,8 @@
 import { ENCRYPT_KEY } from '@config'
-import { DiaryUser, sequelize } from '@db'
+import { sequelize } from '@db'
 import { decrypt, encrypt } from '@diary-spo/sql'
 import { formatDate } from '@utils'
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model
-} from 'sequelize'
+import { DataTypes } from 'sequelize'
 import { GroupsModel } from './groups'
 
 // FIXME: че ему надо первым параметром отдать?

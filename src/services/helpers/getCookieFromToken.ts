@@ -1,7 +1,7 @@
 import { ApiError } from '@api'
-import { CookieInfoFromDatabase } from '@diary-spo/types'
 import { formatDate } from '@utils'
-import { AuthModel, DiaryUserModel } from './models'
+import { AuthModel, DiaryUserModel } from '../models'
+import { CookieInfoFromDatabase } from '../tables'
 
 type TokenType = {
   cookie: string
