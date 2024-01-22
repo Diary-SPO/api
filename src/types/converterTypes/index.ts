@@ -1,9 +1,4 @@
-import type {
-  DiaryUser,
-  Group,
-  ResponseLogin,
-  SPO
-} from '../../services/tables/types'
+import type { DiaryUser, Group, ResponseLogin, SPO } from '@db'
 
 export function ResponseLoginFromDiaryUser(
   diaryUser: DiaryUser,
